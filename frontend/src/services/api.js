@@ -1,8 +1,13 @@
 import axios from 'axios';
 
 // Create custom Axios client with defaults
+let baseURL = import.meta.env.VITE_API_URL || 'https://mediconnectcopy.onrender.com';
+if (!baseURL.endsWith('/api')) {
+  baseURL = baseURL.replace(/\/$/, '') + '/api';
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://mediconnectcopy.onrender.com',
+  baseURL,
   withCredentials: true, // Crucial for receiving/sending HTTP-only session cookies
   headers: {
     'Content-Type': 'application/json',
