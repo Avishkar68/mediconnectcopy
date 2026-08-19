@@ -14,6 +14,20 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to attach Bearer token if it exists in localStorage
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Response interceptor to format errors and extract data
 api.interceptors.response.use(
   (response) => {

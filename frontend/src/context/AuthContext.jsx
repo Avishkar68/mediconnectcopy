@@ -11,14 +11,19 @@ export const AuthProvider = ({ children }) => {
   // Check if user is already authenticated on mount
   useEffect(() => {
     const checkSession = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
         const response = await api.get('/auth/me');
         if (response.success && response.data) {
           setUser(response.data);
         }
       } catch (err) {
-        // Suppress session check error on initial load (not logged in yet)
         console.log('No active session found.');
+        localStorage.removeItem('token'); // Clear invalid token
       } finally {
         setLoading(false);
       }
@@ -56,6 +61,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/auth/login', { email, password });
       if (response.success && response.data) {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
         setUser(response.data);
       }
       return response;
@@ -72,6 +80,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error('Logout error:', err.message);
     } finally {
+      localStorage.removeItem('token');
       setUser(null);
     }
   };
