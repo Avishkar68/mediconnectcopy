@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Local MongoDB database
+mongodb_data/
+
+# Build files
+dist/
+build/
+
+# Logs
+*.log
