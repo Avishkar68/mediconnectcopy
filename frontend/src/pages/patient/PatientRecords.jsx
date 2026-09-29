@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import {
   FileText,
@@ -9,8 +10,10 @@ import {
   FileCheck,
   AlertCircle,
   CheckCircle2,
-  Trash2
+  Trash2,
+  Sparkles
 } from 'lucide-react';
+
 
 const PatientRecords = () => {
   const [records, setRecords] = useState([]);
@@ -152,9 +155,21 @@ const PatientRecords = () => {
     ? records
     : records.filter(r => r.category === filterCategory);
 
+  const getFullImageUrl = (url) => {
+    if (!url) return '';
+    let cleanUrl = url.replace('localhost5001', 'localhost:5001');
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:')) {
+      return cleanUrl;
+    }
+    const backendHost = import.meta.env.DEV ? 'http://localhost:5001' : 'https://mediconnectcopy.onrender.com';
+    return `${backendHost}${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+  };
+
+
   if (loading) {
     return <div className="text-center py-12 text-slate-500">Loading documentation index...</div>;
   }
+
 
   return (
     <div className="space-y-6">
@@ -338,7 +353,7 @@ const PatientRecords = () => {
                 {record.fileUrl && (
                   <div className="mt-3 overflow-hidden rounded-xl border border-slate-800 max-h-40 bg-slate-900/60 flex items-center justify-center">
                     <img 
-                      src={record.fileUrl} 
+                      src={getFullImageUrl(record.fileUrl)} 
                       alt={record.title} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
@@ -346,7 +361,7 @@ const PatientRecords = () => {
                 )}
               </div>
 
-              <div className="flex justify-between items-center mt-5 pt-3 border-t border-slate-850">
+              <div className="flex flex-wrap justify-between items-center gap-2 mt-5 pt-3 border-t border-slate-850">
                 <button
                   onClick={() => handleRecordDelete(record._id)}
                   className="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-500 hover:text-rose-400 transition-all"
@@ -354,17 +369,30 @@ const PatientRecords = () => {
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Delete</span>
                 </button>
-                <a
-                  href={record.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1 text-xs font-bold text-brand-400 hover:text-brand-300 transition-all"
-                >
-                  <ArrowDownToLine className="w-4 h-4" />
-                  <span>Download Document</span>
-                </a>
+                <div className="flex items-center space-x-3">
+                  <Link
+                    to={`/dashboard/ai-analyzer?recordId=${record._id}`}
+                    className="inline-flex items-center space-x-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 border border-brand-500/20 transition-all"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Analyze with AI</span>
+                  </Link>
+                  {record.fileUrl && (
+                    <a
+                      href={getFullImageUrl(record.fileUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1 text-xs font-bold text-slate-400 hover:text-slate-200 transition-all"
+                    >
+                      <ArrowDownToLine className="w-4 h-4" />
+                      <span>Download</span>
+                    </a>
+                  )}
+                </div>
               </div>
+
             </div>
+
           ))}
         </div>
       )}

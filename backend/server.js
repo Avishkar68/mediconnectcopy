@@ -5,7 +5,9 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-// Load environmental variables
+import path from 'path';
+
+// Load environmental variables (Medical AI report analyzer enabled)
 dotenv.config();
 
 // Connect to MongoDB
@@ -18,9 +20,12 @@ app.use(cors({
   origin: (origin, callback) => callback(null, true),
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 
 // Base Route
 app.get('/api/health', (req, res) => {
@@ -46,7 +51,11 @@ app.use('/api/doctor', doctorRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
+// MediConnect Backend Server Entrypoint - Cloudinary & Base64 Fallback Ready
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });
+
+
+

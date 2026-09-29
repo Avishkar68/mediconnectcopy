@@ -1,10 +1,15 @@
 import axios from 'axios';
 
 // Create custom Axios client with defaults
-let baseURL = import.meta.env.VITE_API_URL || 'https://mediconnectcopy.onrender.com';
+const defaultBaseURL = import.meta.env.DEV 
+  ? 'http://localhost:5001/api' 
+  : 'https://mediconnectcopy.onrender.com/api';
+
+let baseURL = import.meta.env.VITE_API_URL || defaultBaseURL;
 if (!baseURL.endsWith('/api')) {
   baseURL = baseURL.replace(/\/$/, '') + '/api';
 }
+
 
 const api = axios.create({
   baseURL,

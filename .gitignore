@@ -1,16 +1,40 @@
-# Dependencies
-node_modules/
-
 # Environment variables
 .env
 .env.*
+!.env.example
 
-# Local MongoDB database
-mongodb_data/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Build files
-dist/
-build/
+# Virtual environments
+.venv/
+venv/
+env/
 
-# Logs
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# AI service
+ai-service/.venv/
+ai-service/__pycache__/
+
+# Uploads / generated medical files
+uploads/
+ai-service/uploads/
+
+# Local generated files
 *.log
+
+# Node
+node_modules/
+
+# Frontend build
+dist/
+
+# OS
+.DS_Store
+Thumbs.db

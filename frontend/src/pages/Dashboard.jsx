@@ -22,8 +22,10 @@ import {
   Calendar,
   Menu,
   X,
-  Video
+  Video,
+  Sparkles
 } from 'lucide-react';
+
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -241,6 +243,7 @@ const Dashboard = () => {
 
     const navItems = [
       { path: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
+      { path: '/dashboard/ai-analyzer', label: 'AI Report Analyzer', icon: Sparkles },
       { path: '/dashboard/health', label: 'My Health', icon: Heart },
       { path: '/dashboard/records', label: 'Medical Records', icon: FileText },
       { path: '/dashboard/timeline', label: 'Medical Timeline', icon: Clock },
@@ -250,6 +253,7 @@ const Dashboard = () => {
       { path: '/dashboard/doctors', label: 'Doctor Access', icon: UserCheck },
       { path: '/dashboard/notifications', label: 'Notifications', icon: Bell, badge: true }
     ];
+
 
     const isLinkActive = (item) => {
       if (item.exact) {
@@ -323,7 +327,9 @@ const Dashboard = () => {
       return 'Doctor Portal Workspace';
     }
 
+    if (path.endsWith('/ai-analyzer')) return 'AI Medical Report Analyzer';
     if (path.endsWith('/health')) return 'My Health Summary';
+
     if (path.endsWith('/records')) return 'Medical Records Archive';
     if (path.endsWith('/timeline')) return 'Chronological Health Timeline';
     if (path.endsWith('/medications')) return 'Active Medications & Prescriptions';

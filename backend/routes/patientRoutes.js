@@ -15,6 +15,7 @@ import {
   grantDoctorAccess,
   revokeDoctorAccess,
   uploadRecordImage,
+  analyzeMedicalReport,
 } from '../controllers/patientController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -52,5 +53,7 @@ router.route('/doctors/:id')
   .delete(protect, revokeDoctorAccess);
 
 router.post('/upload', protect, upload.single('image'), uploadRecordImage);
+router.post('/analyze-report', protect, analyzeMedicalReport);
 
 export default router;
+
