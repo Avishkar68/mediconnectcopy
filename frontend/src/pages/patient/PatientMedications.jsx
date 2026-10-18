@@ -97,7 +97,7 @@ const PatientMedications = () => {
   const pastMeds = medications.filter(m => m.status !== 'active');
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading prescription logs...</div>;
+    return <div className="text-center py-12 text-slate-400">Loading your medicines...</div>;
   }
 
   return (
@@ -106,15 +106,15 @@ const PatientMedications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">Medication Registry</h2>
-          <p className="text-xs text-slate-400">Keep track of your current prescription schedules and dosing instructions.</p>
+          <h2 className="text-xl font-bold text-white font-display">My Daily Medicines</h2>
+          <p className="text-xs text-slate-300">Keep track of what pills to take, how much to take, and when to take them.</p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
+          className="bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-brand-500/20"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>{showAddForm ? 'Close form' : 'Register Medication'}</span>
+          <span>{showAddForm ? 'Close form' : '+ Add A Medicine'}</span>
         </button>
       </div>
 
@@ -126,7 +126,7 @@ const PatientMedications = () => {
       )}
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center flex items-center justify-center space-x-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs font-semibold text-center flex items-center justify-center space-x-2">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -135,41 +135,41 @@ const PatientMedications = () => {
       {/* Add Form */}
       {showAddForm && (
         <div className="glass-card rounded-2xl p-6 border border-slate-800 max-w-xl mx-auto animate-in fade-in slide-in-from-top-3 duration-200">
-          <h3 className="text-sm font-bold text-white mb-4">Register Prescribed Medication</h3>
+          <h3 className="text-sm font-bold text-white mb-4">Add A New Medicine</h3>
 
           <form onSubmit={handleMedSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Medication Name</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Medicine Name</label>
               <input
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Lipitor, Metformin"
+                placeholder="e.g. Paracetamol, Metformin, Vitamin D"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Dosage</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">How Much (Dosage)</label>
                 <input
                   type="text"
                   value={form.dosage}
                   onChange={(e) => setForm({ ...form, dosage: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. 10mg, 1 tablet"
+                  placeholder="e.g. 1 tablet, 500mg, 5ml"
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Frequency</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">How Often (Frequency)</label>
                 <input
                   type="text"
                   value={form.frequency}
                   onChange={(e) => setForm({ ...form, frequency: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. Once daily, Twice a day"
+                  placeholder="e.g. Once daily, Twice a day after meals"
                   required
                 />
               </div>
@@ -197,20 +197,20 @@ const PatientMedications = () => {
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Intake Instructions</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Doctor's Advice or Special Instructions</label>
               <textarea
                 value={form.instructions}
                 onChange={(e) => setForm({ ...form, instructions: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 h-20 resize-none"
-                placeholder="e.g. Take with food, avoid alcohol..."
+                placeholder="e.g. Take with warm water after food, do not take on empty stomach..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold py-2.5 rounded-xl transition-all"
+              className="w-full bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition-all shadow-md shadow-brand-500/20"
             >
-              Add to Active Medications
+              Save To My Medicines
             </button>
           </form>
         </div>
@@ -223,12 +223,18 @@ const PatientMedications = () => {
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
             <Activity className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Active Prescriptions ({activeMeds.length})</span>
+            <span>Medicines I Am Taking Right Now ({activeMeds.length})</span>
           </h3>
 
           {activeMeds.length === 0 ? (
-            <div className="p-8 text-center bg-slate-900/10 border border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-500">No active medications registered. Add one using the form above.</p>
+            <div className="p-8 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-2xl">
+              <p className="text-xs text-slate-400">No active medicines registered right now.</p>
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="mt-3 text-xs font-bold text-brand-400 hover:underline"
+              >
+                + Add your first medicine
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -240,23 +246,23 @@ const PatientMedications = () => {
                   <div>
                     <div className="flex items-center space-x-2">
                       <h4 className="text-sm font-bold text-white">{med.name}</h4>
-                      <span className={`text-[8px] font-bold px-2 py-0.5 rounded-full border uppercase ${getStatusBadgeClass(med.status)}`}>
-                        {med.status}
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase ${getStatusBadgeClass(med.status)}`}>
+                        {med.status === 'active' ? 'Active' : med.status}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1">Dosage: {med.dosage} | Frequency: {med.frequency}</p>
+                    <p className="text-xs text-slate-300 mt-1">Dose: <strong className="text-white">{med.dosage}</strong> • Frequency: {med.frequency}</p>
                     
                     {med.instructions && (
-                      <p className="text-[11px] text-slate-500 mt-2 italic">
-                        Note: {med.instructions}
+                      <p className="text-xs text-slate-400 mt-2 italic bg-slate-900/40 p-2 rounded-lg border border-slate-800">
+                        Instructions: {med.instructions}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-left sm:text-right border-t sm:border-t-0 border-slate-850 pt-2 sm:pt-0">
-                    <span className="text-[9px] font-bold text-slate-500 uppercase block">Course Duration</span>
-                    <div className="flex items-center text-[10px] text-slate-450 mt-1 space-x-1 sm:justify-end">
-                      <Calendar className="w-3.5 h-3.5" />
+                  <div className="text-left sm:text-right border-t sm:border-t-0 border-slate-800 pt-2 sm:pt-0">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Course Duration</span>
+                    <div className="flex items-center text-xs text-slate-300 mt-1 space-x-1 sm:justify-end">
+                      <Calendar className="w-3.5 h-3.5 text-brand-400" />
                       <span>
                         {new Date(med.startDate).toLocaleDateString()} - {med.endDate ? new Date(med.endDate).toLocaleDateString() : 'Ongoing'}
                       </span>
@@ -272,21 +278,21 @@ const PatientMedications = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider border-b border-slate-800 pb-2 mb-3">
-              Intake Reminders
+              Helpful Medicine Reminders
             </h3>
-            <div className="space-y-3 text-xs text-slate-400">
-              <div className="flex items-start space-x-2.5 p-2 bg-slate-900/30 rounded-lg border border-slate-850">
+            <div className="space-y-3 text-xs text-slate-300">
+              <div className="flex items-start space-x-2.5 p-3 bg-slate-900/40 rounded-xl border border-slate-800">
                 <Clock className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-slate-350">Morning Routine</h4>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Take thyroid pills 30 mins before breakfast.</p>
+                  <h4 className="font-bold text-white">Morning Routine</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Take thyroid or blood pressure pills in the morning as prescribed.</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-2.5 p-2 bg-slate-900/30 rounded-lg border border-slate-850">
-                <Clock className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-2.5 p-3 bg-slate-900/40 rounded-xl border border-slate-800">
+                <Clock className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-slate-350">Dinner Routine</h4>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Metformin should be taken with dinner.</p>
+                  <h4 className="font-bold text-white">Evening Routine</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Take dinner sugar pills and cholesterol tablets with food.</p>
                 </div>
               </div>
             </div>
@@ -295,19 +301,19 @@ const PatientMedications = () => {
           {/* Past Medications History */}
           {pastMeds.length > 0 && (
             <div className="glass-card rounded-2xl p-5 border border-slate-800">
-              <h3 className="text-xs font-bold text-slate-450 uppercase tracking-wider border-b border-slate-850 pb-2 mb-3">
-                Completed Course History
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 mb-3">
+                Past Medicines (Finished Course)
               </h3>
               <div className="space-y-2.5">
                 {pastMeds.map(med => (
-                  <div key={med._id} className="text-left text-[11px]">
+                  <div key={med._id} className="text-left text-xs p-2 bg-slate-900/30 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="font-semibold text-slate-300">{med.name}</span>
-                      <span className="text-[9px] text-slate-550 border border-slate-800 px-1.5 py-0.5 rounded-full uppercase">
+                      <span className="font-semibold text-slate-200">{med.name}</span>
+                      <span className="text-[9px] text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded-full uppercase">
                         {med.status}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Dose: {med.dosage} | Ended: {med.endDate ? new Date(med.endDate).toLocaleDateString() : 'N/A'}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Dose: {med.dosage} | Ended: {med.endDate ? new Date(med.endDate).toLocaleDateString() : 'Completed'}</p>
                   </div>
                 ))}
               </div>

@@ -96,7 +96,7 @@ const PatientAppointments = () => {
   const pastAppts = appointments.filter(a => new Date(a.dateTime) <= new Date() || a.status === 'cancelled');
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading appointments registry...</div>;
+    return <div className="text-center py-12 text-slate-400">Loading your visits...</div>;
   }
 
   return (
@@ -105,15 +105,15 @@ const PatientAppointments = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">Appointments</h2>
-          <p className="text-xs text-slate-400">Schedule, review, and organize consultations with your doctors.</p>
+          <h2 className="text-xl font-bold text-white font-display">Doctor Visits & Video Calls</h2>
+          <p className="text-xs text-slate-300">Book a visit, talk to your doctor over video call from home, or review past visits.</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
+          className="bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-brand-500/20"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>{showForm ? 'Cancel booking' : 'Book Appointment'}</span>
+          <span>{showForm ? 'Cancel booking' : '+ Book Doctor Visit'}</span>
         </button>
       </div>
 
@@ -125,7 +125,7 @@ const PatientAppointments = () => {
       )}
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center flex items-center justify-center space-x-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs font-semibold text-center flex items-center justify-center space-x-2">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -134,11 +134,11 @@ const PatientAppointments = () => {
       {/* Booking Form Overlay/Panel */}
       {showForm && (
         <div className="glass-card rounded-2xl p-6 border border-slate-800 max-w-xl mx-auto animate-in fade-in slide-in-from-top-3 duration-200">
-          <h3 className="text-sm font-bold text-white mb-4">Book New Medical Consultation</h3>
+          <h3 className="text-sm font-bold text-white mb-4">Book A Visit With Your Doctor</h3>
 
           <form onSubmit={handleBookingSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Select Doctor</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Choose Doctor</label>
               <select
                 value={form.doctorId}
                 onChange={(e) => setForm({ ...form, doctorId: e.target.value })}
@@ -148,14 +148,14 @@ const PatientAppointments = () => {
                 <option value="">Choose a doctor...</option>
                 {doctors.map(doc => (
                   <option key={doc._id} value={doc._id}>
-                    Dr. {doc.name} ({doc.profile?.specialization || 'General Practice'})
+                    Dr. {doc.name} ({doc.profile?.specialization || 'General Physician'})
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Consultation Date & Time</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Date & Time</label>
               <input
                 type="datetime-local"
                 value={form.dateTime}
@@ -166,32 +166,32 @@ const PatientAppointments = () => {
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Purpose of Visit</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Reason for Visit</label>
               <input
                 type="text"
                 value={form.purpose}
                 onChange={(e) => setForm({ ...form, purpose: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Regular health checkup, Cardiac consultation"
+                placeholder="e.g. Regular health checkup, review blood test, fever"
                 required
               />
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Symtoms / Notes</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">How are you feeling? (Symptoms or questions)</label>
               <textarea
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 h-20 resize-none"
-                placeholder="Add details regarding symptoms or requests..."
+                placeholder="Tell the doctor anything you are experiencing..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold py-2.5 rounded-xl transition-all"
+              className="w-full bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition-all shadow-md shadow-brand-500/20"
             >
-              Confirm Booking
+              Confirm & Book Visit
             </button>
           </form>
         </div>
@@ -203,13 +203,19 @@ const PatientAppointments = () => {
         {/* Upcoming Consultations */}
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
-            <Video className="w-4 h-4 text-brand-400 mr-1.5 animate-pulse" />
-            <span>Scheduled Consultations ({upcomingAppts.length})</span>
+            <Video className="w-4 h-4 text-brand-400 mr-1.5" />
+            <span>Upcoming Doctor Visits ({upcomingAppts.length})</span>
           </h3>
 
           {upcomingAppts.length === 0 ? (
-            <div className="p-10 text-center bg-slate-900/10 border border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-500">No upcoming appointments booked.</p>
+            <div className="p-8 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-2xl">
+              <p className="text-xs text-slate-400">No upcoming visits booked right now.</p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="mt-3 text-xs font-bold text-brand-400 hover:underline"
+              >
+                + Book an appointment with a doctor
+              </button>
             </div>
           ) : (
             <div className="space-y-4">

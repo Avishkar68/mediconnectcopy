@@ -34,37 +34,37 @@ const FIELD_CONFIG = [
   {
     key: "bloodGroup",
     title: "Blood Group",
-    description: "Allow emergency clinicians to see your verified blood group for urgent transfusions.",
+    description: "Shows your blood group so doctors know what blood to give you right away.",
     icon: "🩸",
   },
   {
     key: "allergies",
-    title: "Allergies & Sensitivities",
-    description: "Critical allergies (medications, latex, food) that medical responders must avoid.",
+    title: "Allergies",
+    description: "Lists foods or medicines you are allergic to so doctors know what to avoid.",
     icon: "⚠️",
   },
   {
     key: "medications",
-    title: "Current Medications",
-    description: "Active prescriptions to prevent adverse drug-drug interactions during acute care.",
+    title: "Current Medicines",
+    description: "Shows daily medicines you take so doctors don't give conflicting treatments.",
     icon: "💊",
   },
   {
     key: "conditions",
-    title: "Existing Medical Conditions",
-    description: "Chronic or critical health conditions (e.g., Diabetes, Asthma, Cardiac history).",
+    title: "Health Conditions",
+    description: "Shows chronic conditions like Asthma, Diabetes, or Heart conditions.",
     icon: "🏥",
   },
   {
     key: "emergencyContact",
     title: "Emergency Contact",
-    description: "Designated primary emergency contact details with phone dialing capability.",
+    description: "Gives the name and phone number of your family member to call immediately.",
     icon: "📞",
   },
   {
     key: "criticalNotes",
-    title: "Critical Medical Notes",
-    description: "Specific emergency directives, implants, or clinical considerations you have authorized.",
+    title: "Special Note for Doctors",
+    description: "Any special note (e.g. 'I have a pacemaker', 'Please contact my daughter').",
     icon: "📋",
   },
 ];
@@ -330,17 +330,17 @@ export default function EmergencyAccess() {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-                  Emergency Medical Directive
+                  Life Safety Card
                 </span>
                 <span className="text-[9px] px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-mono">
-                  Encrypted URL
+                  Private & Protected
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-display mt-0.5">
-                Emergency Medical QR
+                Emergency Health QR Card
               </h1>
               <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                Configure patient-authorized health information accessible by paramedics and doctors during urgent care situations.
+                Paramedics and emergency doctors can scan this card to quickly see your blood type, allergies, and emergency contact if you ever need urgent help.
               </p>
             </div>
           </div>
@@ -351,27 +351,29 @@ export default function EmergencyAccess() {
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-rose-600/20"
             >
               <HeartPulse className="w-4 h-4 animate-pulse" />
-              <span>Emergency First-Aid AI</span>
+              <span>First-Aid Helper</span>
             </Link>
 
             <div className="flex items-center space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
               <div className="text-right">
-                <div className="text-[10px] font-bold text-slate-400 uppercase">Emergency Sharing</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase">Emergency Card Sharing</div>
                 <div className={`text-xs font-bold ${enabled ? "text-emerald-400" : "text-slate-500"}`}>
-                  {enabled ? "Active & Resolvable" : "Sharing Disabled"}
+                  {enabled ? "Active & Ready To Scan" : "Sharing Turned Off"}
                 </div>
               </div>
               <button
+                type="button"
                 onClick={handleMasterToggle}
                 role="switch"
                 aria-checked={enabled}
-                className={`relative w-13 h-7 rounded-full transition-all cursor-pointer ${
-                  enabled ? "bg-emerald-500 shadow-md shadow-emerald-500/20" : "bg-slate-700"
+                className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  enabled ? "bg-emerald-500 shadow-md shadow-emerald-500/30" : "bg-slate-700"
                 }`}
               >
                 <span
-                  className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all transform ${
-                    enabled ? "translate-x-7" : "translate-x-1"
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    enabled ? "translate-x-5" : "translate-x-0"
                   }`}
                 />
               </button>
@@ -383,7 +385,7 @@ export default function EmergencyAccess() {
         <div className="mt-5 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-3.5 text-xs text-slate-300 flex items-center space-x-3">
           <Lock className="w-4 h-4 text-cyan-400 shrink-0" />
           <span>
-            <strong className="text-white">Strict Privacy Architecture:</strong> Your QR code does NOT store raw medical records or database IDs. It points to a secure token on the server that only exposes data categories you explicitly turn on below.
+            <strong className="text-white">Safe & Protected:</strong> Your emergency card only displays the specific items you turn on below. You stay in full control at all times.
           </span>
         </div>
       </div>
@@ -427,10 +429,10 @@ export default function EmergencyAccess() {
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <div>
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  Emergency Information Categories
+                  What doctors can see in an emergency
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Select which items healthcare professionals can view upon scanning your QR.
+                  Choose which information is visible when someone scans your emergency card.
                 </p>
               </div>
               <span className="text-xs font-bold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">
@@ -470,13 +472,18 @@ export default function EmergencyAccess() {
                         e.stopPropagation();
                         updateSetting(field.key);
                       }}
-                      className={`relative shrink-0 w-10 h-5 rounded-full transition-all mt-0.5 cursor-pointer ${
-                        isSelected && enabled ? "bg-emerald-500" : "bg-slate-700"
+                      role="switch"
+                      aria-checked={isSelected && enabled}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:cursor-not-allowed ${
+                        isSelected && enabled
+                          ? "bg-emerald-500 shadow-sm shadow-emerald-500/40"
+                          : "bg-slate-700"
                       }`}
                     >
                       <span
-                        className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all transform ${
-                          isSelected && enabled ? "translate-x-5" : "translate-x-1"
+                        aria-hidden="true"
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          isSelected && enabled ? "translate-x-5" : "translate-x-0"
                         }`}
                       />
                     </button>

@@ -29,41 +29,41 @@ import {
 const SMART_PATHWAY_TEMPLATES = [
   {
     id: 'cardiac-pci',
-    name: 'Cardiovascular Rehab & Post-PCI Stent Protocol',
+    name: 'Heart Recovery & Daily Health Plan',
     category: 'cardiac',
-    diagnosis: 'Acute Coronary Syndrome, Post-PCI Stent Placement',
-    description: 'Post-catheterization hemodynamic stabilization, dual antiplatelet compliance, graded aerobic walking, and sodium restriction.',
+    diagnosis: 'Heart Stent & Recovery Care',
+    description: 'Gentle daily recovery: blood pressure monitoring, daily medicines, walking, and low-salt food.',
     targetVitals: {
       systolicMax: 130,
       diastolicMax: 80,
       heartRateTarget: '60 - 75 bpm',
       bloodSugarTarget: '< 100 mg/dL',
       weightTargetKg: 75,
-      specialNotes: 'Report systolic BP > 140 mmHg or resting pulse > 90 bpm immediately. Keep nitroglycerin accessible.',
+      specialNotes: 'Call doctor if blood pressure is over 140/90 or resting pulse is over 90 bpm.',
     },
     phases: [
       {
         phaseNumber: 1,
-        name: 'Phase 1: Acute Hemodynamic Stabilization (Days 1–7)',
+        name: 'Phase 1: Rest & Steady Recovery (Week 1)',
         durationDays: 7,
-        description: 'Resting vital monitoring, catheter site inspection, zero heavy lifting.',
-        goals: ['BP < 130/80 mmHg', 'No puncture site hematoma', 'Zero resting chest tightness'],
+        description: 'Rest at home, check blood pressure daily, and avoid heavy lifting.',
+        goals: ['BP under 130/80 mmHg', 'No wrist or groin soreness', 'Zero chest tightness'],
         status: 'in-progress',
       },
       {
         phaseNumber: 2,
-        name: 'Phase 2: Graduated Aerobic Reconditioning (Days 8–28)',
+        name: 'Phase 2: Gentle Daily Walking (Weeks 2–4)',
         durationDays: 21,
-        description: 'Daily 20-30 min flat cardiovascular walking, sodium intake < 2g/day.',
-        goals: ['Walk 30 mins continuously', 'Resting pulse 60-75 bpm', '100% medication adherence'],
+        description: 'Daily 20-30 minute flat walk, eat low-salt meals.',
+        goals: ['Walk 30 mins easily', 'Resting pulse 60-75 bpm', 'Take all medicines daily on time'],
         status: 'pending',
       },
       {
         phaseNumber: 3,
-        name: 'Phase 3: Long-term Cardiac Wellness & Maintenance (Month 2+)',
+        name: 'Phase 3: Long-term Healthy Habits (Month 2+)',
         durationDays: 60,
-        description: 'Sustained Mediterranean nutrition, maintenance statin + antiplatelet therapy.',
-        goals: ['LDL maintained < 70 mg/dL', 'Sustained physical activity without angina'],
+        description: 'Eat fresh healthy foods, stay active, and continue prescribed medicines.',
+        goals: ['Keep cholesterol healthy', 'Stay active comfortably without feeling tired'],
         status: 'pending',
       },
     ],
@@ -541,7 +541,7 @@ const DoctorCarePlans = () => {
     return (
       <div className="py-24 text-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin mx-auto" />
-        <p className="text-sm text-slate-400 font-medium">Loading Treatment Plan Management Suite...</p>
+        <p className="text-sm text-slate-400 font-medium">Loading Care Plans...</p>
       </div>
     );
   }
@@ -558,10 +558,10 @@ const DoctorCarePlans = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                Treatment Plan Management Studio
+                Patient Care Plans
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
-                Prescribe structured clinical pathways, define milestone phases, and track daily patient adherence.
+                Create easy daily health plans, set recovery goals, and track patient progress.
               </p>
             </div>
           </div>

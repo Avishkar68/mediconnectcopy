@@ -397,17 +397,17 @@ const PatientEmergencyAssistant = () => {
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-extrabold uppercase tracking-wider mb-3 animate-pulse">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-extrabold uppercase tracking-wider mb-3">
               <ShieldAlert className="w-3.5 h-3.5" />
-              <span>Real-Time Medical Emergency Mode</span>
+              <span>Emergency First-Aid Guide</span>
             </div>
             
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display flex flex-wrap items-center">
-              <span>Emergency First-Aid AI: </span>
+              <span>Emergency First-Aid Helper: </span>
               <span className="text-rose-400 ml-2 font-normal text-xl sm:text-2xl">{patientProfile?.name}</span>
             </h1>
             <p className="text-rose-200/80 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
-              Dynamically converses with you during medical crises. Actively checks your recorded allergies ({patientProfile?.allergies?.join(', ') || 'None'}), chronic conditions, and active prescriptions in real-time to prevent lethal contraindications.
+              Get calm, immediate first-aid instructions. It automatically checks your known allergies ({patientProfile?.allergies?.join(', ') || 'None'}) and medicines so you know what is safe to do right now.
             </p>
           </div>
 
@@ -424,10 +424,10 @@ const PatientEmergencyAssistant = () => {
             <button
               onClick={() => setShowPersonaDrawer(!showPersonaDrawer)}
               className="inline-flex items-center space-x-2 px-3.5 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 font-bold text-xs transition-all"
-              title="Switch clinical history persona"
+              title="Try a sample profile"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-brand-400" />
-              <span>Switch Clinical Persona</span>
+              <span>Try Sample Profile</span>
             </button>
 
             <button
@@ -446,9 +446,9 @@ const PatientEmergencyAssistant = () => {
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
                 <User className="w-3.5 h-3.5 text-brand-400" />
-                <span>Test Different Patient Medical Profiles Live</span>
+                <span>Try Different Sample Patient Profiles</span>
               </span>
-              <span className="text-[11px] text-slate-400">See how the AI immediately adapts its medical reasoning</span>
+              <span className="text-[11px] text-slate-400">See how advice automatically changes based on each person's allergies & medicines</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -518,9 +518,9 @@ const PatientEmergencyAssistant = () => {
         <div className="flex items-center justify-between mb-2.5">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
             <FlameKindling className="w-3.5 h-3.5 text-rose-400" />
-            <span>1-Tap Immediate Emergency Symptom Selectors</span>
+            <span>Common Urgent Symptoms (Tap Any)</span>
           </span>
-          <span className="text-[10px] text-slate-500">Tap to instantly evaluate without typing</span>
+          <span className="text-[10px] text-slate-500">Tap to get instant first-aid advice without typing</span>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -552,7 +552,7 @@ const PatientEmergencyAssistant = () => {
             <div className="flex items-center space-x-2.5">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs font-bold text-white uppercase tracking-wider">
-                Emergency First-Aid Chatbot
+                First-Aid Helper
               </span>
             </div>
             <span className="text-[11px] text-slate-400">

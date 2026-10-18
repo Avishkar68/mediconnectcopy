@@ -840,15 +840,190 @@ export function generateFallbackMedicalAnalysis(text, title = '') {
             }
           }
 
+          // Plain-language medical dictionary for everyday understanding
+          const getPlainLanguageExplanation = (paramName, stat, val, range, sec) => {
+            const p = paramName.toLowerCase();
+
+            // 1. Hemoglobin
+            if (p.includes('hemoglobin') || p === 'hb') {
+              return {
+                def: 'Hemoglobin is the iron-rich protein in red blood cells that carries oxygen from your lungs to the rest of your body.',
+                meaning: stat === 'normal'
+                  ? 'Your hemoglobin level is healthy. Your body has plenty of oxygen-carrying power.'
+                  : stat === 'low'
+                  ? 'Your hemoglobin is lower than normal (Anemia). This can make you feel unusually tired, weak, pale, or short of breath.'
+                  : 'Your hemoglobin is higher than normal. This can happen with dehydration or low oxygen environments.',
+                tip: stat === 'normal'
+                  ? 'Keep eating iron-rich foods like leafy greens, beans, and healthy proteins.'
+                  : 'Eat iron-rich foods (spinach, lentils, beets) and ask your doctor if you need an iron supplement.'
+              };
+            }
+
+            // 2. White Blood Cells (WBC)
+            if (p.includes('white blood cell') || p.includes('wbc') || p.includes('leukocyte')) {
+              return {
+                def: 'White blood cells are your body’s immune soldiers. They defend you against bacteria, viruses, and infections.',
+                meaning: stat === 'normal'
+                  ? 'Your infection-fighting white blood cells are in a healthy, balanced range.'
+                  : stat === 'high'
+                  ? 'Your white blood cells are elevated. This usually means your body is actively fighting off an infection or inflammation (like a cold or sore throat).'
+                  : 'Your white blood cells are lower than normal. Your immune system may be temporarily weakened.',
+                tip: stat === 'high'
+                  ? 'Get plenty of rest, drink warm fluids, and consult your doctor if you have fever or pain.'
+                  : 'Rest well and wash hands frequently to protect against everyday germs.'
+              };
+            }
+
+            // 3. Platelets
+            if (p.includes('platelet')) {
+              return {
+                def: 'Platelets are tiny blood cells that stick together to stop bleeding when you get a cut or bruise.',
+                meaning: stat === 'normal'
+                  ? 'Your platelet count is normal. Your blood can clot safely when needed.'
+                  : stat === 'low'
+                  ? 'Platelet count is low. You might bruise or bleed more easily from minor cuts.'
+                  : 'Platelet count is high. Blood may clot more quickly than usual.',
+                tip: stat === 'normal'
+                  ? 'Healthy platelet levels show good bone marrow function.'
+                  : 'Avoid vigorous sports that cause deep bruising, and let your doctor know.'
+              };
+            }
+
+            // 4. Red Blood Cells (RBC)
+            if (p.includes('red blood cell') || p.includes('rbc') || p.includes('erythrocyte')) {
+              return {
+                def: 'Red blood cells are the delivery trucks in your blood that carry fresh oxygen to every organ.',
+                meaning: stat === 'normal'
+                  ? 'Healthy count of red blood cells delivering oxygen to your muscles and brain.'
+                  : stat === 'low'
+                  ? 'Lower count of red blood cells. You may feel low on energy or tire quickly.'
+                  : 'Higher red blood cell count. Often seen with dehydration or living at high altitudes.',
+                tip: 'Stay well hydrated and maintain a balanced diet with vitamin B12 and iron.'
+              };
+            }
+
+            // 5. Blood Glucose / Sugar
+            if (p.includes('glucose') || p.includes('sugar') || p.includes('glycemic')) {
+              return {
+                def: 'Blood glucose is the primary sugar your body uses for daily energy from the food you eat.',
+                meaning: stat === 'normal'
+                  ? 'Your blood sugar is balanced. Your body is processing food and energy smoothly.'
+                  : stat === 'high'
+                  ? 'Your blood sugar is higher than normal. This can put stress on blood vessels and is a sign of diabetes or pre-diabetes.'
+                  : 'Your blood sugar is low. You may feel shaky, sweaty, dizzy, or hungry.',
+                tip: stat === 'high'
+                  ? 'Reduce sugary drinks, white bread, and sweets. Enjoy daily 20-minute walks after meals.'
+                  : 'Keep a small healthy snack handy and consult your doctor.'
+              };
+            }
+
+            // 6. HbA1c
+            if (p.includes('hba1c') || p.includes('a1c')) {
+              return {
+                def: 'HbA1c shows your average blood sugar level over the past 2 to 3 months.',
+                meaning: stat === 'normal'
+                  ? 'Your 3-month sugar average is in the healthy safe zone (below 5.7%).'
+                  : 'Your 3-month average sugar is elevated. This indicates diabetes or pre-diabetes.',
+                tip: 'Work with your doctor on a healthy meal plan and take any prescribed sugar medicines regularly.'
+              };
+            }
+
+            // 7. Cholesterol & Lipids
+            if (p.includes('cholesterol') || p.includes('triglyceride') || p.includes('ldl') || p.includes('hdl')) {
+              const isHdl = p.includes('hdl');
+              return {
+                def: isHdl
+                  ? 'HDL is "Good" cholesterol. It helps clear excess fats out of your arteries back to the liver.'
+                  : 'Cholesterol and triglycerides are fats in your blood needed for cells, but too much can clog arteries.',
+                meaning: stat === 'normal'
+                  ? 'Your blood fat levels look healthy and supportive of good heart health.'
+                  : isHdl && stat === 'low'
+                  ? 'Your "good" protective cholesterol is low. Higher HDL is better for your heart.'
+                  : 'Blood fats are higher than ideal. Over time, extra fat can build up in heart vessels.',
+                tip: 'Enjoy heart-healthy foods like oats, nuts, olive oil, and limit deep-fried snacks.'
+              };
+            }
+
+            // 8. Creatinine & BUN (Kidney)
+            if (p.includes('creatinine') || p.includes('bun') || p.includes('urea') || p.includes('egfr')) {
+              return {
+                def: 'These markers measure how well your two kidneys filter waste and excess water from your blood.',
+                meaning: stat === 'normal'
+                  ? 'Your kidneys are filtering waste effectively and keeping your body clean.'
+                  : stat === 'critical' || stat === 'high'
+                  ? 'Kidney waste markers are elevated. This means your kidneys are working extra hard or filtering more slowly.'
+                  : 'Kidney filtration numbers are slightly low. Often related to muscle mass or hydration.',
+                tip: 'Drink plenty of clean water daily, avoid excessive salt, and avoid taking unnecessary painkiller pills.'
+              };
+            }
+
+            // 9. Liver Markers (ALT, AST, Bilirubin, ALP)
+            if (p.includes('alt') || p.includes('ast') || p.includes('sgpt') || p.includes('sgot') || p.includes('bilirubin') || p.includes('alp')) {
+              return {
+                def: 'These are natural enzymes produced by your liver that help digest nutrients and process toxins.',
+                meaning: stat === 'normal'
+                  ? 'Your liver cells are healthy and processing nutrients normally.'
+                  : 'Liver enzyme levels are elevated. This indicates your liver may be irritated, inflamed, or under stress.',
+                tip: 'Avoid alcohol, limit fatty or overly processed foods, and check with your doctor.'
+              };
+            }
+
+            // 10. Cardiac Markers (Troponin, CK-MB)
+            if (p.includes('troponin') || p.includes('ck-mb') || p.includes('cardiac')) {
+              return {
+                def: 'Cardiac markers are special proteins released into the bloodstream when the heart muscle is stressed or injured.',
+                meaning: stat === 'normal'
+                  ? 'Heart muscle markers are safe and normal. No acute heart muscle stress detected.'
+                  : 'Cardiac markers are elevated. This is an urgent sign that your heart muscle needs medical attention immediately.',
+                tip: 'If you have chest tightness, arm pain, or breathlessness, seek immediate medical care.'
+              };
+            }
+
+            // 11. Inflammatory Markers (CRP, ESR)
+            if (p.includes('crp') || p.includes('c-reactive') || p.includes('esr')) {
+              return {
+                def: 'These markers indicate whether there is swelling, irritation, or infection anywhere in your body.',
+                meaning: stat === 'normal'
+                  ? 'No unusual inflammation or swelling detected in your system.'
+                  : 'Inflammation markers are elevated. Your body is fighting an active infection or experiencing joint/tissue swelling.',
+                tip: 'Rest, hydrate, and discuss possible causes with your doctor.'
+              };
+            }
+
+            // 12. Blood Pressure & Heart Rate
+            if (p.includes('blood pressure') || p.includes('systolic') || p.includes('diastolic') || p.includes('heart rate') || p.includes('pulse') || p.includes('spo2')) {
+              return {
+                def: 'Vitals measure the heartbeat, blood flow pressure, and oxygen levels keeping you energized.',
+                meaning: stat === 'normal'
+                  ? 'Your vital signs are in a healthy, comfortable range.'
+                  : 'Vital readings are outside the standard range. May indicate stress, dehydration, or cardiovascular strain.',
+                tip: 'Sit calmly, breathe slowly, and check your vitals again in 15 minutes.'
+              };
+            }
+
+            // Default generic fallback
+            return {
+              def: `${paramName} is a diagnostic test parameter measured in the ${sec} panel.`,
+              meaning: stat === 'normal'
+                ? `Your ${paramName} level (${val}) is within the healthy, expected range.`
+                : `Your ${paramName} level (${val}) is ${stat} compared to standard reference bounds (${range}).`,
+              tip: stat === 'normal'
+                ? 'Continue maintaining a balanced daily routine and healthy nutrition.'
+                : 'Discuss this reading with your doctor to see if any simple lifestyle adjustment is recommended.'
+            };
+          };
+
+          const explanation = getPlainLanguageExplanation(namePart, status, displayVal, refRange, secName);
+
           if (status === 'critical') {
             hasCritical = true;
             hasAbnormal = true;
-            criticalFindings.push(`CRITICAL: ${namePart} is ${displayVal} (Reference: ${refRange})`);
+            criticalFindings.push(`Attention Needed: ${namePart} is ${displayVal} (Normal is ${refRange})`);
           } else if (status === 'high' || status === 'low' || status === 'attention') {
             hasAbnormal = true;
-            attentionFindings.push(`${namePart} is ${displayVal} (${status.toUpperCase()}) - Reference: ${refRange}`);
+            attentionFindings.push(`${namePart} is ${displayVal} (${status === 'high' ? 'High' : 'Low'}) - Normal is ${refRange}`);
           } else {
-            healthyFindings.push(`${namePart} is ${displayVal} (Normal)`);
+            healthyFindings.push(`${namePart} is ${displayVal} (Healthy & Normal)`);
           }
 
           metrics.push({
@@ -861,13 +1036,9 @@ export function generateFallbackMedicalAnalysis(text, title = '') {
             referenceRange: refRange,
             range: refRange,
             status: status,
-            simpleDefinition: `${namePart} is a clinical measurement in ${secName}.`,
-            simpleMeaning: status === 'normal'
-              ? `Your ${namePart} level (${valPart}) is within the expected normal range.`
-              : `Your ${namePart} level (${valPart}) is ${status} compared to normal bounds (${refRange}).`,
-            fieldTip: status === 'normal'
-              ? 'Maintain healthy nutrition and active daily routine.'
-              : 'Consult your attending physician to evaluate this parameter.'
+            simpleDefinition: explanation.def,
+            simpleMeaning: explanation.meaning,
+            fieldTip: explanation.tip
           });
         }
       }
@@ -876,11 +1047,11 @@ export function generateFallbackMedicalAnalysis(text, title = '') {
 
   if (metrics.length === 0) {
     return {
-      simplifiedSummary: 'No medical parameters could be extracted from this report text.',
+      simplifiedSummary: 'We could not detect any readable test numbers in the text provided. Please make sure the report text contains test names and values.',
       overallStatus: 'attention',
       statusHighlights: {
         healthyFindings: [],
-        attentionFindings: ['No lab or clinical parameters isolated from the provided text.'],
+        attentionFindings: ['No lab test parameters found in the text.'],
         criticalFindings: []
       },
       sections: [],
@@ -891,8 +1062,8 @@ export function generateFallbackMedicalAnalysis(text, title = '') {
         physicianImpression: physicianImpression.join(' '),
         remarks
       },
-      actionableAdvice: ['Ensure the uploaded image or text contains readable medical lab parameters.'],
-      disclaimer: 'This AI medical report breakdown translates technical diagnostic terms into easy language for patient awareness. Always consult your attending doctor for clinical decisions.',
+      actionableAdvice: ['Upload a clear photo of your lab test or paste the test names and numbers.'],
+      disclaimer: 'This AI report explainer translates complex medical numbers into plain everyday language. Always consult your doctor for medical advice and prescriptions.',
       analysisCoverage: {
         extractedMetrics: 0,
         explainedMetrics: 0,
@@ -916,15 +1087,15 @@ export function generateFallbackMedicalAnalysis(text, title = '') {
   const overallStatus = hasCritical ? 'critical' : (hasAbnormal ? 'attention' : 'normal');
 
   const summary = hasCritical
-    ? 'The medical report contains critical laboratory findings that require urgent physician attention and follow-up.'
+    ? 'Your report has a few important numbers (such as cardiac, kidney, or inflammation markers) that need prompt attention. We strongly recommend sharing this report with your doctor as soon as possible.'
     : (hasAbnormal
-      ? 'The medical report shows elevated or lower-than-normal findings across lab parameters that require dietary adjustment and doctor consultation.'
-      : `All ${metrics.length} analyzed medical parameters are within safe reference bounds.`);
+      ? 'Most of your body readings are doing well, but a few numbers (such as blood sugar, cholesterol, or blood count) are slightly outside normal ranges. Simple dietary changes and a quick chat with your doctor will help get them back on track.'
+      : `Great news! All ${metrics.length} test parameters in this report are in the safe, healthy normal range.`);
 
   const statusHighlightsList = [
-    ...criticalFindings.map(c => ({ type: 'critical', label: 'CRITICAL CLINICAL FINDING', message: typeof c === 'string' ? c : (c.message || '') })),
-    ...attentionFindings.map(a => ({ type: 'attention', label: 'Needs Attention', message: typeof a === 'string' ? a : (a.message || '') })),
-    ...healthyFindings.map(h => ({ type: 'normal', label: 'Healthy Finding', message: typeof h === 'string' ? h : (h.message || '') }))
+    ...criticalFindings.map(c => ({ type: 'critical', label: 'Doctor Review Advised', message: typeof c === 'string' ? c : (c.message || '') })),
+    ...attentionFindings.map(a => ({ type: 'attention', label: 'Keep An Eye On This', message: typeof a === 'string' ? a : (a.message || '') })),
+    ...healthyFindings.map(h => ({ type: 'normal', label: 'Healthy & Normal', message: typeof h === 'string' ? h : (h.message || '') }))
   ];
 
   return {

@@ -57,7 +57,7 @@ const PatientDoctors = () => {
       });
 
       if (response.success) {
-        setSuccess('Decryption clearance key successfully provisioned to doctor.');
+        setSuccess('Permission granted! This doctor can now view your medical records.');
         setSelectedDoctorId('');
         fetchDoctorAccessData(); // refresh list
       }
@@ -73,7 +73,7 @@ const PatientDoctors = () => {
     try {
       const response = await api.delete(`/patient/doctors/${consentId}`);
       if (response.success) {
-        setSuccess('Doctor clearance token revoked.');
+        setSuccess('Permission removed. This doctor can no longer view your records.');
         fetchDoctorAccessData();
       }
     } catch (err) {
@@ -82,7 +82,7 @@ const PatientDoctors = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading consent directories...</div>;
+    return <div className="text-center py-12 text-slate-400">Loading your doctors list...</div>;
   }
 
   // Filter out doctors that already have granted consents
@@ -97,8 +97,8 @@ const PatientDoctors = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Doctor Access & Consents</h2>
-        <p className="text-xs text-slate-400">Control who has access to read or update your encrypted medical profiles.</p>
+        <h2 className="text-xl font-bold text-white font-display">My Connected Doctors</h2>
+        <p className="text-xs text-slate-300">You decide which doctors are allowed to view your medical records. You can turn access on or off anytime with 1 click.</p>
       </div>
 
       {success && (
@@ -109,7 +109,7 @@ const PatientDoctors = () => {
       )}
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center flex items-center justify-center space-x-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs font-semibold text-center flex items-center justify-center space-x-2">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -121,12 +121,13 @@ const PatientDoctors = () => {
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
             <ShieldCheck className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Authorized Medical Practitioners</span>
+            <span>Doctors Who Can See My Records ({consents.filter(c => c.status === 'granted').length})</span>
           </h3>
 
           {consents.filter(c => c.status === 'granted').length === 0 ? (
-            <div className="p-10 text-center bg-slate-900/10 border border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-500">No practitioners currently authorized to view your logs.</p>
+            <div className="p-8 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-2xl">
+              <p className="text-xs text-slate-400">No doctors currently have permission to see your files.</p>
+              <p className="text-[11px] text-slate-500 mt-1">Use the box on the right to give permission to your doctor.</p>
             </div>
           ) : (
             <div className="space-y-4">

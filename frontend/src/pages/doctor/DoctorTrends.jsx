@@ -101,10 +101,10 @@ const DoctorTrends = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white font-display">
-            Practice Analytics & Health Trend Analyzer
+            Patient Health Trends
           </h2>
           <p className="text-xs text-slate-400">
-            Review aggregated patient cohorts, demographic telemetry, and individual vital curves.
+            See your patients' health trends, blood pressure history, and vital charts over time.
           </p>
         </div>
 
@@ -126,7 +126,7 @@ const DoctorTrends = () => {
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              Registry Cohort Size
+              Total Patients
             </span>
             <h3 className="text-xl font-extrabold text-white mt-0.5">{patients.length} Active Patients</h3>
           </div>

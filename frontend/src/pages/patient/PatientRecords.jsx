@@ -168,33 +168,32 @@ const PatientRecords = () => {
 
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading documentation index...</div>;
+    return <div className="text-center py-12 text-slate-400">Loading your medical files...</div>;
   }
-
 
   return (
     <div className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-left">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">Medical Records</h2>
-          <p className="text-xs text-slate-400">Manage, view, and organize medical certificates, scans, and reports.</p>
+          <h2 className="text-xl font-bold text-white font-display">My Medical Files & Lab Papers</h2>
+          <p className="text-xs text-slate-300">Keep all your lab tests, doctor prescriptions, and X-ray papers safely organized here.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/dashboard/compare-reports"
-            className="bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-300 hover:text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-sm"
+            className="bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-200 hover:text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-sm"
           >
             <GitCompare className="w-4 h-4 text-brand-400" />
             <span>Compare 2 Reports</span>
           </Link>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
+            className="bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-brand-500/20"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>{showAddForm ? 'Close uploader' : 'Add New Record'}</span>
+            <span>{showAddForm ? 'Close uploader' : '+ Upload A File'}</span>
           </button>
         </div>
       </div>
@@ -207,7 +206,7 @@ const PatientRecords = () => {
       )}
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center flex items-center justify-center space-x-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs font-semibold text-center flex items-center justify-center space-x-2">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -216,7 +215,7 @@ const PatientRecords = () => {
       {/* Upload Form Box */}
       {showAddForm && (
         <div className="glass-card rounded-2xl p-6 border border-slate-800 text-left max-w-xl mx-auto animate-in fade-in slide-in-from-top-3 duration-200">
-          <h3 className="text-sm font-bold text-white mb-4">Record Metadata Uploader</h3>
+          <h3 className="text-sm font-bold text-white mb-4">Upload A Medical Document</h3>
 
           <form onSubmit={handleRecordSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">

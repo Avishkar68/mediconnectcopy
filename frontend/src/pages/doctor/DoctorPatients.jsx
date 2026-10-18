@@ -706,7 +706,7 @@ const DoctorPatients = () => {
                     </div>
 
                     <div className="flex justify-between items-center mt-5 pt-3 border-t border-slate-850">
-                      <span className="text-[10px] text-slate-500">Decryption Clearance: Decrypted</span>
+                      <span className="text-[10px] text-slate-500">Access: Authorized</span>
                       <a href={record.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center space-x-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-all">
                         <FileDown className="w-4 h-4" />
                         <span>Download Record</span>
@@ -745,6 +745,13 @@ const DoctorPatients = () => {
 
         {/* Emergency Medical QR Profile Modal */}
         {renderEmergencyModal()}
+
+        {/* 🤖 AI DOCTOR COPILOT MODAL */}
+        <DoctorAiCopilotModal
+          isOpen={copilotOpen}
+          onClose={() => setCopilotOpen(false)}
+          patient={patient}
+        />
       </div>
     );
   }
@@ -753,7 +760,7 @@ const DoctorPatients = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-        <span className="text-xs text-slate-400">Decrypting patient clinical workspace...</span>
+        <span className="text-xs text-slate-400">Loading patient health records...</span>
       </div>
     );
   }
@@ -764,8 +771,8 @@ const DoctorPatients = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Patient Registry Directory</h2>
-        <p className="text-xs text-slate-400">Search system users to verify record sharing credentials and request access clearance tokens.</p>
+        <h2 className="text-xl font-bold text-white font-display">Patient Directory</h2>
+        <p className="text-xs text-slate-400">Search patients, view authorized health charts, or request connection access.</p>
       </div>
 
       {success && (
@@ -830,8 +837,8 @@ const DoctorPatients = () => {
               <thead>
                 <tr className="bg-slate-900/40 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
                   <th className="p-4">Patient Profile</th>
-                  <th className="p-4">Patient ID / UID</th>
-                  <th className="p-4 text-center">Demographics</th>
+                  <th className="p-4">Patient ID</th>
+                  <th className="p-4 text-center">Gender & Age</th>
                   <th className="p-4">Access Status</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
@@ -976,7 +983,7 @@ const DoctorPatients = () => {
       <DoctorAiCopilotModal
         isOpen={copilotOpen}
         onClose={() => setCopilotOpen(false)}
-        patient={patient}
+        patient={patientData?.patient || null}
       />
 
     </div>

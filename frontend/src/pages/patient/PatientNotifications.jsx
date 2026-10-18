@@ -83,13 +83,13 @@ const PatientNotifications = () => {
         return {
           icon: ClipboardList,
           color: 'text-brand-400 bg-brand-500/10 border-brand-500/20',
-          label: 'Care Pathway',
+          label: 'Care Plan',
         };
       case 'appointment':
         return {
           icon: Calendar,
           color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-          label: 'Consultation',
+          label: 'Doctor Visit',
         };
       case 'medication':
         return {
@@ -107,7 +107,7 @@ const PatientNotifications = () => {
         return {
           icon: Bell,
           color: 'text-slate-400 bg-slate-800 border-slate-700',
-          label: 'Notification',
+          label: 'Notice',
         };
     }
   };
@@ -131,7 +131,7 @@ const PatientNotifications = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white font-display flex items-center space-x-2">
-            <span>Notifications & Follow-up Reminders</span>
+            <span>Notifications & Reminders</span>
             {unreadCount > 0 && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-500/10 text-brand-400 border border-brand-500/20">
                 {unreadCount} Unread
@@ -139,7 +139,7 @@ const PatientNotifications = () => {
             )}
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time clinical alerts, smart follow-up countdowns, and care pathway task reminders.
+            Friendly reminders for your medicines, care plan tasks, and upcoming doctor visits.
           </p>
         </div>
 
@@ -160,8 +160,8 @@ const PatientNotifications = () => {
           { key: 'all', label: 'All Alerts' },
           { key: 'unread', label: `Unread (${unreadCount})` },
           { key: 'reminder', label: 'Reminders' },
-          { key: 'care_plan', label: 'Care Pathway' },
-          { key: 'appointment', label: 'Consultations' },
+          { key: 'care_plan', label: 'Care Plan' },
+          { key: 'appointment', label: 'Doctor Visits' },
         ].map((tab) => (
           <button
             key={tab.key}

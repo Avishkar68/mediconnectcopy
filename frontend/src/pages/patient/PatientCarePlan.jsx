@@ -31,52 +31,53 @@ import {
 // Fallback interactive demonstration pathway for new patients before a doctor assigns one
 const SAMPLE_DEMO_CARE_PLAN = {
   _id: 'demo-sample-plan',
-  title: 'Post-Myocardial & Cardiovascular Recovery Pathway',
-  diagnosis: 'Acute Coronary Syndrome, Post-PCI Stent Placement',
+  title: 'Heart Recovery & Healthy Living Plan',
+  diagnosis: 'Heart Care & Steady Recovery After Stent',
   category: 'cardiac',
   status: 'active',
   doctor: {
-    name: 'Sarah Chen, M.D.',
+    name: 'Dr. Sarah Chen',
     profile: {
-      specialization: 'Consultant Interventional Cardiologist',
+      specialization: 'Heart Specialist (Cardiologist)',
       phone: '+1 (555) 234-8901',
-      clinicAddress: 'Heart & Vascular Institute, Suite 400',
+      clinicAddress: 'Heart & Wellness Center, Suite 400',
     },
   },
   createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
   phases: [
     {
       phaseNumber: 1,
-      name: 'Phase 1: Acute Hemodynamic Stabilization (Days 1–7)',
+      name: 'Week 1: Rest & Steady Recovery (Days 1–7)',
       durationDays: 7,
-      description: 'Stabilize resting hemodynamics, prevent puncture site hematoma, and establish baseline daily vital monitoring.',
+      description: 'Get plenty of calm rest, check your blood pressure twice a day, and keep your body relaxed.',
       goals: [
-        'Seated blood pressure consistently below 130/80 mmHg',
-        'Zero angina or resting dyspnea',
-        'No catheter site exudate or swelling',
+        'Resting Blood Pressure consistently below 130/80 mmHg',
+        'No chest tightness, shortness of breath, or dizziness',
+        'Healing site on wrist stays clean and comfortable',
       ],
       status: 'in-progress',
     },
     {
       phaseNumber: 2,
-      name: 'Phase 2: Graduated Aerobic Reconditioning (Days 8–28)',
+      name: 'Weeks 2–4: Light Walking & Healthy Eating (Days 8–28)',
       durationDays: 21,
-      description: 'Progressive monitored cardiovascular walking, low-sodium dietary integration, and cardiac medication adherence.',
+      description: 'Start gentle daily walks, eat low-salt home meals, and take morning and evening pills on time.',
       goals: [
-        '30-minute continuous flat-surface walk without angina',
-        'Target resting pulse rate between 60–75 bpm',
-        'Full adherence to dual antiplatelet regimen',
+        'Enjoy a comfortable 20-minute daily walk at an easy pace',
+        'Resting heartbeat between 60–75 beats per minute',
+        'Take all prescribed heart medicines without missing a dose',
       ],
       status: 'pending',
     },
     {
       phaseNumber: 3,
-      name: 'Phase 3: Long-term Cardiac Wellness & Maintenance (Month 2+)',
+      name: 'Month 2 Onwards: Long-Term Healthy Heart Habits',
       durationDays: 60,
-      description: 'Long-term lipid targets maintenance, sustained aerobic exercise, and quarterly clinical follow-ups.',
+      description: 'Keep your cholesterol healthy, stay active every day, and schedule regular check-ins with your doctor.',
       goals: [
-        'LDL cholesterol maintained < 70 mg/dL',
-        'Sustained Mediterranean / low-sodium nutrition',
+        'Keep cholesterol within healthy normal range',
+        'Eat fresh, low-salt home-cooked meals every day',
+        'Regular follow-up visit with your doctor',
       ],
       status: 'pending',
     },
@@ -84,57 +85,57 @@ const SAMPLE_DEMO_CARE_PLAN = {
   dailyTasks: [
     {
       taskId: 'demo_t1',
-      title: 'Morning Blood Pressure & Resting Pulse Log',
+      title: 'Morning Blood Pressure & Heart Rate Check',
       category: 'vital',
       frequency: 'twice_daily',
-      instructions: 'Rest seated for 5 minutes before cuff measurement. Log systolic and diastolic values.',
+      instructions: 'Sit comfortably and rest for 5 minutes before checking your blood pressure and pulse.',
       targetMetric: { metricName: 'Blood Pressure', targetValue: '< 130/80 mmHg' },
       isActive: true,
     },
     {
       taskId: 'demo_t2',
-      title: 'Dual Antiplatelet (Aspirin + Clopidogrel) Morning Dose',
+      title: 'Take Morning Heart Pills (with breakfast & water)',
       category: 'medication',
       frequency: 'daily',
-      instructions: 'Take with morning breakfast and water. Do not skip or alter dose without consulting cardiology.',
-      targetMetric: { metricName: 'Adherence', targetValue: '100% on-time' },
+      instructions: 'Take your prescribed morning pills with breakfast. Always take on time.',
+      targetMetric: { metricName: 'Pill Time', targetValue: 'Every morning' },
       isActive: true,
     },
     {
       taskId: 'demo_t3',
-      title: 'Strict Low-Sodium Intake Check (< 2,000 mg/day)',
+      title: 'Eat Fresh, Low-Salt Meals (Limit extra table salt)',
       category: 'diet',
       frequency: 'daily',
-      instructions: 'Avoid canned soups, processed deli meats, and added table salt. Drink at least 2 liters of water.',
-      targetMetric: { metricName: 'Sodium Limit', targetValue: '< 2g daily' },
+      instructions: 'Avoid salty snacks, chips, canned soup, and fast food. Drink 8 glasses of clean water.',
+      targetMetric: { metricName: 'Daily Salt', targetValue: 'Low salt' },
       isActive: true,
     },
     {
       taskId: 'demo_t4',
-      title: 'Monitored 20-Minute Light Cardiovascular Walk',
+      title: 'Gentle 20-Minute Walk (Flat, easy pace)',
       category: 'exercise',
       frequency: 'daily',
-      instructions: 'Brisk walk on flat terrain. Maintain conversational pace. Stop immediately if lightheaded or chest tightness occurs.',
-      targetMetric: { metricName: 'Duration', targetValue: '20 mins @ < 110 bpm' },
+      instructions: 'Walk at an easy conversational speed. Stop and rest if you feel tired or breathless.',
+      targetMetric: { metricName: 'Daily Walk', targetValue: '20 minutes' },
       isActive: true,
     },
     {
       taskId: 'demo_t5',
-      title: 'Post-Catheterization Radial / Femoral Puncture Inspection',
+      title: 'Quick Check on Wrist Dressing / Site',
       category: 'symptom_check',
       frequency: 'daily',
-      instructions: 'Inspect wrist/groin puncture site for swelling, expanding bruises, or throbbing tenderness.',
-      targetMetric: { metricName: 'Site Status', targetValue: 'Clean & Intact' },
+      instructions: 'Check that the small wrist bandage area is clean, dry, and healing without redness.',
+      targetMetric: { metricName: 'Site Check', targetValue: 'Clean & healing' },
       isActive: true,
     },
   ],
   targetVitals: {
     systolicMax: 130,
     diastolicMax: 80,
-    heartRateTarget: '60 - 80 bpm',
-    bloodSugarTarget: '< 100 mg/dL (fasting)',
+    heartRateTarget: '60 - 80 beats/min',
+    bloodSugarTarget: '< 100 mg/dL (morning fasting)',
     weightTargetKg: 74,
-    specialNotes: 'Report systolic BP > 140 mmHg or pulse > 95 bpm at rest immediately. Keep sublingual nitroglycerin accessible.',
+    specialNotes: 'If Blood Pressure goes above 140/90 or you feel chest pain, rest calmly and contact your doctor immediately.',
   },
   taskCompletions: [
     {
@@ -270,25 +271,25 @@ const PatientCarePlan = () => {
         return {
           icon: Activity,
           color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-          label: 'Physical Rehab',
+          label: 'Daily Exercise',
         };
       case 'diet':
         return {
           icon: Droplet,
           color: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-          label: 'Diet & Nutrition',
+          label: 'Food & Water',
         };
       case 'symptom_check':
         return {
           icon: ShieldAlert,
           color: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-          label: 'Symptom Triage',
+          label: 'Health Check',
         };
       default:
         return {
           icon: Compass,
           color: 'text-brand-400 bg-brand-500/10 border-brand-500/20',
-          label: 'Lifestyle Target',
+          label: 'Healthy Habit',
         };
     }
   };
@@ -311,7 +312,7 @@ const PatientCarePlan = () => {
     return (
       <div className="py-24 text-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin mx-auto" />
-        <p className="text-sm text-slate-400 font-medium">Synchronizing Care Pathway & Clinical Targets...</p>
+        <p className="text-sm text-slate-300 font-medium">Loading your care plan...</p>
       </div>
     );
   }
@@ -328,10 +329,10 @@ const PatientCarePlan = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                Smart Care Pathway & Recovery Tracking
+                My Care Plan & Daily Recovery Guide
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Dynamic clinical protocol, stage-by-stage recovery milestones, and daily health checksheets.
+              <p className="text-xs text-slate-300 mt-0.5">
+                A simple step-by-step health roadmap to guide your daily medicines, habits, and recovery.
               </p>
             </div>
           </div>
@@ -360,7 +361,7 @@ const PatientCarePlan = () => {
             <div className="flex items-center space-x-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 uppercase tracking-wider flex items-center">
                 <Sparkles className="w-3 h-3 mr-1" />
-                Sample Smart Pathway
+                Example Care Plan
               </span>
               <button
                 onClick={fetchCarePlans}
@@ -380,10 +381,10 @@ const PatientCarePlan = () => {
           <Info className="w-5 h-5 text-brand-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <p className="font-semibold text-slate-200">
-              Welcome to the MediConnect Smart Care Pathway Engine!
+              Your Personalized Daily Health Guide
             </p>
-            <p className="text-slate-400 leading-relaxed">
-              When your doctor assigns a personalized recovery or chronic disease care plan, it will appear here dynamically. You are currently previewing an interactive <strong>Post-Myocardial & Cardiovascular Recovery Pathway</strong>. Click the checklist tasks below to test live adherence tracking!
+            <p className="text-slate-300 leading-relaxed">
+              When your doctor creates a custom plan for you, it will show up here. Below is a sample <strong>Heart Recovery & Healthy Living Plan</strong> so you can see how daily checkboxes and progress work. Tap any task to mark it done!
             </p>
           </div>
         </div>

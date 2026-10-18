@@ -22,8 +22,8 @@ import {
 
 const PRESET_SAMPLES = [
   {
-    title: 'Comprehensive Multi-Section Report (10 Panels)',
-    desc: 'CBC, Cardiac, Inflammatory, KFT, LFT, Diabetes, Lipids, ABG, Urinalysis, Vitals & Doctor Impression',
+    title: 'Sample 1: Complete Full Body Checkup (10 Panels)',
+    desc: 'Blood count, Heart, Kidneys, Liver, Sugar, Cholesterol, and Vitals',
     text: `COMPLETE DIAGNOSTIC LABORATORY & VITAL REPORT
 
 PATIENT CLINICAL HISTORY:
@@ -86,13 +86,13 @@ Multi-organ diagnostic profile demonstrates significant cardiac biomarker elevat
 `
   },
   {
-    title: 'Diabetes & Lipid Panel',
-    desc: 'High sugar & elevated cholesterol sample',
+    title: 'Sample 2: Blood Sugar & Cholesterol Test',
+    desc: 'High sugar & elevated cholesterol readings',
     text: 'Patient Diagnostic Report:\nHbA1c: 7.2%\nFasting Blood Glucose: 142 mg/dL\nTotal Cholesterol: 235 mg/dL\nLDL Cholesterol: 158 mg/dL\nHDL Cholesterol: 42 mg/dL\nTriglycerides: 185 mg/dL'
   },
   {
-    title: 'Complete Blood Count (CBC)',
-    desc: 'Low Hemoglobin & elevated WBC count',
+    title: 'Sample 3: Blood Count & Infection Test (CBC)',
+    desc: 'Low Hemoglobin (Anemia) & high white blood cells',
     text: 'Laboratory Analysis:\nHemoglobin: 10.4 g/dL\nWhite Blood Cells (WBC): 12,800 /µL\nRed Blood Cells (RBC): 3.9 million/µL\nPlatelet Count: 240,000 /µL\nClinical Note: Patient reports general fatigue and mild throat discomfort.'
   }
 ];
@@ -347,23 +347,23 @@ const PatientAiAnalyzer = () => {
     switch (status) {
       case 'normal':
         return (
-          <span className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Body Status: Healthy / Safe</span>
+          <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Body Status: Healthy & Normal</span>
           </span>
         );
       case 'attention':
         return (
-          <span className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm">
-            <AlertTriangle className="w-4 h-4" />
-            <span>Body Status: Attention Recommended</span>
+          <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm">
+            <AlertTriangle className="w-4 h-4 text-amber-400" />
+            <span>Body Status: Keep An Eye On This</span>
           </span>
         );
       case 'critical':
         return (
-          <span className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 animate-pulse shadow-sm">
-            <ShieldAlert className="w-4 h-4" />
-            <span>Body Status: Urgent Doctor Review Advised</span>
+          <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse shadow-sm">
+            <ShieldAlert className="w-4 h-4 text-rose-400" />
+            <span>Body Status: Doctor Review Advised</span>
           </span>
         );
       default:
@@ -382,20 +382,20 @@ const PatientAiAnalyzer = () => {
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-xs font-bold mb-3">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Comprehensive Multi-Section Report Processor</span>
+              <span>Easy Lab Report Explainer</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white font-display">
-              AI Medical Report Analyzer
+              Explain My Lab Report (In Plain English)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-              Processes complete multi-page diagnostic panels (CBC, Cardiac, KFT, LFT, Diabetes, Lipids, ABG, Vitals & Clinical Notes) to explain every parameter in clear language.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+              Upload any blood test or medical report. We translate every line into simple words so you can easily understand what your numbers mean for your body.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/dashboard/compare-reports"
-              className="px-4 py-2 bg-slate-900 border border-slate-850 hover:border-brand-500/50 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all shadow-sm"
+              className="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-200 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all shadow-sm"
             >
               <GitCompare className="w-3.5 h-3.5 text-brand-400" />
               <span>Compare 2 Reports</span>
@@ -404,10 +404,10 @@ const PatientAiAnalyzer = () => {
             {analysisResult && (
               <button
                 onClick={() => { setAnalysisResult(null); setReportText(''); setSelectedRecordId(''); setReportTitle(''); }}
-                className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all"
+                className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-200 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Analyze Another Report</span>
+                <span>Explain Another Report</span>
               </button>
             )}
           </div>
@@ -415,8 +415,8 @@ const PatientAiAnalyzer = () => {
       </div>
 
       {error && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 text-xs font-semibold flex items-center space-x-2.5">
-          <AlertTriangle className="w-4 h-4 shrink-0" />
+        <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-300 text-xs font-semibold flex items-center space-x-2.5">
+          <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
           <span>{error}</span>
         </div>
       )}
@@ -537,22 +537,22 @@ const PatientAiAnalyzer = () => {
       {analysisResult && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
           
-          {/* Analysis Coverage Stats Badge */}
+          {/* Coverage Badge */}
           <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-wrap justify-between items-center gap-3">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-white">Full Report Analysis Coverage Verified</h4>
-                <p className="text-[11px] text-slate-400">
-                  {analysisResult.analysisCoverage?.explainedMetrics || analysisResult.metricsBreakdown?.length || 0} of {analysisResult.analysisCoverage?.extractedMetrics || analysisResult.metricsBreakdown?.length || 0} extracted parameters fully explained
+                <h4 className="text-xs font-bold text-white">Full Test Report Breakdown Complete</h4>
+                <p className="text-xs text-slate-400">
+                  All {analysisResult.metricsBreakdown?.length || 0} test parameters explained in plain, simple words.
                 </p>
               </div>
             </div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-xs font-bold">
               <Layers className="w-3.5 h-3.5" />
-              <span>{analysisResult.sections?.length || 1} Section Panels Processed</span>
+              <span>{analysisResult.sections?.length || 1} Test Sections Checked</span>
             </div>
           </div>
 
@@ -565,9 +565,9 @@ const PatientAiAnalyzer = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white font-display">
-                    {reportTitle || 'Comprehensive Medical Diagnostic AI Breakdown'}
+                    {reportTitle || 'Your Test Report Summary'}
                   </h3>
-                  <p className="text-xs text-slate-400">Multi-panel plain-language health interpretation</p>
+                  <p className="text-xs text-slate-300">Plain English explanation of your body health</p>
                 </div>
               </div>
               {getStatusBadge(analysisResult.overallStatus)}
@@ -576,7 +576,7 @@ const PatientAiAnalyzer = () => {
             <div className="p-5 rounded-2xl bg-brand-500/10 border border-brand-500/25 space-y-2">
               <div className="flex items-center space-x-2 text-brand-400 text-xs font-bold uppercase tracking-wider">
                 <Heart className="w-4 h-4" />
-                <span>Overall Body Status (Plain English Summary)</span>
+                <span>Overall Summary (In Plain English)</span>
               </div>
               <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed">
                 "{analysisResult.simplifiedSummary}"
@@ -584,16 +584,16 @@ const PatientAiAnalyzer = () => {
             </div>
           </div>
 
-          {/* Physician Impression & Narrative Clinical Context */}
+          {/* Physician Impression & Doctor Notes */}
           {analysisResult.clinicalContext && (analysisResult.clinicalContext.physicianImpression || analysisResult.clinicalContext.clinicalNotes?.length > 0) && (
             <div className="glass-card rounded-3xl p-6 border border-amber-500/20 bg-amber-500/5 space-y-3">
               <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                 <ClipboardList className="w-4 h-4" />
-                <span>Clinical Notes & Physician Impression</span>
+                <span>Doctor's Impression & Clinical Notes</span>
               </div>
               {analysisResult.clinicalContext.physicianImpression && (
                 <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-                  <span className="text-[11px] font-bold text-amber-300 block">Attending Physician Impression:</span>
+                  <span className="text-xs font-bold text-amber-300 block">Attending Doctor's Note:</span>
                   <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     "{analysisResult.clinicalContext.physicianImpression}"
                   </p>
@@ -601,7 +601,7 @@ const PatientAiAnalyzer = () => {
               )}
               {analysisResult.clinicalContext.clinicalNotes?.length > 0 && (
                 <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-850 space-y-1">
-                  <span className="text-[11px] font-bold text-slate-400 block">Patient Clinical Notes:</span>
+                  <span className="text-xs font-bold text-slate-400 block">Report Notes:</span>
                   <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
                     {analysisResult.clinicalContext.clinicalNotes.map((note, idx) => (
                       <li key={idx}>{note}</li>
@@ -619,17 +619,17 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Normal & Safe Findings</span>
+                <span>Good & Normal Readings</span>
               </div>
               
               <div className="space-y-2.5">
                 {(Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').length === 0 ? (
-                  <p className="text-xs text-slate-500 italic">No normal parameters isolated.</p>
+                  <p className="text-xs text-slate-400 italic">No specific normal parameters singled out.</p>
                 ) : (
                   (Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').map((h, i) => (
-                    <div key={i} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/15 space-y-1">
+                    <div key={i} className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
                       <span className="text-xs font-bold text-emerald-300 block">{h.label}</span>
-                      <p className="text-xs text-slate-300 leading-relaxed">{h.message}</p>
+                      <p className="text-xs text-slate-200 leading-relaxed">{h.message}</p>
                     </div>
                   ))
                 )}
@@ -640,7 +640,7 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                 <AlertTriangle className="w-4 h-4" />
-                <span>Needs Attention / Urgent Review</span>
+                <span>Numbers To Discuss With Doctor</span>
               </div>
 
               <div className="space-y-2.5">
@@ -662,7 +662,7 @@ const PatientAiAnalyzer = () => {
                       <span className={`text-xs font-bold block ${h.type === 'critical' ? 'text-rose-400' : 'text-amber-300'}`}>
                         {h.label}
                       </span>
-                      <p className="text-xs text-slate-300 leading-relaxed">{h.message}</p>
+                      <p className="text-xs text-slate-200 leading-relaxed">{h.message}</p>
                     </div>
                   ))
                 )}
@@ -677,10 +677,10 @@ const PatientAiAnalyzer = () => {
               <div>
                 <h4 className="text-base font-bold text-white flex items-center space-x-2 font-display">
                   <Activity className="w-5 h-5 text-sky-400" />
-                  <span>Field-by-Field Medical Breakdown ({analysisResult.metricsBreakdown.length} Parameters)</span>
+                  <span>What Each Test Line Means ({analysisResult.metricsBreakdown.length} Tests)</span>
                 </h4>
-                <p className="text-xs text-slate-400 mt-1">
-                  Every test parameter from your report is explained below with what it checks, what your result means, and actionable tips.
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Every test from your report is explained below: what it tests, what your number means, and an easy daily health tip.
                 </p>
               </div>
 
@@ -693,65 +693,65 @@ const PatientAiAnalyzer = () => {
                     {/* Top Row: Section, Name, Status, Value & Range */}
                     <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-850">
                       <div className="flex items-center space-x-2.5">
-                        <span className="text-xs font-bold text-slate-400 bg-slate-800 px-2.5 py-0.5 rounded-lg">
-                          {item.section || 'General'}
+                        <span className="text-xs font-bold text-slate-300 bg-slate-800 px-2.5 py-0.5 rounded-lg">
+                          {item.section || 'General Test'}
                         </span>
                         <span className="text-sm font-bold text-white font-display">{item.name}</span>
                         <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                           item.status === 'normal'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
                             : item.status === 'critical'
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
                             : item.status === 'high'
-                            ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                            : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                            : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                         }`}>
-                          {item.status}
+                          {item.status === 'normal' ? 'Normal' : item.status === 'high' ? 'High' : item.status === 'low' ? 'Low' : 'Attention'}
                         </span>
                       </div>
 
-                      <div className="flex items-center space-x-3 text-xs bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
+                      <div className="flex items-center space-x-3 text-xs bg-slate-950/70 px-3 py-1.5 rounded-xl border border-slate-800">
                         <div>
-                          <span className="text-slate-400">Result: </span>
+                          <span className="text-slate-400">Your Number: </span>
                           <strong className="text-brand-400 font-mono font-bold">{item.val}</strong>
                         </div>
-                        <span className="text-slate-700">|</span>
+                        <span className="text-slate-600">|</span>
                         <div>
-                          <span className="text-slate-500">Normal Range: </span>
-                          <span className="text-slate-300 font-mono">{item.range}</span>
+                          <span className="text-slate-400">Healthy Normal: </span>
+                          <span className="text-slate-200 font-mono">{item.range}</span>
                         </div>
                       </div>
                     </div>
 
                     {item.simpleDefinition && (
-                      <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-850 space-y-1">
+                      <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 space-y-1">
                         <div className="flex items-center space-x-1.5 text-sky-400 text-[11px] font-bold uppercase tracking-wider">
                           <Info className="w-3.5 h-3.5 shrink-0" />
-                          <span>What is this test parameter?</span>
+                          <span>What is this test?</span>
                         </div>
-                        <p className="text-xs text-slate-300 leading-relaxed">
+                        <p className="text-xs text-slate-200 leading-relaxed">
                           {item.simpleDefinition}
                         </p>
                       </div>
                     )}
 
-                    <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-850 space-y-1">
+                    <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 space-y-1">
                       <div className="flex items-center space-x-1.5 text-brand-400 text-[11px] font-bold uppercase tracking-wider">
                         <Heart className="w-3.5 h-3.5 shrink-0" />
-                        <span>What your result means for your body</span>
+                        <span>What this means for you</span>
                       </div>
-                      <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                      <p className="text-xs text-slate-100 leading-relaxed font-medium">
                         {item.simpleMeaning}
                       </p>
                     </div>
 
                     {item.fieldTip && (
-                      <div className="p-3 rounded-xl bg-brand-500/5 border border-brand-500/15 space-y-1">
+                      <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20 space-y-1">
                         <div className="flex items-center space-x-1.5 text-amber-400 text-[11px] font-bold uppercase tracking-wider">
                           <Lightbulb className="w-3.5 h-3.5 shrink-0" />
-                          <span>Recommended action / tip for this field</span>
+                          <span>Everyday health tip</span>
                         </div>
-                        <p className="text-xs text-slate-300 leading-relaxed">
+                        <p className="text-xs text-slate-200 leading-relaxed">
                           {item.fieldTip}
                         </p>
                       </div>
@@ -768,7 +768,7 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <h4 className="text-sm font-bold text-white flex items-center space-x-2">
                 <Lightbulb className="w-4 h-4 text-brand-400" />
-                <span>Recommended Next Steps & Tips</span>
+                <span>What You Can Do Next</span>
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -777,18 +777,18 @@ const PatientAiAnalyzer = () => {
                     <div className="p-1 rounded-lg bg-brand-500/10 text-brand-400 shrink-0 mt-0.5">
                       <ArrowRight className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs text-slate-300 font-medium">{tip}</span>
+                    <span className="text-xs text-slate-200 font-medium">{tip}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Medical Disclaimer */}
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-850 text-slate-400 text-xs flex items-start space-x-3">
-            <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-            <p className="leading-relaxed text-[11px]">
-              {analysisResult.disclaimer || 'This AI medical report breakdown translates technical diagnostic terms into easy language for patient awareness. Always consult your attending doctor for clinical decisions.'}
+          {/* Friendly Medical Note */}
+          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-850 text-slate-300 text-xs flex items-start space-x-3">
+            <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <p className="leading-relaxed text-xs">
+              {analysisResult.disclaimer || 'This report explainer simplifies medical numbers for your understanding. Always discuss your test results with your doctor before making treatment changes.'}
             </p>
           </div>
 

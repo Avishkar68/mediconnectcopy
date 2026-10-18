@@ -71,8 +71,8 @@ const PatientTimeline = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Medical Timeline</h2>
-        <p className="text-xs text-slate-400">A secure chronological registry of your clinical journey activities.</p>
+        <h2 className="text-xl font-bold text-white font-display">My Health Timeline</h2>
+        <p className="text-xs text-slate-400">A simple timeline of your health journey, doctor visits, and test reports in order.</p>
       </div>
 
       {error && (
@@ -87,7 +87,7 @@ const PatientTimeline = () => {
           <Clock className="w-12 h-12 text-slate-650 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-white">Your timeline is empty</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-            Once you log vitals, book consultations, or upload diagnostic records, your chronological ledger will build automatically.
+            When you log blood pressure readings, visit a doctor, or upload lab reports, your timeline will show up here automatically.
           </p>
         </div>
       ) : (

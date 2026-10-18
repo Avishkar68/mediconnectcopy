@@ -89,8 +89,8 @@ const DoctorRequests = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Sent Consent Requests</h2>
-        <p className="text-xs text-slate-400">Monitor access requests sent to patients for records sharing authorization.</p>
+        <h2 className="text-xl font-bold text-white font-display">Patient Connection Requests</h2>
+        <p className="text-xs text-slate-400">Requests you sent to patients to connect and share medical records.</p>
       </div>
 
       {error && (
@@ -105,7 +105,7 @@ const DoctorRequests = () => {
           <UserPlus className="w-12 h-12 text-slate-700 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-white">No outgoing requests found</h3>
           <p className="text-xs text-slate-500 mt-1">
-            Search patient files in the directory to request data decryption consent tokens.
+            Search patients in the directory to send them a connection request.
           </p>
         </div>
       ) : (

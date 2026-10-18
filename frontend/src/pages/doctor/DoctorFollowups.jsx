@@ -21,12 +21,12 @@ import {
 } from 'lucide-react';
 
 const QUICK_PURPOSE_TAGS = [
-  '2-Week Post-Procedure Clinical Review',
-  'Medication Titration & Blood Pressure Review',
-  'Glycemic Control & HbA1c Lab Follow-up',
-  'Surgical Wound & Suture Inspection',
-  'Post-Discharge Recovery Evaluation',
-  'Routine Chronic Disease Surveillance',
+  '2-Week Routine Health Check',
+  'Blood Pressure & Medicine Review',
+  'Blood Sugar & Lab Test Check',
+  'Wound Healing Check',
+  'Post-Hospital Recovery Review',
+  'Regular Health Checkup',
 ];
 
 const DoctorFollowups = () => {
@@ -173,10 +173,10 @@ const DoctorFollowups = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                Patient Follow-up & Reminder Center
+                Follow-ups & Reminders
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
-                Schedule clinical reviews, monitor upcoming check-ins, and track consultation outcomes.
+                Schedule follow-up visits, see upcoming appointments, and keep patients on track.
               </p>
             </div>
           </div>
@@ -226,8 +226,8 @@ const DoctorFollowups = () => {
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Concluded Reviews</span>
-            <h3 className="text-xl font-bold text-white mt-0.5">{completedFollowups.length} Concluded</h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Completed Visits</span>
+            <h3 className="text-xl font-bold text-white mt-0.5">{completedFollowups.length} Completed</h3>
           </div>
         </div>
 

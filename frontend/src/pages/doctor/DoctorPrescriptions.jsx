@@ -140,8 +140,8 @@ const DoctorPrescriptions = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Prescription Console</h2>
-        <p className="text-xs text-slate-400">Issue medications and dosing schedules directly to authorized patients.</p>
+        <h2 className="text-xl font-bold text-white font-display">Prescriptions</h2>
+        <p className="text-xs text-slate-400">Prescribe medicines and daily instructions directly to your patients.</p>
       </div>
 
       {success && (
@@ -165,10 +165,10 @@ const DoctorPrescriptions = () => {
           <h3 className="text-sm font-bold text-white mb-4 flex items-center justify-between">
             <div className="flex items-center">
               <PlusCircle className="w-4 h-4 text-emerald-400 mr-2" />
-              <span>Write New Prescription Slip</span>
+              <span>Write New Prescription</span>
             </div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              AI Screen Guard Enabled
+              AI Safety Check Ready
             </span>
           </h3>
 
@@ -195,7 +195,7 @@ const DoctorPrescriptions = () => {
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Medication / Drug Name</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Medicine Name</label>
                 <button
                   type="button"
                   onClick={handleScreenDrug}
@@ -203,7 +203,7 @@ const DoctorPrescriptions = () => {
                   className="text-[10px] px-2.5 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
                 >
                   {screening ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-brand-400" />}
-                  <span>AI Screen Drug Interactions</span>
+                  <span>Check For Drug Conflicts</span>
                 </button>
               </div>
 

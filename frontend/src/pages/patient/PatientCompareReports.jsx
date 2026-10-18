@@ -21,11 +21,11 @@ import {
 const COMPARISON_PRESETS = [
   {
     id: 'anemia-cbc',
-    title: 'Anemia & CBC Therapy Progress',
-    subtitle: 'Baseline vs Month 3 Follow-up on Iron & Nutritional Supplementation',
-    tag: 'Hematology',
+    title: 'Sample 1: Iron & Blood Count (Anemia)',
+    subtitle: 'See if Hemoglobin & Energy improved after taking iron vitamins',
+    tag: 'Blood Count',
     report1: {
-      title: 'Baseline Diagnostic CBC (Month 0)',
+      title: 'Earlier Test: Jan 15, 2026',
       date: 'Jan 15, 2026',
       text: `PATIENT BASELINE CBC TEST REPORT:
 Date: Jan 15, 2026
@@ -40,7 +40,7 @@ ESR (Erythrocyte Sedimentation Rate): 38 mm/hr (Ref: 0 - 15 mm/hr) [HIGH]
 Serum Ferritin: 14 ng/mL (Ref: 20 - 250 ng/mL) [LOW]`
     },
     report2: {
-      title: 'Follow-up Evaluation CBC (Month 3)',
+      title: 'Latest Test: Apr 18, 2026',
       date: 'Apr 18, 2026',
       text: `PATIENT FOLLOW-UP EVALUATION CBC:
 Date: Apr 18, 2026
@@ -57,11 +57,11 @@ Serum Ferritin: 68 ng/mL (Ref: 20 - 250 ng/mL) [NORMAL]`
   },
   {
     id: 'diabetes-lipids',
-    title: 'Diabetes & Lipid Optimization',
-    subtitle: 'Baseline vs Month 6 Follow-up under Glycemic & Statin Care',
-    tag: 'Endocrinology & Cardio',
+    title: 'Sample 2: Blood Sugar & Cholesterol',
+    subtitle: 'See if Sugar and Bad Fats dropped down to healthy normal levels',
+    tag: 'Sugar & Fats',
     report1: {
-      title: 'Initial Metabolic & Lipid Screen (Month 0)',
+      title: 'Earlier Test: Nov 10, 2025',
       date: 'Nov 10, 2025',
       text: `PATIENT COMPREHENSIVE METABOLIC REPORT:
 Date: Nov 10, 2025
@@ -81,7 +81,7 @@ Systolic Blood Pressure: 155 mmHg (Ref: < 120 mmHg) [HIGH]
 Diastolic Blood Pressure: 94 mmHg (Ref: < 80 mmHg) [HIGH]`
     },
     report2: {
-      title: 'Follow-up Metabolic Review (Month 6)',
+      title: 'Latest Test: May 12, 2026',
       date: 'May 12, 2026',
       text: `PATIENT FOLLOW-UP METABOLIC REPORT:
 Date: May 12, 2026
@@ -103,11 +103,11 @@ Diastolic Blood Pressure: 78 mmHg (Ref: < 80 mmHg) [NORMAL]`
   },
   {
     id: 'kidney-liver',
-    title: 'Renal & Hepatic Marker Monitoring',
-    subtitle: 'Tracking Creatinine, eGFR, ALT, and AST Dynamics',
-    tag: 'Nephrology & LFT',
+    title: 'Sample 3: Kidney & Liver Health',
+    subtitle: 'See if Kidney waste and Liver readings recovered back to normal',
+    tag: 'Kidneys & Liver',
     report1: {
-      title: 'Baseline Renal & Hepatic Function',
+      title: 'Earlier Test: Dec 02, 2025',
       date: 'Dec 02, 2025',
       text: `PATIENT RENAL & HEPATIC SCREEN:
 Date: Dec 02, 2025
@@ -123,7 +123,7 @@ AST (SGOT): 68 U/L (Ref: 10 - 40 U/L) [HIGH]
 Total Bilirubin: 1.4 mg/dL (Ref: 0.1 - 1.2 mg/dL) [HIGH]`
     },
     report2: {
-      title: 'Follow-up Organ Function Re-test',
+      title: 'Latest Test: Jun 10, 2026',
       date: 'Jun 10, 2026',
       text: `PATIENT FOLLOW-UP ORGAN RE-TEST:
 Date: Jun 10, 2026
@@ -361,28 +361,28 @@ const PatientCompareReports = () => {
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold mb-3">
               <GitCompare className="w-3.5 h-3.5" />
-              <span>Biomarker Trajectory & Longitudinal Analysis</span>
+              <span>Track Your Health Over Time</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
-              Medical Report Comparison & Trends
+              Compare 2 Reports (See If Health Improved)
             </h1>
-            <p className="text-slate-400 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
-              Compare any two diagnostic or lab reports side-by-side. Track whether vital biomarkers are improving, stabilizing, or requiring physician consultation over time.
+            <p className="text-slate-300 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
+              Compare an earlier test report with your latest test report side-by-side. See which numbers got better, which stayed stable, and what to discuss with your doctor.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <Link
               to="/dashboard/ai-analyzer"
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
             >
               <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-              <span>Single Report AI Analyzer</span>
+              <span>Single Report Explainer</span>
             </Link>
 
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
               title="Print clinical comparison summary"
             >
               <Printer className="w-3.5 h-3.5" />
@@ -398,10 +398,10 @@ const PatientCompareReports = () => {
           <div className="flex items-center space-x-2">
             <Layers className="w-4 h-4 text-brand-400" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              Quick Clinical Comparison Presets
+              Try A Realistic Example
             </h3>
           </div>
-          <span className="text-[11px] text-slate-400">1-click realistic patient trajectories</span>
+          <span className="text-[11px] text-slate-400">1-click sample comparisons</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -424,12 +424,12 @@ const PatientCompareReports = () => {
                   {isSelected && (
                     <span className="flex items-center space-x-1 text-[10px] font-bold text-brand-400">
                       <CheckCircle2 className="w-3 h-3" />
-                      <span>Active</span>
+                      <span>Selected</span>
                     </span>
                   )}
                 </div>
                 <h4 className="text-xs font-bold text-white line-clamp-1">{preset.title}</h4>
-                <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-300 mt-1 line-clamp-2 leading-relaxed">
                   {preset.subtitle}
                 </p>
               </button>
@@ -449,9 +449,9 @@ const PatientCompareReports = () => {
                 <div className="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center text-xs font-bold">
                   1
                 </div>
-                <h3 className="text-sm font-bold text-white">Baseline Report (Initial Test)</h3>
+                <h3 className="text-sm font-bold text-white">Report 1: Earlier Test Report</h3>
               </div>
-              <span className="text-[11px] font-medium text-slate-400">Earlier Reference Point</span>
+              <span className="text-[11px] font-medium text-slate-400">Starting Point</span>
             </div>
 
             {patientRecords.length > 0 && (
@@ -523,9 +523,9 @@ const PatientCompareReports = () => {
                 <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">
                   2
                 </div>
-                <h3 className="text-sm font-bold text-white">Follow-up Report (Recent Test)</h3>
+                <h3 className="text-sm font-bold text-white">Report 2: Latest / Recent Test Report</h3>
               </div>
-              <span className="text-[11px] font-medium text-slate-400">Latest Evaluation Point</span>
+              <span className="text-[11px] font-medium text-slate-400">Latest Numbers</span>
             </div>
 
             {patientRecords.length > 0 && (
@@ -665,8 +665,8 @@ const PatientCompareReports = () => {
                     <TrendingUp className="w-4 h-4" />
                     <span>{comparisonResult.stats.improvedCount}</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-emerald-300/80 tracking-wider">
-                    Improved
+                  <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">
+                    Getting Better
                   </span>
                 </div>
 
@@ -675,8 +675,8 @@ const PatientCompareReports = () => {
                     <TrendingDown className="w-4 h-4" />
                     <span>{comparisonResult.stats.worsenedCount}</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-rose-300/80 tracking-wider">
-                    Attention
+                  <span className="text-[10px] uppercase font-bold text-rose-300 tracking-wider">
+                    Needs Watching
                   </span>
                 </div>
 
@@ -685,8 +685,8 @@ const PatientCompareReports = () => {
                     <Activity className="w-4 h-4" />
                     <span>{comparisonResult.stats.stableCount}</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-sky-300/80 tracking-wider">
-                    Stable
+                  <span className="text-[10px] uppercase font-bold text-sky-300 tracking-wider">
+                    Stayed Same
                   </span>
                 </div>
               </div>
@@ -698,7 +698,7 @@ const PatientCompareReports = () => {
                 <div className="flex items-center space-x-2 mb-3">
                   <Stethoscope className="w-4 h-4 text-brand-400" />
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                    Physician Action Items & Next Steps
+                    What You Should Do Next
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

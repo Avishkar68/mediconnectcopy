@@ -106,8 +106,8 @@ const DoctorConsultations = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">Clinical Consultations</h2>
-          <p className="text-xs text-slate-400">Record check-up notes, diagnoses, and conduct live WebRTC video consultations.</p>
+          <h2 className="text-xl font-bold text-white font-display">Doctor Consultations & Visits</h2>
+          <p className="text-xs text-slate-400">Record patient check-up notes, write diagnoses, and start live video calls.</p>
         </div>
         <div className="flex items-center space-x-2 flex-wrap gap-y-2">
           <Link
@@ -115,14 +115,14 @@ const DoctorConsultations = () => {
             className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-brand-500/20"
           >
             <Video className="w-4 h-4" />
-            <span>Start Live Video Room</span>
+            <span>Start Video Call Room</span>
           </Link>
           <button
             onClick={() => setShowForm(!showForm)}
             className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all border border-slate-700"
           >
             <PlusCircle className="w-4 h-4 text-emerald-400" />
-            <span>{showForm ? 'Cancel recording' : 'Log Ad-hoc Notes'}</span>
+            <span>{showForm ? 'Cancel recording' : '+ Add Visit Notes'}</span>
           </button>
         </div>
       </div>
@@ -191,7 +191,7 @@ const DoctorConsultations = () => {
               type="submit"
               className="w-full bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-xs font-bold py-2.5 rounded-xl transition-all"
             >
-              Record Consultation Log
+              Save Consultation Notes
             </button>
           </form>
         </div>

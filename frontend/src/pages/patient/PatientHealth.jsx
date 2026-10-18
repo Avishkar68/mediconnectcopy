@@ -164,10 +164,10 @@ const PatientHealth = () => {
     <div className="space-y-6">
       
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center text-left">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">My Health Logs</h2>
-          <p className="text-xs text-slate-400">Track and review vital sign metrics and clinical history.</p>
+          <h2 className="text-xl font-bold text-white font-display">My Vitals & Body Health</h2>
+          <p className="text-xs text-slate-300">Log your blood pressure, pulse, and check your health trends over time.</p>
         </div>
       </div>
 
@@ -179,7 +179,7 @@ const PatientHealth = () => {
       )}
 
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center flex items-center justify-center space-x-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs font-semibold text-center flex items-center justify-center space-x-2">
           <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -195,7 +195,7 @@ const PatientHealth = () => {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          Vital Logs
+          ❤️ Blood Pressure & Pulse
         </button>
         <button
           onClick={() => setActiveTab('conditions')}
@@ -205,7 +205,7 @@ const PatientHealth = () => {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          Clinical Conditions
+          🩺 Health Conditions
         </button>
         <button
           onClick={() => setActiveTab('demographics')}
@@ -215,7 +215,7 @@ const PatientHealth = () => {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          Allergies & Demographics
+          🩸 Blood Group & Allergies
         </button>
       </div>
 
@@ -224,15 +224,18 @@ const PatientHealth = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Vital Form */}
           <div className="lg:col-span-1 glass-card rounded-2xl p-6 border border-slate-800 h-fit">
-            <h3 className="text-sm font-bold text-white mb-4 flex items-center">
+            <h3 className="text-sm font-bold text-white mb-2 flex items-center">
               <PlusCircle className="w-4 h-4 text-brand-400 mr-2" />
-              <span>Record New Vitals</span>
+              <span>Log Your Vitals</span>
             </h3>
+            <p className="text-[11px] text-slate-300 mb-4 leading-relaxed">
+              Healthy BP is around 120/80 mmHg. Resting pulse is normally 60 to 100 beats per minute.
+            </p>
 
             <form onSubmit={handleVitalSubmit} className="space-y-4 text-left">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Systolic BP (mmHg)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Upper BP (Systolic)</label>
                   <input
                     type="number"
                     value={vitalForm.bloodPressureSystolic}
@@ -242,7 +245,7 @@ const PatientHealth = () => {
                   />
                 </div>
                 <div className="flex flex-col space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Diastolic BP (mmHg)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Lower BP (Diastolic)</label>
                   <input
                     type="number"
                     value={vitalForm.bloodPressureDiastolic}
@@ -254,7 +257,7 @@ const PatientHealth = () => {
               </div>
 
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Heart Rate (bpm)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Heart Beats Per Min (Pulse)</label>
                 <input
                   type="number"
                   value={vitalForm.heartRate}
