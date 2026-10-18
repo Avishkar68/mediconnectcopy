@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import api from "../../services/api";
 import Loader from "../../components/Loader";
@@ -12,11 +12,7 @@ import {
   ExternalLink,
   RefreshCw,
   Phone,
-  User,
-  Heart,
-  Activity,
   AlertCircle,
-  FileText,
   QrCode,
   Lock,
   Save,
@@ -99,8 +95,6 @@ export default function EmergencyAccess() {
     emergencyContact: { name: "", phone: "", relation: "" },
     criticalNotes: "",
   });
-
-  const qrCanvasRef = useRef(null);
 
   // Fetch real emergency settings and patient health data from backend API
   const fetchEmergencyData = async () => {

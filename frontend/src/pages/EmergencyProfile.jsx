@@ -5,15 +5,11 @@ import Loader from "../components/Loader";
 import {
   ShieldAlert,
   ShieldCheck,
-  AlertTriangle,
   Lock,
   Phone,
   ArrowLeft,
-  User,
   Heart,
   Activity,
-  FileText,
-  Clock,
   LogIn,
   CheckCircle,
 } from "lucide-react";

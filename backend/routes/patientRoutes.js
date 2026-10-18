@@ -16,6 +16,7 @@ import {
   revokeDoctorAccess,
   uploadRecordImage,
   analyzeMedicalReport,
+  compareMedicalReports,
   getEmergencySettings,
   updateEmergencySettings,
   regenerateEmergencyToken,
@@ -91,6 +92,7 @@ router.route('/doctors/:id')
 
 router.post('/upload', protect, upload.single('image'), uploadRecordImage);
 router.post('/analyze-report', protect, analyzeMedicalReport);
+router.post('/compare-reports', protect, compareMedicalReports);
 
 export default router;
 

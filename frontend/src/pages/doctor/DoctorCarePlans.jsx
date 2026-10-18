@@ -4,9 +4,7 @@ import {
   ClipboardList,
   PlusCircle,
   AlertCircle,
-  CheckCircle2,
-  Users,
-  Award
+  CheckCircle2
 } from 'lucide-react';
 
 const DoctorCarePlans = () => {

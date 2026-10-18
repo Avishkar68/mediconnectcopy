@@ -11,7 +11,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Trash2,
-  Sparkles
+  Sparkles,
+  GitCompare
 } from 'lucide-react';
 
 
@@ -180,13 +181,22 @@ const PatientRecords = () => {
           <h2 className="text-xl font-bold text-white font-display">Medical Records</h2>
           <p className="text-xs text-slate-400">Manage, view, and organize medical certificates, scans, and reports.</p>
         </div>
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>{showAddForm ? 'Close uploader' : 'Add New Record'}</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/dashboard/compare-reports"
+            className="bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-300 hover:text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-sm"
+          >
+            <GitCompare className="w-4 h-4 text-brand-400" />
+            <span>Compare 2 Reports</span>
+          </Link>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>{showAddForm ? 'Close uploader' : 'Add New Record'}</span>
+          </button>
+        </div>
       </div>
 
       {success && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import api from '../../services/api';
 import {
   Sparkles,
@@ -16,7 +16,8 @@ import {
   ChevronRight,
   Layers,
   ClipboardList,
-  Check
+  Check,
+  GitCompare
 } from 'lucide-react';
 
 const PRESET_SAMPLES = [
@@ -157,27 +158,38 @@ const PatientAiAnalyzer = () => {
     if (!rawData || typeof rawData !== 'object') return null;
 
     let highlights = [];
-    if (Array.isArray(rawData.statusHighlights)) {
-      highlights = rawData.statusHighlights.map((h, idx) => {
+
+    // 1. If statusHighlights is already an array, or if statusHighlightsList is provided
+    const sourceHighlights = Array.isArray(rawData.statusHighlights)
+      ? rawData.statusHighlights
+      : Array.isArray(rawData.statusHighlightsList)
+      ? rawData.statusHighlightsList
+      : null;
+
+    if (sourceHighlights) {
+      highlights = sourceHighlights.map((h, idx) => {
         if (typeof h === 'string') {
           return { type: 'normal', label: `Finding ${idx + 1}`, message: h };
         }
+        const itemType = h.type || (h.status === 'critical' ? 'critical' : h.status === 'attention' || h.status === 'high' || h.status === 'low' ? 'attention' : 'normal');
         return {
-          type: h.type || 'normal',
-          label: h.label || (h.type === 'normal' ? 'Healthy Finding' : 'Needs Attention'),
-          message: h.message || h.text || ''
+          type: itemType,
+          label: h.label || (itemType === 'critical' ? 'CRITICAL CLINICAL FINDING' : itemType === 'normal' ? 'Healthy Finding' : 'Needs Attention'),
+          message: h.message || h.text || h.finding || ''
         };
       });
     } else if (rawData.statusHighlights && typeof rawData.statusHighlights === 'object') {
-      const healthy = Array.isArray(rawData.statusHighlights.healthyFindings) ? rawData.statusHighlights.healthyFindings : [];
-      const attention = Array.isArray(rawData.statusHighlights.attentionFindings) ? rawData.statusHighlights.attentionFindings : [];
-      const critical = Array.isArray(rawData.statusHighlights.criticalFindings) ? rawData.statusHighlights.criticalFindings : [];
+      // 2. If statusHighlights is an object with grouped findings arrays
+      const sh = rawData.statusHighlights;
+      const critical = Array.isArray(sh.criticalFindings) ? sh.criticalFindings : (Array.isArray(sh.critical) ? sh.critical : []);
+      const attention = Array.isArray(sh.attentionFindings) ? sh.attentionFindings : (Array.isArray(sh.attention) ? sh.attention : (Array.isArray(sh.abnormal) ? sh.abnormal : []));
+      const healthy = Array.isArray(sh.healthyFindings) ? sh.healthyFindings : (Array.isArray(sh.healthy) ? sh.healthy : (Array.isArray(sh.normal) ? sh.normal : []));
 
       critical.forEach((item) => {
         highlights.push({
           type: 'critical',
           label: 'CRITICAL CLINICAL FINDING',
-          message: typeof item === 'string' ? item : (item.message || item.text || '')
+          message: typeof item === 'string' ? item : (item.message || item.text || item.finding || '')
         });
       });
 
@@ -185,7 +197,7 @@ const PatientAiAnalyzer = () => {
         highlights.push({
           type: 'attention',
           label: 'Needs Attention',
-          message: typeof item === 'string' ? item : (item.message || item.text || '')
+          message: typeof item === 'string' ? item : (item.message || item.text || item.finding || '')
         });
       });
 
@@ -193,8 +205,28 @@ const PatientAiAnalyzer = () => {
         highlights.push({
           type: 'normal',
           label: 'Healthy Finding',
-          message: typeof item === 'string' ? item : (item.message || item.text || '')
+          message: typeof item === 'string' ? item : (item.message || item.text || item.finding || '')
         });
+      });
+
+      // Also parse any extra keys that might be strings or arrays
+      Object.entries(sh).forEach(([k, v]) => {
+        if (['criticalFindings', 'critical', 'attentionFindings', 'attention', 'abnormal', 'healthyFindings', 'healthy', 'normal'].includes(k)) return;
+        if (Array.isArray(v)) {
+          v.forEach(sub => {
+            highlights.push({
+              type: 'normal',
+              label: k,
+              message: typeof sub === 'string' ? sub : (sub.message || sub.text || '')
+            });
+          });
+        } else if (typeof v === 'string' && v.trim()) {
+          highlights.push({
+            type: 'normal',
+            label: k,
+            message: v
+          });
+        }
       });
     }
 
@@ -202,6 +234,8 @@ const PatientAiAnalyzer = () => {
       ? rawData.metricsBreakdown
       : Array.isArray(rawData.metrics)
       ? rawData.metrics
+      : Array.isArray(rawData.parameters)
+      ? rawData.parameters
       : [];
 
     const normalizedMetrics = rawMetrics.map((m) => {
@@ -219,15 +253,20 @@ const PatientAiAnalyzer = () => {
         };
       }
 
-      const val = m.val !== undefined && m.val !== null
+      // Format clean value with unit if not already included
+      let rawVal = m.val !== undefined && m.val !== null && String(m.val).trim() !== ''
         ? String(m.val)
-        : m.value !== undefined && m.value !== null
-        ? (m.unit && !String(m.value).includes(m.unit) ? (m.unit.startsWith('%') ? `${m.value}${m.unit}` : `${m.value} ${m.unit}`) : String(m.value))
+        : m.value !== undefined && m.value !== null && String(m.value).trim() !== ''
+        ? String(m.value)
         : 'N/A';
 
-      const range = m.range !== undefined && m.range !== null
+      if (rawVal !== 'N/A' && m.unit && !rawVal.includes(m.unit)) {
+        rawVal = m.unit.startsWith('%') ? `${rawVal}${m.unit}` : `${rawVal} ${m.unit}`;
+      }
+
+      const rawRange = m.range !== undefined && m.range !== null && String(m.range).trim() !== ''
         ? String(m.range)
-        : m.referenceRange !== undefined && m.referenceRange !== null
+        : m.referenceRange !== undefined && m.referenceRange !== null && String(m.referenceRange).trim() !== ''
         ? String(m.referenceRange)
         : 'N/A';
 
@@ -235,10 +274,10 @@ const PatientAiAnalyzer = () => {
         ...m,
         section: m.section || 'General',
         name: m.name || 'Parameter',
-        val,
-        range,
-        value: m.value !== undefined ? m.value : val,
-        referenceRange: m.referenceRange !== undefined ? m.referenceRange : range,
+        val: rawVal,
+        value: rawVal,
+        range: rawRange,
+        referenceRange: rawRange,
         status: m.status || 'normal',
         simpleDefinition: m.simpleDefinition || '',
         simpleMeaning: m.simpleMeaning || '',
@@ -246,11 +285,19 @@ const PatientAiAnalyzer = () => {
       };
     });
 
+    const statusHighlightsObj = {
+      healthyFindings: highlights.filter(h => h.type === 'normal').map(h => h.message),
+      attentionFindings: highlights.filter(h => h.type === 'attention').map(h => h.message),
+      criticalFindings: highlights.filter(h => h.type === 'critical').map(h => h.message)
+    };
+
     return {
       ...rawData,
       simplifiedSummary: rawData.simplifiedSummary || 'Medical report analysis complete.',
       overallStatus: rawData.overallStatus || 'normal',
       statusHighlights: highlights,
+      statusHighlightsList: highlights,
+      statusHighlightsObject: statusHighlightsObj,
       metricsBreakdown: normalizedMetrics,
       metrics: normalizedMetrics,
       sections: Array.isArray(rawData.sections) ? rawData.sections : [],
@@ -345,15 +392,25 @@ const PatientAiAnalyzer = () => {
             </p>
           </div>
 
-          {analysisResult && (
-            <button
-              onClick={() => { setAnalysisResult(null); setReportText(''); setSelectedRecordId(''); setReportTitle(''); }}
-              className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all"
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/dashboard/compare-reports"
+              className="px-4 py-2 bg-slate-900 border border-slate-850 hover:border-brand-500/50 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all shadow-sm"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Analyze Another Report</span>
-            </button>
-          )}
+              <GitCompare className="w-3.5 h-3.5 text-brand-400" />
+              <span>Compare 2 Reports</span>
+            </Link>
+
+            {analysisResult && (
+              <button
+                onClick={() => { setAnalysisResult(null); setReportText(''); setSelectedRecordId(''); setReportTitle(''); }}
+                className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Analyze Another Report</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -566,10 +623,10 @@ const PatientAiAnalyzer = () => {
               </div>
               
               <div className="space-y-2.5">
-                {analysisResult.statusHighlights.filter(h => h.type === 'normal').length === 0 ? (
+                {(Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').length === 0 ? (
                   <p className="text-xs text-slate-500 italic">No normal parameters isolated.</p>
                 ) : (
-                  analysisResult.statusHighlights.filter(h => h.type === 'normal').map((h, i) => (
+                  (Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').map((h, i) => (
                     <div key={i} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/15 space-y-1">
                       <span className="text-xs font-bold text-emerald-300 block">{h.label}</span>
                       <p className="text-xs text-slate-300 leading-relaxed">{h.message}</p>
@@ -587,13 +644,13 @@ const PatientAiAnalyzer = () => {
               </div>
 
               <div className="space-y-2.5">
-                {analysisResult.statusHighlights.filter(h => h.type !== 'normal').length === 0 ? (
+                {(Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type !== 'normal').length === 0 ? (
                   <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 font-semibold flex items-center space-x-2">
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <span>All checked lab values appear within safe normal ranges!</span>
                   </div>
                 ) : (
-                  analysisResult.statusHighlights.filter(h => h.type !== 'normal').map((h, i) => (
+                  (Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type !== 'normal').map((h, i) => (
                     <div
                       key={i}
                       className={`p-3 rounded-xl space-y-1 ${

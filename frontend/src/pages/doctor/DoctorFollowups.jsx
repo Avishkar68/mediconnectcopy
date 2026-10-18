@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
-  Calendar,
   Clock,
   User,
   CheckCircle2,
-  AlertCircle,
-  Video,
-  FileText
+  AlertCircle
 } from 'lucide-react';
 
 const DoctorFollowups = () => {

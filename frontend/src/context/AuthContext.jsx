@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         if (response.success && response.data) {
           setUser(response.data);
         }
-      } catch (err) {
+      } catch {
         console.log('No active session found.');
         localStorage.removeItem('token'); // Clear invalid token
       } finally {

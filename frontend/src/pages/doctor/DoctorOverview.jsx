@@ -8,13 +8,7 @@ import {
   Clock,
   AlertCircle,
   Play,
-  ClipboardList,
-  FileSpreadsheet,
-  TrendingUp,
-  Stethoscope,
-  Activity,
   ArrowRight,
-  Bell,
   CheckCircle
 } from 'lucide-react';
 
@@ -147,7 +141,7 @@ const DoctorOverview = () => {
             </div>
 
             {todaysConsults.length === 0 ? (
-              <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-805 rounded-xl">
+              <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-800 rounded-xl">
                 <Clock className="w-8 h-8 text-slate-600 mx-auto mb-2" />
                 <p className="text-xs text-slate-450">No consultations scheduled for today.</p>
               </div>
@@ -185,7 +179,7 @@ const DoctorOverview = () => {
             </h3>
 
             {overdueFollowups.length === 0 && pendingRequests.length === 0 ? (
-              <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-805 rounded-xl">
+              <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-800 rounded-xl">
                 <CheckCircle className="w-8 h-8 text-emerald-500/20 mx-auto mb-2" />
                 <p className="text-xs text-slate-450">No urgent practitioner alerts or pending items.</p>
               </div>

@@ -92,7 +92,7 @@ const PatientTimeline = () => {
         </div>
       ) : (
         <div className="max-w-3xl mx-auto text-left relative border-l border-slate-800 pl-6 ml-4 py-2 space-y-8">
-          {timeline.map((event, idx) => (
+          {timeline.map((event) => (
             <div key={event._id} className="relative group">
               
               {/* Event Circle Node Icon */}

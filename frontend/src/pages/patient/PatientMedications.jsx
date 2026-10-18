@@ -303,7 +303,7 @@ const PatientMedications = () => {
                   <div key={med._id} className="text-left text-[11px]">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold text-slate-300">{med.name}</span>
-                      <span className="text-[9px] text-slate-550 border border-slate-800 px-1.5 py-0.2 rounded-full uppercase">
+                      <span className="text-[9px] text-slate-550 border border-slate-800 px-1.5 py-0.5 rounded-full uppercase">
                         {med.status}
                       </span>
                     </div>

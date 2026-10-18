@@ -24,7 +24,7 @@ const Navbar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef(null);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = React.useCallback(async () => {
     if (!isAuthenticated) return;
     try {
       const response = await api.get('/notifications');
@@ -34,7 +34,7 @@ const Navbar = () => {
     } catch (err) {
       console.error('Failed to fetch notifications:', err.message);
     }
-  };
+  }, [isAuthenticated]);
 
   // Poll for notifications every 20 seconds
   useEffect(() => {
@@ -45,7 +45,7 @@ const Navbar = () => {
     } else {
       setNotifications([]);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchNotifications]);
 
   // Click outside listener for notification dropdown close
   useEffect(() => {

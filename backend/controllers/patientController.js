@@ -632,9 +632,35 @@ try {
     console.log("EXTRACTED METRICS COUNT:", extractedMetrics?.length);
     console.log("EXTRACTED METRICS:", extractedMetrics);
 
+    extractedMetrics.forEach(m => {
+      const v = m.val ?? m.value ?? 'N/A';
+      const r = m.range ?? m.referenceRange ?? 'N/A';
+      m.val = v;
+      m.value = v;
+      m.range = r;
+      m.referenceRange = r;
+    });
+
     if (analysis.metrics && !analysis.metricsBreakdown) {
       analysis.metricsBreakdown = analysis.metrics;
     }
+    if (analysis.metricsBreakdown && !analysis.metrics) {
+      analysis.metrics = analysis.metricsBreakdown;
+    }
+
+    if (analysis.statusHighlights && !Array.isArray(analysis.statusHighlights)) {
+      const sh = analysis.statusHighlights;
+      const critical = Array.isArray(sh.criticalFindings) ? sh.criticalFindings : (Array.isArray(sh.critical) ? sh.critical : []);
+      const attention = Array.isArray(sh.attentionFindings) ? sh.attentionFindings : (Array.isArray(sh.attention) ? sh.attention : []);
+      const healthy = Array.isArray(sh.healthyFindings) ? sh.healthyFindings : (Array.isArray(sh.healthy) ? sh.healthy : []);
+
+      analysis.statusHighlightsList = [
+        ...critical.map(c => ({ type: 'critical', label: 'CRITICAL CLINICAL FINDING', message: typeof c === 'string' ? c : (c.message || '') })),
+        ...attention.map(a => ({ type: 'attention', label: 'Needs Attention', message: typeof a === 'string' ? a : (a.message || '') })),
+        ...healthy.map(h => ({ type: 'normal', label: 'Healthy Finding', message: typeof h === 'string' ? h : (h.message || '') }))
+      ];
+    }
+
     return sendSuccess(
       res,
       'AI Medical Report Analysis complete',
@@ -672,7 +698,7 @@ try {
  * Built-in Intelligent Medical Report Rule & Translation Engine
  * Comprehensive section-aware and parameter-complete parser.
  */
-function generateFallbackMedicalAnalysis(text, title = '') {
+export function generateFallbackMedicalAnalysis(text, title = '') {
   const lines = text.split ? text.split('\n') : [];
 
   // Section & Clinical Context Detection
@@ -745,8 +771,9 @@ function generateFallbackMedicalAnalysis(text, title = '') {
       if (line.startsWith('---') || line.startsWith('===')) continue;
 
       let parts;
-      if (line.includes(':')) {
-        parts = line.split(':', 2);
+      const firstColon = line.indexOf(':');
+      if (firstColon !== -1) {
+        parts = [line.slice(0, firstColon), line.slice(firstColon + 1)];
       } else {
         parts = line.split(/[\t|]|\s{2,}/);
       }
@@ -771,29 +798,41 @@ function generateFallbackMedicalAnalysis(text, title = '') {
 
           // Ref range extraction
           const refMatch = line.match(/(?:ref|reference|range)[\s:]*([^)\n]+)/i) || line.match(/\(([^)]+)\)/);
-          const refRange = refMatch ? (refMatch[1].strip ? refMatch[1].strip() : refMatch[1].trim()) : 'N/A';
+          const refRange = refMatch ? refMatch[1].replace(/^[;,\s]+|[;,\s]+$/g, '').trim() : 'N/A';
+
+          // Clean display value by stripping out reference range annotations and status tags
+          const cleanValPart = valPart
+            .replace(/\((?:ref|reference|range)[\s:]*[^)]+\)/gi, '')
+            .replace(/\[(?:high|low|normal|critical|attention)\]/gi, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          const displayVal = cleanValPart || valPart;
 
           // Status calculation
           let status = 'normal';
           const lineUpper = line.toUpperCase();
-          if (lineUpper.includes('CRITICAL') || lineUpper.includes('PANIC')) {
+          if (line.match(/\[\s*(?:CRITICAL|PANIC)\s*\]/i) || lineUpper.includes('CRITICAL:')) {
             status = 'critical';
-          } else if (lineUpper.includes('HIGH') || lineUpper.includes(' H ')) {
+          } else if (line.match(/\[\s*(?:HIGH|ELEVATED)\s*\]/i)) {
             status = 'high';
-          } else if (lineUpper.includes('LOW') || lineUpper.includes(' L ')) {
+          } else if (line.match(/\[\s*(?:LOW|DECREASED)\s*\]/i)) {
             status = 'low';
-          } else if (numVal !== null) {
-            const rangeMatch = refRange.match(/([0-9.]+)\s*(?:-|–|to)\s*([0-9.]+)/);
+          } else if (line.match(/\[\s*(?:NORMAL|SAFE)\s*\]/i)) {
+            status = 'normal';
+          } else if (numVal !== null && refRange !== 'N/A') {
+            const cleanRefRange = refRange.replace(/,/g, '');
+            const rangeMatch = cleanRefRange.match(/([0-9]+(?:\.[0-9]+)?)\s*(?:-|–|to)\s*([0-9]+(?:\.[0-9]+)?)/);
             if (rangeMatch) {
               const low = parseFloat(rangeMatch[1]);
               const high = parseFloat(rangeMatch[2]);
               if (numVal > high) status = 'high';
               else if (numVal < low) status = 'low';
+              else status = 'normal';
             } else if (refRange.includes('<') || refRange.toLowerCase().includes('below')) {
-              const highMatch = refRange.match(/([0-9.]+)/);
+              const highMatch = cleanRefRange.match(/([0-9]+(?:\.[0-9]+)?)/);
               if (highMatch && numVal >= parseFloat(highMatch[1])) status = 'high';
             } else if (refRange.includes('>') || refRange.toLowerCase().includes('above')) {
-              const lowMatch = refRange.match(/([0-9.]+)/);
+              const lowMatch = cleanRefRange.match(/([0-9]+(?:\.[0-9]+)?)/);
               if (lowMatch && numVal <= parseFloat(lowMatch[1])) status = 'low';
             }
           }
@@ -801,19 +840,19 @@ function generateFallbackMedicalAnalysis(text, title = '') {
           if (status === 'critical') {
             hasCritical = true;
             hasAbnormal = true;
-            criticalFindings.push(`CRITICAL: ${namePart} is ${valPart} (Reference: ${refRange})`);
+            criticalFindings.push(`CRITICAL: ${namePart} is ${displayVal} (Reference: ${refRange})`);
           } else if (status === 'high' || status === 'low' || status === 'attention') {
             hasAbnormal = true;
-            attentionFindings.push(`${namePart} is ${valPart} (${status.toUpperCase()}) - Reference: ${refRange}`);
+            attentionFindings.push(`${namePart} is ${displayVal} (${status.toUpperCase()}) - Reference: ${refRange}`);
           } else {
-            healthyFindings.push(`${namePart} is ${valPart} (Normal)`);
+            healthyFindings.push(`${namePart} is ${displayVal} (Normal)`);
           }
 
           metrics.push({
             section: secName,
             name: namePart,
-            value: valPart,
-            val: valPart,
+            value: displayVal,
+            val: displayVal,
             numericValue: numVal,
             unit: unit,
             referenceRange: refRange,
@@ -879,6 +918,12 @@ function generateFallbackMedicalAnalysis(text, title = '') {
       ? 'The medical report shows elevated or lower-than-normal findings across lab parameters that require dietary adjustment and doctor consultation.'
       : `All ${metrics.length} analyzed medical parameters are within safe reference bounds.`);
 
+  const statusHighlightsList = [
+    ...criticalFindings.map(c => ({ type: 'critical', label: 'CRITICAL CLINICAL FINDING', message: typeof c === 'string' ? c : (c.message || '') })),
+    ...attentionFindings.map(a => ({ type: 'attention', label: 'Needs Attention', message: typeof a === 'string' ? a : (a.message || '') })),
+    ...healthyFindings.map(h => ({ type: 'normal', label: 'Healthy Finding', message: typeof h === 'string' ? h : (h.message || '') }))
+  ];
+
   return {
     simplifiedSummary: summary,
     overallStatus: overallStatus,
@@ -887,6 +932,7 @@ function generateFallbackMedicalAnalysis(text, title = '') {
       attentionFindings,
       criticalFindings
     },
+    statusHighlightsList,
     sections: sectionsList,
     metricsBreakdown: metrics,
     metrics: metrics,
@@ -1202,5 +1248,296 @@ export const getEmergencyProfileByToken = async (req, res) => {
     return sendError(res, 'Server error retrieving emergency profile', 500);
   }
 };
+
+/**
+ * Helper to normalize lab parameter name for matching across multiple reports
+ */
+function normalizeParamName(name) {
+  if (!name) return '';
+  const clean = name.toLowerCase().replace(/[*•#\-()]/g, ' ').replace(/\s+/g, ' ').trim();
+  
+  // Ignore non-biomarker header metadata
+  const ignoredMetadata = /^(date|time|patient|patient name|patient clinical history|name|age|gender|sex|doctor|physician|hospital|clinic|specimen|collected|reported|sample id|barcode|status|ref|reference|notes)$/i;
+  if (ignoredMetadata.test(clean)) return '';
+
+  if (/^(hgb|hb|hemoglobin)/i.test(clean)) return 'hemoglobin';
+  if (/^(wbc|white blood cells?|total leukocyte count|tlc)/i.test(clean)) return 'wbc';
+  if (/^(rbc|red blood cells?|erythrocyte count)/i.test(clean)) return 'rbc';
+  if (/^(plt|platelet count|platelets)/i.test(clean)) return 'platelets';
+  if (/^(hba1c|glycated hemoglobin|hemoglobin a1c)/i.test(clean)) return 'hba1c';
+  if (/^(fasting blood glucose|fasting blood sugar|fbs|glucose fasting)/i.test(clean)) return 'fasting_glucose';
+  if (/^(random blood glucose|random blood sugar|rbs|glucose random)/i.test(clean)) return 'random_glucose';
+  if (/^(total cholesterol|cholesterol total)/i.test(clean)) return 'total_cholesterol';
+  if (/^(ldl|ldl cholesterol)/i.test(clean)) return 'ldl_cholesterol';
+  if (/^(hdl|hdl cholesterol)/i.test(clean)) return 'hdl_cholesterol';
+  if (/^(triglycerides|tg)/i.test(clean)) return 'triglycerides';
+  if (/^(serum creatinine|creatinine)/i.test(clean)) return 'creatinine';
+  if (/^(blood urea nitrogen|bun)/i.test(clean)) return 'bun';
+  if (/^(egfr|gfr)/i.test(clean)) return 'egfr';
+  if (/^(sgpt|alt)/i.test(clean)) return 'alt';
+  if (/^(sgot|ast)/i.test(clean)) return 'ast';
+  if (/^(crp|c-reactive protein)/i.test(clean)) return 'crp';
+  if (/^(esr|erythrocyte sedimentation rate)/i.test(clean)) return 'esr';
+  if (/^(tsh|thyroid stimulating hormone)/i.test(clean)) return 'tsh';
+  if (/^(systolic|systolic blood pressure|sbp)/i.test(clean)) return 'systolic_bp';
+  if (/^(diastolic|diastolic blood pressure|dbp)/i.test(clean)) return 'diastolic_bp';
+  if (/^(heart rate|pulse|pulse rate)/i.test(clean)) return 'heart_rate';
+  if (/^(spo2|oxygen saturation)/i.test(clean)) return 'spo2';
+
+  return clean;
+}
+
+/**
+ * Helper to evaluate trajectory between 2 metric measurements
+ */
+function evaluateParameterTrajectory(m1, m2) {
+  const n1 = m1.numericValue;
+  const n2 = m2.numericValue;
+  const s1 = m1.status || 'normal';
+  const s2 = m2.status || 'normal';
+
+  let delta = null;
+  let percentChange = null;
+  if (n1 !== null && n2 !== null && !isNaN(n1) && !isNaN(n2)) {
+    delta = +(n2 - n1).toFixed(2);
+    if (n1 !== 0) {
+      percentChange = +(((n2 - n1) / Math.abs(n1)) * 100).toFixed(1);
+    }
+  }
+
+  let trajectory = 'stable';
+  let message = '';
+
+  // Case 1: Status moved from abnormal to normal -> Improvement!
+  if (s1 !== 'normal' && s2 === 'normal') {
+    trajectory = 'improved';
+    message = `Normalized into safe reference bounds (${m2.range || 'Normal'}). Excellent health progress.`;
+  }
+  // Case 2: Status moved from normal to abnormal -> Regression / Needs attention!
+  else if (s1 === 'normal' && s2 !== 'normal') {
+    trajectory = 'worsened';
+    message = `Shifted from normal bounds to ${s2.toUpperCase()}. Consult your physician.`;
+  }
+  // Case 3: Critical in report 1, but downgraded to high/low/normal -> Improvement!
+  else if (s1 === 'critical' && s2 !== 'critical') {
+    trajectory = 'improved';
+    message = `Decreased from critical risk level to ${s2.toUpperCase()}. Positive clinical trend.`;
+  }
+  // Case 4: Moved into critical in report 2 -> Serious worsening!
+  else if (s2 === 'critical' && s1 !== 'critical') {
+    trajectory = 'worsened';
+    message = `Elevated into CRITICAL range. Urgent medical consultation advised.`;
+  }
+  // Case 5: Both abnormal (both high)
+  else if (s1 === 'high' && s2 === 'high') {
+    if (delta !== null && delta < 0) {
+      trajectory = 'improved';
+      message = `Decreased by ${Math.abs(delta)} (${Math.abs(percentChange)}%), trending downward toward normal.`;
+    } else if (delta !== null && delta > 0) {
+      trajectory = 'worsened';
+      message = `Increased further by +${delta} (${percentChange}%), moving further away from normal limits.`;
+    } else {
+      trajectory = 'stable';
+      message = `Remains elevated at ${m2.val}, showing no significant change.`;
+    }
+  }
+  // Case 6: Both abnormal (both low)
+  else if (s1 === 'low' && s2 === 'low') {
+    if (delta !== null && delta > 0) {
+      trajectory = 'improved';
+      message = `Increased by +${delta} (${percentChange}%), rising toward safe normal bounds.`;
+    } else if (delta !== null && delta < 0) {
+      trajectory = 'worsened';
+      message = `Decreased further by ${delta} (${percentChange}%), moving lower than previous baseline.`;
+    } else {
+      trajectory = 'stable';
+      message = `Remains below reference bounds at ${m2.val}.`;
+    }
+  }
+  // Case 7: Both normal
+  else if (s1 === 'normal' && s2 === 'normal') {
+    trajectory = 'stable_normal';
+    message = `Consistently maintained within healthy reference limits.`;
+  } else {
+    trajectory = 'stable';
+    message = `Parameter tracked across both test points.`;
+  }
+
+  return {
+    trajectory,
+    delta,
+    percentChange,
+    message
+  };
+}
+
+/**
+ * @desc    Compare 2 medical reports over time to understand improvements or regressions
+ * @route   POST /api/patient/compare-reports
+ * @access  Private (Patient / Doctor)
+ */
+export const compareMedicalReports = async (req, res) => {
+  const { report1, report2 } = req.body;
+
+  if (!report1 || !report2) {
+    return sendError(res, 'Please provide both reports (Report 1 baseline and Report 2 follow-up) to compare.', 400);
+  }
+
+  try {
+    let text1 = report1.text || '';
+    let title1 = report1.title || 'Baseline Report (Report 1)';
+    let date1 = report1.date || 'Earlier Date';
+
+    let text2 = report2.text || '';
+    let title2 = report2.title || 'Follow-up Report (Report 2)';
+    let date2 = report2.date || 'Later Date';
+
+    // If report1 recordId is provided, pull from DB
+    if (report1.recordId) {
+      const rec1 = await MedicalRecord.findOne({ _id: report1.recordId, patient: req.user._id });
+      if (rec1) {
+        title1 = rec1.title;
+        date1 = rec1.recordDate ? new Date(rec1.recordDate).toLocaleDateString() : date1;
+        text1 = `Title: ${rec1.title}\nCategory: ${rec1.category}\nNotes: ${rec1.notes}\n${text1}`;
+      }
+    }
+
+    // If report2 recordId is provided, pull from DB
+    if (report2.recordId) {
+      const rec2 = await MedicalRecord.findOne({ _id: report2.recordId, patient: req.user._id });
+      if (rec2) {
+        title2 = rec2.title;
+        date2 = rec2.recordDate ? new Date(rec2.recordDate).toLocaleDateString() : date2;
+        text2 = `Title: ${rec2.title}\nCategory: ${rec2.category}\nNotes: ${rec2.notes}\n${text2}`;
+      }
+    }
+
+    if (!text1.trim() || !text2.trim()) {
+      return sendError(res, 'Both reports must contain readable diagnostic text or valid medical records.', 400);
+    }
+
+    // Run clinical metric extraction for both reports
+    const analysis1 = generateFallbackMedicalAnalysis(text1, title1);
+    const analysis2 = generateFallbackMedicalAnalysis(text2, title2);
+
+    const metrics1 = analysis1.metrics || analysis1.metricsBreakdown || [];
+    const metrics2 = analysis2.metrics || analysis2.metricsBreakdown || [];
+
+    // Build map for report 1 metrics
+    const map1 = new Map();
+    metrics1.forEach(m => {
+      const norm = normalizeParamName(m.name);
+      if (norm) map1.set(norm, m);
+    });
+
+    // Match parameters between reports
+    const matchedParams = [];
+    const seenNorms = new Set();
+
+    metrics2.forEach(m2 => {
+      const norm = normalizeParamName(m2.name);
+      if (map1.has(norm)) {
+        const m1 = map1.get(norm);
+        seenNorms.add(norm);
+
+        const evaluation = evaluateParameterTrajectory(m1, m2);
+
+        matchedParams.push({
+          name: m2.name,
+          normalizedName: norm,
+          section: m2.section || m1.section || 'General',
+          report1: {
+            val: m1.val,
+            value: m1.value,
+            numericValue: m1.numericValue,
+            status: m1.status,
+            range: m1.range,
+            date: date1
+          },
+          report2: {
+            val: m2.val,
+            value: m2.value,
+            numericValue: m2.numericValue,
+            status: m2.status,
+            range: m2.range,
+            date: date2
+          },
+          delta: evaluation.delta,
+          percentChange: evaluation.percentChange,
+          trajectory: evaluation.trajectory, // 'improved', 'worsened', 'stable_normal', 'stable'
+          clinicalInsight: evaluation.message,
+          simpleDefinition: m2.simpleDefinition || m1.simpleDefinition || `${m2.name} laboratory test.`
+        });
+      }
+    });
+
+    // Unmatched metrics
+    const uniqueToReport1 = metrics1.filter(m => !seenNorms.has(normalizeParamName(m.name)));
+    const uniqueToReport2 = metrics2.filter(m => !seenNorms.has(normalizeParamName(m.name)));
+
+    // Categorize matched parameters
+    const improvements = matchedParams.filter(p => p.trajectory === 'improved');
+    const regressions = matchedParams.filter(p => p.trajectory === 'worsened');
+    const stable = matchedParams.filter(p => p.trajectory === 'stable_normal' || p.trajectory === 'stable');
+
+    // Overall trajectory assessment
+    let overallBadge = 'stable_health';
+    let overallStatusText = 'Stable Clinical Trajectory';
+    let summarySentence = '';
+
+    if (improvements.length > regressions.length) {
+      overallBadge = 'positive_progress';
+      overallStatusText = 'Positive Health Improvement';
+      summarySentence = `Comparing ${title1} to ${title2} demonstrates measurable clinical improvement across ${improvements.length} parameter${improvements.length > 1 ? 's' : ''}.`;
+    } else if (regressions.length > improvements.length) {
+      overallBadge = 'needs_attention';
+      overallStatusText = 'Attention Required / Regressed Trends';
+      summarySentence = `Comparison reveals ${regressions.length} parameter${regressions.length > 1 ? 's' : ''} have shifted outside normal bounds or elevated from baseline, warranting physician follow-up.`;
+    } else {
+      overallBadge = 'stable_health';
+      overallStatusText = 'Stable Parameters';
+      summarySentence = `Parameters across both reports remain largely consistent and stable compared to your earlier baseline.`;
+    }
+
+    const advice = [];
+    if (improvements.length > 0) {
+      advice.push(`Maintain the lifestyle, dietary, or medication regimens that supported improvement in ${improvements.map(i => i.name).slice(0, 3).join(', ')}.`);
+    }
+    if (regressions.length > 0) {
+      advice.push(`Schedule a clinical consult with your attending doctor to discuss elevated or shifting parameters: ${regressions.map(r => r.name).slice(0, 3).join(', ')}.`);
+    }
+    advice.push('Bring both reports and this comparison timeline to your next medical consultation.');
+
+    const comparisonResult = {
+      report1Meta: { title: title1, date: date1, overallStatus: analysis1.overallStatus, metricsCount: metrics1.length },
+      report2Meta: { title: title2, date: date2, overallStatus: analysis2.overallStatus, metricsCount: metrics2.length },
+      matchedCount: matchedParams.length,
+      stats: {
+        improvedCount: improvements.length,
+        worsenedCount: regressions.length,
+        stableCount: stable.length,
+        totalCompared: matchedParams.length
+      },
+      overallBadge,
+      overallStatusText,
+      summary: summarySentence,
+      matchedParameters: matchedParams,
+      improvements,
+      regressions,
+      stable,
+      uniqueToReport1,
+      uniqueToReport2,
+      actionableAdvice: advice,
+      disclaimer: 'This comparison analysis tracks relative differences between diagnostic reports to support patient awareness and is not a definitive clinical diagnosis. Always consult a qualified physician for treatment decisions.'
+    };
+
+    return sendSuccess(res, 'Report comparison completed successfully', comparisonResult);
+
+  } catch (error) {
+    console.error('compareMedicalReports error:', error.message);
+    return sendError(res, 'Server error comparing medical reports', 500);
+  }
+};
+
 
 

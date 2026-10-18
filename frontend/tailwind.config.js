@@ -13,6 +13,7 @@ export default {
           200: '#bae2fd',
           300: '#7ccbfd',
           400: '#38b2fc',
+          450: '#1d9bf0',
           500: '#0ea5e9', // Sky blue primary
           600: '#0285c7',
           700: '#036aa1',
@@ -25,6 +26,23 @@ export default {
           100: '#dcfce7',
           500: '#10b981', // Emerald/Teal accent
           600: '#059669',
+        },
+        slate: {
+          350: '#b0bece',
+          450: '#94a3b8',
+          550: '#64748b',
+          650: '#475569',
+          750: '#1e293b',
+          850: '#0f172a',
+        },
+        emerald: {
+          450: '#34d399',
+        },
+        yellow: {
+          450: '#facc15',
+        },
+        red: {
+          450: '#f87171',
         },
         dark: {
           50: '#f8fafc',

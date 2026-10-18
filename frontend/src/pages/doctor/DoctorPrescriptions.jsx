@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
-  FileText,
   PlusCircle,
   AlertCircle,
   CheckCircle2,
-  Users,
   Activity
 } from 'lucide-react';
 

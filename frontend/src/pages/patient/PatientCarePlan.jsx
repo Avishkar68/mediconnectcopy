@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   ClipboardList,
   CheckCircle2,
-  Calendar,
   Award,
   Heart,
   Droplet,

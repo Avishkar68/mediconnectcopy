@@ -14,7 +14,6 @@ import {
   User,
   AlertCircle,
   FileDown,
-  Lock,
   CheckCircle,
   Send,
   Eye,

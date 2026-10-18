@@ -3,8 +3,7 @@ import api from '../../services/api';
 import {
   Bell,
   Clock,
-  AlertCircle,
-  CheckCircle2
+  AlertCircle
 } from 'lucide-react';
 
 const DoctorNotifications = () => {
@@ -111,7 +110,7 @@ const DoctorNotifications = () => {
                 </div>
                 <div>
                   <div className="flex items-center space-x-2 flex-wrap gap-1">
-                    <span className={`text-[8px] font-bold tracking-wider uppercase px-2 py-0.2 rounded border ${
+                    <span className={`text-[8px] font-bold tracking-wider uppercase px-2 py-0.5 rounded border ${
                       notif.type === 'success'
                         ? 'text-emerald-450 border-emerald-500/20 bg-emerald-500/5'
                         : notif.type === 'warning'

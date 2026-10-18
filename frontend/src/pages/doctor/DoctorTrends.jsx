@@ -4,8 +4,7 @@ import {
   TrendingUp,
   Users,
   Activity,
-  Award,
-  AlertCircle
+  Award
 } from 'lucide-react';
 
 const DoctorTrends = () => {

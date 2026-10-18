@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Modal from '../components/Modal';
 import Loader from '../components/Loader';
-import { MessageSquare, Heart, PlusCircle, Tag, User, Calendar, CornerDownRight } from 'lucide-react';
+import { MessageSquare, Heart, PlusCircle, Tag, Calendar, CornerDownRight } from 'lucide-react';
 
 const Community = () => {
   const { user } = useAuth();
@@ -28,7 +28,7 @@ const Community = () => {
 
   const categories = ['All', 'General', 'Health Tips', 'Medical News', 'Mental Health', 'Support Group'];
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
       const url = activeCategory === 'All' ? '/posts' : `/posts?category=${activeCategory}`;
@@ -41,11 +41,11 @@ const Community = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeCategory]);
 
   useEffect(() => {
     fetchPosts();
-  }, [activeCategory]);
+  }, [fetchPosts]);
 
   const handleCreatePost = async (e) => {
     e.preventDefault();

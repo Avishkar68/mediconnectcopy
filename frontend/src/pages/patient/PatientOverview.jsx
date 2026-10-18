@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import {
   Activity,
   Heart,
-  FileText,
   Calendar,
   UserCheck,
-  Bell,
   Clock,
   ClipboardList,
-  PlusCircle,
   ArrowRight,
   ShieldCheck,
   AlertCircle,
@@ -18,7 +15,6 @@ import {
 } from 'lucide-react';
 
 const PatientOverview = () => {
-  const navigate = useNavigate();
   const [data, setData] = useState({
     profile: null,
     bloodGroup: '',

@@ -10,11 +10,7 @@ import {
   UserPlus,
   Users,
   ShieldCheck,
-  Stethoscope,
-  PlusCircle,
   Bell,
-  CheckCircle,
-  ArrowRight,
   TrendingUp,
   LayoutDashboard,
   Clock,
@@ -24,7 +20,8 @@ import {
   X,
   Video,
   Sparkles,
-  QrCode
+  QrCode,
+  GitCompare
 } from 'lucide-react';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -246,6 +243,7 @@ const Dashboard = () => {
       { path: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
       { path: '/dashboard/emergency-access', label: 'Emergency Medical QR', icon: QrCode },
       { path: '/dashboard/ai-analyzer', label: 'AI Report Analyzer', icon: Sparkles },
+      { path: '/dashboard/compare-reports', label: 'Compare Reports', icon: GitCompare },
       { path: '/dashboard/health', label: 'My Health', icon: Heart },
       { path: '/dashboard/records', label: 'Medical Records', icon: FileText },
       { path: '/dashboard/timeline', label: 'Medical Timeline', icon: Clock },
@@ -330,6 +328,7 @@ const Dashboard = () => {
     }
 
     if (path.endsWith('/ai-analyzer')) return 'AI Medical Report Analyzer';
+    if (path.endsWith('/compare-reports')) return 'Medical Report Comparison & Trends';
     if (path.endsWith('/emergency-access')) return 'Emergency Medical QR Access';
     if (path.endsWith('/health')) return 'My Health Summary';
 

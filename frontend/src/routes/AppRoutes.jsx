@@ -12,6 +12,7 @@ import Community from "../pages/Community";
 // Patient Workspace Pages
 import PatientOverview from "../pages/patient/PatientOverview";
 import PatientAiAnalyzer from "../pages/patient/PatientAiAnalyzer";
+import PatientCompareReports from "../pages/patient/PatientCompareReports";
 import PatientHealth from "../pages/patient/PatientHealth";
 import PatientRecords from "../pages/patient/PatientRecords";
 import PatientTimeline from "../pages/patient/PatientTimeline";
@@ -68,6 +69,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["patient"]}>
               <PatientAiAnalyzer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="compare-reports"
+          element={
+            <ProtectedRoute allowedRoles={["patient"]}>
+              <PatientCompareReports />
             </ProtectedRoute>
           }
         />
