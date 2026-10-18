@@ -6,6 +6,7 @@ import TimelineEvent from '../models/TimelineEvent.js';
 import Notification from '../models/Notification.js';
 import HealthProfile from '../models/HealthProfile.js';
 import MedicalRecord from '../models/MedicalRecord.js';
+import CarePlan from '../models/CarePlan.js';
 import crypto from 'crypto';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 
@@ -25,12 +26,14 @@ const createTimelineEvent = async (patientId, category, title, description) => {
 };
 
 // Helper to send notifications
-const createPatientNotification = async (patientId, message, type = 'info') => {
+const createPatientNotification = async (patientId, message, type = 'info', category = 'general', actionUrl = '') => {
   try {
     await Notification.create({
       recipient: patientId,
       type,
-      message
+      category,
+      message,
+      actionUrl,
     });
   } catch (err) {
     console.error('Failed to create patient notification:', err.message);
@@ -199,15 +202,43 @@ export const createPrescription = async (req, res) => {
 };
 
 /**
- * @desc    Assign recovery / care task to an authorized patient
+ * @desc    Get all care plans created by the logged-in doctor
+ * @route   GET /api/doctor/care-plans
+ * @access  Private (Doctor only)
+ */
+export const getDoctorCarePlans = async (req, res) => {
+  try {
+    const carePlans = await CarePlan.find({ doctor: req.user._id })
+      .populate('patient', 'name email profile.phone profile.gender profile.bloodGroup')
+      .sort({ updatedAt: -1 });
+
+    return sendSuccess(res, 'Doctor care plans retrieved successfully', carePlans);
+  } catch (error) {
+    console.error('getDoctorCarePlans error:', error.message);
+    return sendError(res, 'Server error retrieving care plans', 500);
+  }
+};
+
+/**
+ * @desc    Create structured treatment / care pathway for an authorized patient
  * @route   POST /api/doctor/care-plans
  * @access  Private (Doctor only)
  */
 export const createCarePlan = async (req, res) => {
-  const { patientId, title, description } = req.body;
+  const {
+    patientId,
+    title,
+    diagnosis,
+    description,
+    category,
+    targetEndDate,
+    phases,
+    dailyTasks,
+    targetVitals,
+  } = req.body;
 
-  if (!patientId || !title) {
-    return sendError(res, 'Patient ID and task title are required', 400);
+  if (!patientId || !title || !diagnosis) {
+    return sendError(res, 'Patient, care plan title, and diagnosis focus are required', 400);
   }
 
   try {
@@ -221,24 +252,146 @@ export const createCarePlan = async (req, res) => {
       return sendError(res, 'Unauthorized records access. Consent required.', 403);
     }
 
-    // Register a timeline activity representing the care recommendation
+    // Default phases if none provided
+    const planPhases = phases && phases.length > 0 ? phases : [
+      {
+        phaseNumber: 1,
+        name: 'Phase 1: Stabilization & Immediate Care',
+        durationDays: 7,
+        description: 'Focus on symptom stabilization and vital checks.',
+        goals: ['Vital signs stabilization', 'Initial recovery compliance'],
+        status: 'in-progress',
+      },
+      {
+        phaseNumber: 2,
+        name: 'Phase 2: Active Recovery & Lifestyle Modification',
+        durationDays: 14,
+        description: 'Gradual increase in activity and dietary compliance.',
+        goals: ['Consistent target vitals', 'Activity progression'],
+        status: 'pending',
+      },
+      {
+        phaseNumber: 3,
+        name: 'Phase 3: Long-term Maintenance & Secondary Prevention',
+        durationDays: 30,
+        description: 'Sustain therapeutic goals and maintain health milestones.',
+        goals: ['Sustained lifestyle goals', 'Follow-up consultation review'],
+        status: 'pending',
+      },
+    ];
+
+    // Format tasks with unique ids
+    const tasks = (dailyTasks || []).map((t, idx) => ({
+      taskId: t.taskId || `task_${Date.now()}_${idx}`,
+      title: t.title,
+      category: t.category || 'lifestyle',
+      frequency: t.frequency || 'daily',
+      instructions: t.instructions || '',
+      targetMetric: t.targetMetric || { metricName: '', targetValue: '' },
+      isActive: t.isActive !== false,
+    }));
+
+    const carePlan = await CarePlan.create({
+      patient: patientId,
+      doctor: req.user._id,
+      title,
+      diagnosis,
+      description: description || '',
+      category: category || 'general',
+      status: 'active',
+      startDate: new Date(),
+      targetEndDate: targetEndDate ? new Date(targetEndDate) : undefined,
+      phases: planPhases,
+      dailyTasks: tasks,
+      targetVitals: targetVitals || {},
+      taskCompletions: [],
+    });
+
     await createTimelineEvent(
       patientId,
       'condition',
-      'Care Plan Recommendation',
-      `Dr. ${req.user.name} added care plan target: "${title}" - ${description || ''}`
+      'Care Pathway Prescribed',
+      `Dr. ${req.user.name} initiated Care Pathway: "${title}" (Diagnosis: ${diagnosis}).`
     );
 
     await createPatientNotification(
       patientId,
-      `Dr. ${req.user.name} updated your care plan instructions: "${title}".`,
-      'info'
+      `Dr. ${req.user.name} prescribed a new Care Pathway: "${title}". Check your daily recovery checklist.`,
+      'info',
+      'care_plan',
+      '/dashboard/care-plan'
     );
 
-    return sendSuccess(res, 'Care plan task generated successfully', null, 201);
+    const populated = await CarePlan.findById(carePlan._id)
+      .populate('patient', 'name email profile.phone');
+
+    return sendSuccess(res, 'Care pathway created successfully', populated, 201);
   } catch (error) {
     console.error('createCarePlan error:', error.message);
-    return sendError(res, 'Server error creating care plan target', 500);
+    return sendError(res, 'Server error creating care pathway', 500);
+  }
+};
+
+/**
+ * @desc    Update care plan status, milestones, target metrics, or doctor reviews
+ * @route   PUT /api/doctor/care-plans/:id
+ * @access  Private (Doctor only)
+ */
+export const updateCarePlan = async (req, res) => {
+  const { id } = req.params;
+  const { status, phaseUpdates, reviewNote, targetVitals, dailyTasks, description } = req.body;
+
+  try {
+    const carePlan = await CarePlan.findOne({ _id: id, doctor: req.user._id });
+    if (!carePlan) {
+      return sendError(res, 'Care plan not found or unauthorized', 404);
+    }
+
+    if (status) {
+      carePlan.status = status;
+    }
+
+    if (description !== undefined) {
+      carePlan.description = description;
+    }
+
+    if (targetVitals) {
+      carePlan.targetVitals = { ...carePlan.targetVitals, ...targetVitals };
+    }
+
+    if (dailyTasks && Array.isArray(dailyTasks)) {
+      carePlan.dailyTasks = dailyTasks;
+    }
+
+    if (phaseUpdates && Array.isArray(phaseUpdates)) {
+      carePlan.phases = phaseUpdates;
+    }
+
+    if (reviewNote) {
+      carePlan.doctorReviews.push({
+        date: new Date(),
+        note: reviewNote,
+        doctorName: req.user.name,
+      });
+
+      await createPatientNotification(
+        carePlan.patient,
+        `Dr. ${req.user.name} reviewed your Care Plan: "${reviewNote.slice(0, 70)}"`,
+        'info',
+        'care_plan',
+        '/dashboard/care-plan'
+      );
+    }
+
+    await carePlan.save();
+
+    const populated = await CarePlan.findById(carePlan._id)
+      .populate('patient', 'name email profile.phone');
+
+    return sendSuccess(res, 'Care plan updated successfully', populated);
+  } catch (error) {
+    console.error('updateCarePlan error:', error.message);
+    return sendError(res, 'Server error updating care plan', 500);
   }
 };
 
@@ -606,4 +759,514 @@ export const getPatientEmergencyProfile = async (req, res) => {
     return sendError(res, 'Server error retrieving patient emergency profile', 500);
   }
 };
+
+/**
+ * @desc    Directly schedule a follow-up consultation for an authorized patient
+ * @route   POST /api/doctor/appointments/schedule-followup
+ * @access  Private (Doctor only)
+ */
+export const scheduleFollowupAppointment = async (req, res) => {
+  const { patientId, dateTime, purpose, notes } = req.body;
+
+  if (!patientId || !dateTime || !purpose) {
+    return sendError(res, 'Patient, appointment date & time, and purpose are required', 400);
+  }
+
+  try {
+    const consent = await DoctorAccess.findOne({
+      patient: patientId,
+      doctor: req.user._id,
+      status: 'approved',
+    });
+
+    if (!consent) {
+      return sendError(res, 'Unauthorized. Active patient consent required to schedule consultations.', 403);
+    }
+
+    const apptDate = new Date(dateTime);
+    if (isNaN(apptDate.getTime())) {
+      return sendError(res, 'Invalid date format provided', 400);
+    }
+
+    const appointment = await Appointment.create({
+      patient: patientId,
+      doctor: req.user._id,
+      dateTime: apptDate,
+      purpose,
+      notes: notes || '',
+      status: 'scheduled',
+    });
+
+    const formattedTime = apptDate.toLocaleString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    await createTimelineEvent(
+      patientId,
+      'appointment',
+      'Follow-up Consultation Scheduled',
+      `Dr. ${req.user.name} scheduled a clinical follow-up for "${purpose}" on ${formattedTime}.`
+    );
+
+    await createPatientNotification(
+      patientId,
+      `Dr. ${req.user.name} scheduled a follow-up consultation with you on ${formattedTime} for "${purpose}".`,
+      'warning',
+      'reminder',
+      '/dashboard/appointments'
+    );
+
+    const populated = await Appointment.findById(appointment._id)
+      .populate('patient', 'name email profile.phone');
+
+    return sendSuccess(res, 'Follow-up appointment scheduled successfully', populated, 201);
+  } catch (error) {
+    console.error('scheduleFollowupAppointment error:', error.message);
+    return sendError(res, 'Server error scheduling follow-up appointment', 500);
+  }
+};
+
+/**
+ * ========================================================
+ * 🤖 SMART AI DOCTOR COPILOT CONTROLLERS
+ * ========================================================
+ */
+
+/**
+ * @desc    Generate comprehensive AI clinical brief for a patient
+ * @route   POST /api/doctor/copilot/summary
+ * @access  Private (Doctor only)
+ */
+export const generateCopilotSummary = async (req, res) => {
+  const { patientId } = req.body;
+
+  if (!patientId) {
+    return sendError(res, 'Patient ID is required', 400);
+  }
+
+  try {
+    const [patientUser, healthProfile, medications, records, carePlans] = await Promise.all([
+      User.findById(patientId).select('name email profile'),
+      HealthProfile.findOne({ patient: patientId }),
+      Medication.find({ patient: patientId, status: 'active' }),
+      MedicalRecord.find({ patient: patientId }).sort({ recordDate: -1 }).limit(10),
+      CarePlan.find({ patient: patientId, status: 'active' }),
+    ]);
+
+    if (!patientUser) {
+      return sendError(res, 'Patient not found', 404);
+    }
+
+    const allergies = patientUser.profile?.allergies || [];
+    const bloodGroup = patientUser.profile?.bloodGroup || 'Not Documented';
+    const conditions = healthProfile?.conditions?.map((c) => c.name) || [];
+    const vitals = healthProfile?.vitals || [];
+    const latestVital = vitals.length > 0 ? vitals[vitals.length - 1] : null;
+
+    // Evaluate Vitals & Risk Level
+    let riskLevel = 'Low';
+    let riskReasons = [];
+    let vitalEvaluation = 'Within Expected Parameters';
+
+    if (latestVital) {
+      const sys = latestVital.bloodPressureSystolic;
+      const dia = latestVital.bloodPressureDiastolic;
+      const hr = latestVital.heartRate;
+
+      if (sys >= 160 || dia >= 100) {
+        riskLevel = 'High';
+        vitalEvaluation = `Hypertensive Crisis / Stage 2 Range (${sys}/${dia} mmHg)`;
+        riskReasons.push(`Markedly elevated blood pressure: ${sys}/${dia} mmHg`);
+      } else if (sys >= 140 || dia >= 90) {
+        if (riskLevel !== 'High') riskLevel = 'Moderate';
+        vitalEvaluation = `Stage 1 Hypertension (${sys}/${dia} mmHg)`;
+        riskReasons.push(`Elevated systolic/diastolic BP (${sys}/${dia} mmHg)`);
+      } else if (sys >= 120 && dia < 80) {
+        vitalEvaluation = `Elevated Pre-hypertension (${sys}/${dia} mmHg)`;
+      } else {
+        vitalEvaluation = `Normotensive (${sys}/${dia} mmHg)`;
+      }
+
+      if (hr > 105) {
+        riskReasons.push(`Tachycardia observed: ${hr} BPM`);
+        if (riskLevel === 'Low') riskLevel = 'Moderate';
+      } else if (hr < 50) {
+        riskReasons.push(`Sinus Bradycardia: ${hr} BPM`);
+      }
+    }
+
+    if (allergies.length > 0) {
+      riskReasons.push(`Documented hypersensitivity: ${allergies.join(', ')}`);
+    }
+
+    if (conditions.length >= 2) {
+      if (riskLevel === 'Low') riskLevel = 'Moderate';
+      riskReasons.push(`Multimorbidity burden (${conditions.length} active conditions)`);
+    }
+
+    // Recommendations Engine
+    const recommendations = [];
+    if (vitals.length < 3) {
+      recommendations.push('Establish structured baseline vitals monitoring (at least 2 logs per week).');
+    }
+    if (conditions.some((c) => /diabetes/i.test(c))) {
+      recommendations.push('Review HbA1c trending and schedule annual diabetic foot/retinal screen.');
+    }
+    if (conditions.some((c) => /hypertens|cardio/i.test(c))) {
+      recommendations.push('Recommend ambulatory blood pressure monitoring (ABPM) and low-sodium diet.');
+    }
+    if (allergies.length > 0) {
+      recommendations.push(`Cross-verify all new prescriptions against active allergens: ${allergies.join(', ')}.`);
+    }
+    if (medications.length >= 4) {
+      recommendations.push('Perform periodic polypharmacy review to minimize adverse drug events.');
+    }
+    if (recommendations.length === 0) {
+      recommendations.push('Continue preventive health maintenance and routine annual wellness exam.');
+    }
+
+    // Synthesized Executive Narrative
+    const executiveSummary = `Patient ${patientUser.name} (${patientUser.profile?.gender || 'Patient'}, Blood Group: ${bloodGroup}) presents with ${
+      conditions.length > 0 ? conditions.join(', ') : 'no formally diagnosed chronic ailments'
+    }. Currently maintained on ${medications.length} active prescription(s) [${
+      medications.map((m) => m.name).join(', ') || 'None'
+    }]. Vital telemetry reflects ${vitalEvaluation}. Documented allergies include: ${
+      allergies.length > 0 ? allergies.join(', ') : 'None documented'
+    }. Overall clinical risk tier is evaluated as ${riskLevel.toUpperCase()}${
+      riskReasons.length > 0 ? ` secondary to ${riskReasons.slice(0, 2).join(' and ')}` : ''
+    }.`;
+
+    const copilotData = {
+      patientName: patientUser.name,
+      patientEmail: patientUser.email,
+      riskLevel,
+      riskReasons,
+      vitalEvaluation,
+      latestVital,
+      allergies,
+      bloodGroup,
+      activeConditions: conditions,
+      activeMedications: medications.map((m) => ({
+        name: m.name,
+        dosage: m.dosage,
+        frequency: m.frequency,
+      })),
+      activeCarePlansCount: carePlans.length,
+      medicalRecordsCount: records.length,
+      recommendations,
+      executiveSummary,
+      generatedAt: new Date().toISOString(),
+    };
+
+    return sendSuccess(res, 'AI Doctor Copilot clinical brief generated', copilotData);
+  } catch (error) {
+    console.error('generateCopilotSummary error:', error.message);
+    return sendError(res, 'Server error generating AI clinical brief', 500);
+  }
+};
+
+/**
+ * @desc    AI Drug-Drug & Allergy Interaction Safety Checker
+ * @route   POST /api/doctor/copilot/interaction-check
+ * @access  Private (Doctor only)
+ */
+export const checkDrugInteractions = async (req, res) => {
+  const { patientId, medicationName } = req.body;
+
+  if (!medicationName) {
+    return sendError(res, 'Medication name is required for safety screening', 400);
+  }
+
+  try {
+    let allergies = [];
+    let activeMedications = [];
+
+    if (patientId) {
+      const [patientUser, meds] = await Promise.all([
+        User.findById(patientId).select('profile.allergies name'),
+        Medication.find({ patient: patientId, status: 'active' }),
+      ]);
+      allergies = patientUser?.profile?.allergies || [];
+      activeMedications = meds.map((m) => m.name);
+    }
+
+    const medLower = medicationName.toLowerCase();
+    const alerts = [];
+    let severity = 'none'; // 'none' | 'mild' | 'moderate' | 'severe' | 'critical'
+    let allergyConflict = false;
+
+    // 1. ALLERGY SCREENING MATRIX
+    allergies.forEach((allergy) => {
+      const aLower = allergy.toLowerCase();
+
+      // Penicillins / Beta-lactams
+      if (
+        (aLower.includes('penicillin') || aLower.includes('amoxicillin') || aLower.includes('ampicillin')) &&
+        (medLower.includes('amox') || medLower.includes('penicillin') || medLower.includes('ampicillin') || medLower.includes('augmentin') || medLower.includes('clav'))
+      ) {
+        allergyConflict = true;
+        severity = 'critical';
+        alerts.push({
+          type: 'allergy',
+          severity: 'critical',
+          title: 'Direct Penicillin Hypersensitivity Alert',
+          description: `Patient has documented allergy to "${allergy}". Prescribing "${medicationName}" presents high risk of anaphylaxis or severe cutaneous adverse reactions.`,
+          recommendation: 'Do NOT prescribe. Substitute with a macrolide (e.g. Azithromycin) or fluoroquinolone if clinically indicated.',
+        });
+      }
+
+      // Cephalosporins cross-reactivity
+      if (
+        aLower.includes('penicillin') &&
+        (medLower.includes('ceph') || medLower.includes('cefp') || medLower.includes('ceft') || medLower.includes('keflex'))
+      ) {
+        severity = severity === 'critical' ? 'critical' : 'moderate';
+        alerts.push({
+          type: 'allergy_cross',
+          severity: 'moderate',
+          title: 'Potential Cephalosporin Cross-Reactivity',
+          description: `Patient is allergic to penicillin. First/second-generation cephalosporins carry a 1-3% cross-hypersensitivity rate.`,
+          recommendation: 'Exercise caution. Monitor closely or choose non-beta-lactam alternative.',
+        });
+      }
+
+      // Sulfa / Sulfonamides
+      if (
+        (aLower.includes('sulfa') || aLower.includes('sulfonamide')) &&
+        (medLower.includes('sulfa') || medLower.includes('bactrim') || medLower.includes('septra') || medLower.includes('trimethoprim'))
+      ) {
+        allergyConflict = true;
+        severity = 'critical';
+        alerts.push({
+          type: 'allergy',
+          severity: 'critical',
+          title: 'Sulfa Allergy Conflict',
+          description: `Patient is allergic to "${allergy}". "${medicationName}" contains sulfonamide moieties.`,
+          recommendation: 'Absolute contraindication. Select alternate antimicrobial class.',
+        });
+      }
+
+      // NSAID / Aspirin
+      if (
+        (aLower.includes('aspirin') || aLower.includes('nsaid') || aLower.includes('ibuprofen')) &&
+        (medLower.includes('ibuprofen') || medLower.includes('aspirin') || medLower.includes('naproxen') || medLower.includes('diclofenac') || medLower.includes('combiflam'))
+      ) {
+        allergyConflict = true;
+        severity = 'severe';
+        alerts.push({
+          type: 'allergy',
+          severity: 'severe',
+          title: 'NSAID / Aspirin Hypersensitivity',
+          description: `Patient has documented intolerance/allergy to "${allergy}". Risk of bronchospasm or angioedema.`,
+          recommendation: 'Substitute with Acetaminophen / Paracetamol for analgesia and antipyresis.',
+        });
+      }
+    });
+
+    // 2. DRUG-DRUG INTERACTIONS MATRIX
+    activeMedications.forEach((activeMed) => {
+      const aMedLower = activeMed.toLowerCase();
+
+      // NSAID + Anticoagulant / Antiplatelet
+      if (
+        (medLower.includes('ibuprofen') || medLower.includes('naproxen') || medLower.includes('diclofenac')) &&
+        (aMedLower.includes('warfarin') || aMedLower.includes('aspirin') || aMedLower.includes('clopidogrel') || aMedLower.includes('eliquis') || aMedLower.includes('xarelto'))
+      ) {
+        severity = severity === 'critical' ? 'critical' : 'severe';
+        alerts.push({
+          type: 'drug_interaction',
+          severity: 'severe',
+          title: 'Synergistic Hemorrhage & GI Bleed Risk',
+          description: `Co-administration of ${medicationName} with active anticoagulant/antiplatelet ${activeMed} significantly amplifies gastrointestinal mucosal injury and major bleeding risk.`,
+          recommendation: 'Avoid systemic NSAIDs. Use Paracetamol or topical analgesics; add PPI (Pantoprazole) if co-therapy is strictly unavoidable.',
+        });
+      }
+
+      // ACE-I / ARB + Potassium Sparing / ARB Duplicate
+      if (
+        (medLower.includes('pril') || medLower.includes('sartan')) &&
+        (aMedLower.includes('pril') || aMedLower.includes('sartan') || aMedLower.includes('spironolactone'))
+      ) {
+        severity = severity === 'critical' ? 'critical' : 'severe';
+        alerts.push({
+          type: 'drug_interaction',
+          severity: 'severe',
+          title: 'Dual Renin-Angiotensin Blockade / Hyperkalemia Risk',
+          description: `Combining ${medicationName} with ${activeMed} increases risk of acute renal failure, symptomatic hypotension, and hyperkalemia without added clinical benefit.`,
+          recommendation: 'Dual ACEi/ARB therapy is contraindicated. Discontinue one agent.',
+        });
+      }
+
+      // Macrolide (Azithromycin) + QT Prolonging Agents
+      if (
+        (medLower.includes('azithromycin') || medLower.includes('clarithromycin')) &&
+        (aMedLower.includes('ondansetron') || aMedLower.includes('amiodarone') || aMedLower.includes('citalopram') || aMedLower.includes('escitalopram'))
+      ) {
+        severity = severity === 'critical' || severity === 'severe' ? severity : 'moderate';
+        alerts.push({
+          type: 'drug_interaction',
+          severity: 'moderate',
+          title: 'Additive QTc Interval Prolongation',
+          description: `Both ${medicationName} and ${activeMed} can lengthen cardiac repolarization, elevating risk of Torsades de Pointes.`,
+          recommendation: 'Check baseline ECG; monitor electrolyte levels (K+, Mg2+). Consider alternative antibiotic.',
+        });
+      }
+
+      // Duplicate Therapy
+      if (medLower.replace(/\s+/g, '') === aMedLower.replace(/\s+/g, '')) {
+        severity = severity === 'critical' || severity === 'severe' ? severity : 'moderate';
+        alerts.push({
+          type: 'duplicate',
+          severity: 'moderate',
+          title: 'Duplicate Active Medication',
+          description: `Patient is already actively taking ${activeMed}. Prescribing ${medicationName} creates unintentional double dosing.`,
+          recommendation: 'Verify dosage adjustment rather than generating a duplicate concurrent regimen.',
+        });
+      }
+    });
+
+    const safeToPrescribe = severity !== 'critical' && severity !== 'severe';
+
+    return sendSuccess(res, 'Interaction check evaluated', {
+      medicationName,
+      safeToPrescribe,
+      severity,
+      allergyConflict,
+      alertsCount: alerts.length,
+      alerts,
+      patientAllergiesScreened: allergies,
+      activeMedicationsScreened: activeMedications,
+      checkedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('checkDrugInteractions error:', error.message);
+    return sendError(res, 'Server error checking drug interactions', 500);
+  }
+};
+
+/**
+ * @desc    AI Differential Diagnosis & Clinical Test Recommender
+ * @route   POST /api/doctor/copilot/differential-diagnosis
+ * @access  Private (Doctor only)
+ */
+export const getDifferentialDiagnosis = async (req, res) => {
+  const { symptoms, patientAge, patientGender, duration } = req.body;
+
+  if (!symptoms || symptoms.length === 0) {
+    return sendError(res, 'Symptoms input is required', 400);
+  }
+
+  const queryText = (Array.isArray(symptoms) ? symptoms.join(' ') : symptoms).toLowerCase();
+
+  // Clinical Syndromic Matching Engine
+  const differentials = [];
+  const recommendedTests = [];
+  const redFlags = [];
+
+  // Respiratory / Febrile Pattern
+  if (queryText.includes('fever') || queryText.includes('cough') || queryText.includes('throat') || queryText.includes('cold')) {
+    if (queryText.includes('breath') || queryText.includes('wheez') || queryText.includes('chest pain')) {
+      differentials.push({
+        condition: 'Community-Acquired Pneumonia (CAP)',
+        probability: 'High',
+        icdCode: 'J18.9',
+        rationale: 'Fever accompanied by cough and lower respiratory symptoms (dyspnea/chest discomfort).',
+      });
+      differentials.push({
+        condition: 'Acute Bronchitis with Bronchospasm',
+        probability: 'Moderate',
+        icdCode: 'J20.9',
+        rationale: 'Inflammatory bronchial process; frequently viral with secondary reactive airway response.',
+      });
+      recommendedTests.push('Chest X-Ray PA/Lateral View', 'Complete Blood Count (CBC) with Differential', 'Pulse Oximetry (SpO2)');
+      redFlags.push('SpO2 < 93% on room air', 'Respiratory rate > 28 bpm', 'Cyanosis or hemoptysis');
+    } else {
+      differentials.push({
+        condition: 'Acute Upper Respiratory Tract Infection (URTI)',
+        probability: 'High',
+        icdCode: 'J06.9',
+        rationale: 'Typical constellation of sore throat, low-to-moderate fever, and rhinitis symptoms.',
+      });
+      differentials.push({
+        condition: 'Acute Viral Pharyngitis / Tonsillitis',
+        probability: 'Moderate',
+        icdCode: 'J02.9',
+        rationale: 'Localized pharyngeal erythema and odynophagia without focal lower lung signs.',
+      });
+      recommendedTests.push('Rapid Antigen Strep Test (if Centor Criteria met)', 'Complete Blood Count');
+    }
+  }
+
+  // Gastrointestinal Pattern
+  if (queryText.includes('abdomen') || queryText.includes('stomach') || queryText.includes('vomit') || queryText.includes('diarrhea') || queryText.includes('nausea')) {
+    differentials.push({
+      condition: 'Acute Gastroenteritis (Viral / Bacterial)',
+      probability: 'High',
+      icdCode: 'A09',
+      rationale: 'Nausea, emesis, or diarrheal episodes indicative of intestinal mucosal inflammation.',
+    });
+    differentials.push({
+      condition: 'Gastroesophageal Reflux Disease (GERD) with Dyspepsia',
+      probability: 'Moderate',
+      icdCode: 'K21.9',
+      rationale: 'Epigastric burning, postprandial discomfort, and acid regurgitation.',
+    });
+    recommendedTests.push('Serum Electrolytes (Na+, K+, Cl-)', 'Stool Routine & Microscopy', 'Abdominal Ultrasound (if localized pain)');
+    redFlags.push('Peritoneal signs (guarding, rebound tenderness)', 'Hematemesis or melena', 'Severe dehydration');
+  }
+
+  // Metabolic / General Malaise Pattern
+  if (queryText.includes('fatigue') || queryText.includes('thirst') || queryText.includes('urination') || queryText.includes('weight loss')) {
+    differentials.push({
+      condition: 'Type 2 Diabetes Mellitus (New Onset / Decompensation)',
+      probability: 'Moderate',
+      icdCode: 'E11.9',
+      rationale: 'Classic osmotic triad (polyuria, polydipsia) and unexplained energy depletion.',
+    });
+    differentials.push({
+      condition: 'Microcytic / Iron Deficiency Anemia',
+      probability: 'Moderate',
+      icdCode: 'D50.9',
+      rationale: 'Fatigue, pallor, reduced exercise tolerance common in primary care.',
+    });
+    differentials.push({
+      condition: 'Primary Hypothyroidism',
+      probability: 'Consider',
+      icdCode: 'E03.9',
+      rationale: 'Indolent metabolic slowing, cold intolerance, and chronic lethargy.',
+    });
+    recommendedTests.push('Fasting Blood Glucose & HbA1c', 'Complete Blood Count & Serum Ferritin', 'Serum Thyroid Stimulating Hormone (TSH)');
+  }
+
+  // Fallback if generic symptoms
+  if (differentials.length === 0) {
+    differentials.push({
+      condition: 'Non-Specific Viral Syndrome',
+      probability: 'Moderate',
+      icdCode: 'B34.9',
+      rationale: 'Constitutional prodromal symptoms without localizing organ-specific signs.',
+    });
+    differentials.push({
+      condition: 'Tension / Stress-Related Somatization',
+      probability: 'Consider',
+      icdCode: 'G44.2',
+      rationale: 'Musculoskeletal tension and fatigue without objective laboratory derangements.',
+    });
+    recommendedTests.push('Baseline Complete Blood Count (CBC)', 'Comprehensive Metabolic Panel (CMP)');
+  }
+
+  return sendSuccess(res, 'AI Differential Diagnosis generated', {
+    analyzedSymptoms: queryText,
+    patientDemographics: { age: patientAge || 'Not specified', gender: patientGender || 'Not specified' },
+    differentials,
+    recommendedTests,
+    redFlags,
+    clinicalNotice: 'AI guidance is for informational decision-support only. Definitive diagnosis requires direct physician clinical evaluation.',
+  });
+};
+
 

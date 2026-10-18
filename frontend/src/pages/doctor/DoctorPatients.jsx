@@ -25,8 +25,10 @@ import {
   Download,
   Copy,
   Check,
+  Sparkles,
 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
+import DoctorAiCopilotModal from '../../components/DoctorAiCopilotModal';
 
 const DoctorPatients = () => {
   const [directory, setDirectory] = useState([]);
@@ -41,6 +43,9 @@ const DoctorPatients = () => {
   const [success, setSuccess] = useState('');
   
   const [activeChartTab, setActiveChartTab] = useState('vitals'); // 'vitals', 'records', 'timeline'
+
+  // AI Copilot Modal state
+  const [copilotOpen, setCopilotOpen] = useState(false);
 
   // Emergency Modal states
   const [emergencyModalOpen, setEmergencyModalOpen] = useState(false);
@@ -507,6 +512,16 @@ const DoctorPatients = () => {
                 )}
                 <span>Emergency QR Info</span>
               </button>
+              <button
+                type="button"
+                id="doctor-ai-copilot-btn"
+                onClick={() => setCopilotOpen(true)}
+                className="px-3.5 py-3 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-brand-300 rounded-2xl text-xs font-bold transition flex items-center space-x-2 shrink-0 cursor-pointer shadow-sm hover:border-brand-500/60 active:scale-95"
+                title="Launch AI Clinical Copilot"
+              >
+                <Sparkles className="w-4 h-4 text-brand-400 animate-pulse" />
+                <span>AI Clinical Copilot</span>
+              </button>
             </div>
           </div>
         </div>
@@ -956,6 +971,13 @@ const DoctorPatients = () => {
 
       {/* EMERGENCY PROFILE MODAL FOR DOCTORS */}
       {renderEmergencyModal()}
+
+      {/* 🤖 AI DOCTOR COPILOT MODAL */}
+      <DoctorAiCopilotModal
+        isOpen={copilotOpen}
+        onClose={() => setCopilotOpen(false)}
+        patient={patient}
+      />
 
     </div>
   );

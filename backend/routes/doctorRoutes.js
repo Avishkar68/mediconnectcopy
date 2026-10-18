@@ -5,7 +5,9 @@ import {
   handleConsentRequest,
   getDoctorAppointments,
   createPrescription,
+  getDoctorCarePlans,
   createCarePlan,
+  updateCarePlan,
   searchPatients,
   getPatientMedicalHistory,
   createConsultation,
@@ -13,6 +15,10 @@ import {
   requestPatientAccess,
   getSentRequests,
   getPatientEmergencyProfile,
+  scheduleFollowupAppointment,
+  generateCopilotSummary,
+  checkDrugInteractions,
+  getDifferentialDiagnosis,
 } from '../controllers/doctorController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
 
@@ -31,9 +37,18 @@ router.route('/requests')
   .post(requestPatientAccess);
 router.post('/requests/:id', handleConsentRequest);
 router.get('/appointments', getDoctorAppointments);
+router.post('/appointments/schedule-followup', scheduleFollowupAppointment);
 router.post('/consultations', createConsultation);
 router.post('/prescriptions', createPrescription);
-router.post('/care-plans', createCarePlan);
+router.route('/care-plans')
+  .get(getDoctorCarePlans)
+  .post(createCarePlan);
+router.put('/care-plans/:id', updateCarePlan);
 router.get('/search-patients', searchPatients);
+
+// 🤖 AI Doctor Copilot Routes
+router.post('/copilot/summary', generateCopilotSummary);
+router.post('/copilot/interaction-check', checkDrugInteractions);
+router.post('/copilot/differential-diagnosis', getDifferentialDiagnosis);
 
 export default router;

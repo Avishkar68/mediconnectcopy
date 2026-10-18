@@ -4,7 +4,10 @@ import {
   PlusCircle,
   AlertCircle,
   CheckCircle2,
-  Activity
+  Activity,
+  Sparkles,
+  AlertOctagon,
+  RefreshCw,
 } from 'lucide-react';
 
 const DoctorPrescriptions = () => {
@@ -13,6 +16,11 @@ const DoctorPrescriptions = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
+  // AI Drug Interaction Screening States
+  const [screening, setScreening] = useState(false);
+  const [screeningResult, setScreeningResult] = useState(null);
+  const [screeningError, setScreeningError] = useState('');
+
   // Local list of prescriptions issued recently in this session for testing
   const [issuedPrescriptions, setIssuedPrescriptions] = useState([]);
 
@@ -100,6 +108,29 @@ const DoctorPrescriptions = () => {
     }
   };
 
+  const handleScreenDrug = async () => {
+    if (!form.name.trim()) {
+      setError('Please enter a medication name to screen.');
+      return;
+    }
+    setScreening(true);
+    setScreeningError('');
+    setError('');
+    try {
+      const res = await api.post('/doctor/copilot/interaction-check', {
+        patientId: form.patientId || undefined,
+        medicationName: form.name.trim(),
+      });
+      if (res.success) {
+        setScreeningResult(res.data);
+      }
+    } catch (err) {
+      setScreeningError(err.message || 'Screening failed.');
+    } finally {
+      setScreening(false);
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-12 text-slate-500">Loading prescription console...</div>;
   }
@@ -131,9 +162,14 @@ const DoctorPrescriptions = () => {
         
         {/* Write Prescription Form */}
         <div className="lg:col-span-2 glass-card rounded-2xl p-6 border border-slate-800 h-fit">
-          <h3 className="text-sm font-bold text-white mb-4 flex items-center">
-            <PlusCircle className="w-4 h-4 text-emerald-400 mr-2" />
-            <span>Write New Prescription Slip</span>
+          <h3 className="text-sm font-bold text-white mb-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <PlusCircle className="w-4 h-4 text-emerald-400 mr-2" />
+              <span>Write New Prescription Slip</span>
+            </div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              AI Screen Guard Enabled
+            </span>
           </h3>
 
           <form onSubmit={handlePrescribeSubmit} className="space-y-4">
@@ -141,7 +177,10 @@ const DoctorPrescriptions = () => {
               <label className="text-[10px] font-bold text-slate-400 uppercase">Select Patient</label>
               <select
                 value={form.patientId}
-                onChange={(e) => setForm({ ...form, patientId: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, patientId: e.target.value });
+                  setScreeningResult(null);
+                }}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
                 required
               >
@@ -154,16 +193,70 @@ const DoctorPrescriptions = () => {
               </select>
             </div>
 
-            <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Medication / Drug Name</label>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Medication / Drug Name</label>
+                <button
+                  type="button"
+                  onClick={handleScreenDrug}
+                  disabled={screening || !form.name.trim()}
+                  className="text-[10px] px-2.5 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                >
+                  {screening ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-brand-400" />}
+                  <span>AI Screen Drug Interactions</span>
+                </button>
+              </div>
+
               <input
                 type="text"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Lisinopril, Amoxicillin"
+                onChange={(e) => {
+                  setForm({ ...form, name: e.target.value });
+                  setScreeningResult(null);
+                }}
+                className="w-full glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
+                placeholder="e.g. Amoxicillin 500mg, Paracetamol 650mg, Ibuprofen 400mg"
                 required
               />
+
+              {/* AI Drug Screening Feedback Banner */}
+              {screeningResult && (
+                <div className={`p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
+                  screeningResult.safeToPrescribe
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    : 'bg-rose-500/15 border-rose-500/30 text-rose-200'
+                }`}>
+                  <div className="flex items-center justify-between font-bold">
+                    <span className="flex items-center space-x-1.5">
+                      {screeningResult.safeToPrescribe ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <AlertOctagon className="w-4 h-4 text-rose-400" />
+                      )}
+                      <span>
+                        {screeningResult.safeToPrescribe
+                          ? 'AI Safety Screen: Safe to Prescribe'
+                          : `AI Contraindication Alert: ${screeningResult.severity.toUpperCase()} RISK`}
+                      </span>
+                    </span>
+                    <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">
+                      {screeningResult.alertsCount} alert(s)
+                    </span>
+                  </div>
+
+                  {screeningResult.alerts?.map((a, i) => (
+                    <div key={i} className="text-[11px] pt-1 border-t border-slate-800/60">
+                      <strong className="block text-white">{a.title}</strong>
+                      <p className="text-slate-300 text-[10px]">{a.description}</p>
+                      {a.recommendation && (
+                        <p className="text-brand-300 text-[10px] font-semibold mt-0.5">
+                          💡 Advice: {a.recommendation}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

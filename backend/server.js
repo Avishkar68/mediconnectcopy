@@ -1,9 +1,12 @@
 import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import setupWebRTCSignaling from './utils/socketSignaling.js';
 
 import path from 'path';
 
@@ -14,6 +17,18 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
+
+// Initialize Socket.io Server for WebRTC Signaling
+const io = new Server(server, {
+  cors: {
+    origin: (origin, callback) => callback(null, true),
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
+setupWebRTCSignaling(io);
 
 // Middlewares
 app.use(cors({
@@ -39,6 +54,7 @@ import postRoutes from './routes/postRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
 import doctorRoutes from './routes/doctorRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -46,15 +62,16 @@ app.use('/api/posts', postRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/patient', patientRoutes);
 app.use('/api/doctor', doctorRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Fallback Routes for Error Handling
 app.use(notFound);
 app.use(errorHandler);
 
-// MediConnect Backend Server Entrypoint - Cloudinary & Base64 Fallback Ready
+// MediConnect Backend Server Entrypoint with WebRTC Video Consultation
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT} with WebRTC Signaling active`);
 });
 
 

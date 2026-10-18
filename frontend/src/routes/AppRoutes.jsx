@@ -24,6 +24,7 @@ import PatientNotifications from "../pages/patient/PatientNotifications";
 import EmergencyAccess from "../pages/patient/EmergencyAccess";
 import PatientEmergencyAssistant from "../pages/patient/PatientEmergencyAssistant";
 import EmergencyProfile from "../pages/EmergencyProfile";
+import VideoConsultation from "../pages/VideoConsultation";
 
 // Doctor Workspace Pages
 import DoctorOverview from "../pages/doctor/DoctorOverview";
@@ -35,6 +36,9 @@ import DoctorCarePlans from "../pages/doctor/DoctorCarePlans";
 import DoctorFollowups from "../pages/doctor/DoctorFollowups";
 import DoctorTrends from "../pages/doctor/DoctorTrends";
 import DoctorNotifications from "../pages/doctor/DoctorNotifications";
+
+// Super Admin Pages
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -60,7 +64,23 @@ const AppRoutes = () => {
         <Route
           index
           element={
-            user?.role === "doctor" ? <DoctorOverview /> : <PatientOverview />
+            user?.role === "admin" ? (
+              <AdminDashboard />
+            ) : user?.role === "doctor" ? (
+              <DoctorOverview />
+            ) : (
+              <PatientOverview />
+            )
+          }
+        />
+
+        {/* Super Admin Route */}
+        <Route
+          path="admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
           }
         />
 
@@ -243,6 +263,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Community />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/consultation/:roomId"
+        element={
+          <ProtectedRoute>
+            <VideoConsultation />
           </ProtectedRoute>
         }
       />

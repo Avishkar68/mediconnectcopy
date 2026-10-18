@@ -11,6 +11,7 @@ import {
   MessageSquare,
   LayoutDashboard,
   HeartPulse,
+  Shield,
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -118,6 +119,18 @@ const Navbar = () => {
               <LayoutDashboard className="w-4 h-4" />
               <span>Dashboard</span>
             </Link>
+
+            {user?.role === 'admin' && (
+              <Link
+                to="/dashboard/admin"
+                className={`flex items-center space-x-1.5 text-sm font-bold transition-colors ${
+                  isActive('/dashboard/admin') ? 'text-indigo-400' : 'text-indigo-300 hover:text-white'
+                }`}
+              >
+                <Shield className="w-4 h-4 text-indigo-400" />
+                <span>Super Admin</span>
+              </Link>
+            )}
 
             <Link
               to="/community"
@@ -275,6 +288,16 @@ const Navbar = () => {
                 <LayoutDashboard className="w-4 h-4" />
                 <span>Dashboard</span>
               </Link>
+              {user?.role === 'admin' && (
+                <Link
+                  to="/dashboard/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 p-2.5 rounded-lg text-indigo-400 hover:text-white hover:bg-slate-800/50 text-sm font-bold transition-all"
+                >
+                  <Shield className="w-4 h-4 text-indigo-400" />
+                  <span>Super Admin</span>
+                </Link>
+              )}
               <Link
                 to="/community"
                 onClick={() => setMobileMenuOpen(false)}

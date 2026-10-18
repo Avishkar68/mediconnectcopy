@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import {
   Video,
@@ -106,15 +107,24 @@ const DoctorConsultations = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-white font-display">Clinical Consultations</h2>
-          <p className="text-xs text-slate-400">Record check-up notes, diagnoses, and update scheduled appointment logs.</p>
+          <p className="text-xs text-slate-400">Record check-up notes, diagnoses, and conduct live WebRTC video consultations.</p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>{showForm ? 'Cancel recording' : 'Log Ad-hoc Consultation'}</span>
-        </button>
+        <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+          <Link
+            to={`/consultation/telehealth-${Date.now().toString(36)}`}
+            className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-brand-500/20"
+          >
+            <Video className="w-4 h-4" />
+            <span>Start Live Video Room</span>
+          </Link>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all border border-slate-700"
+          >
+            <PlusCircle className="w-4 h-4 text-emerald-400" />
+            <span>{showForm ? 'Cancel recording' : 'Log Ad-hoc Notes'}</span>
+          </button>
+        </div>
       </div>
 
       {success && (
@@ -222,13 +232,24 @@ const DoctorConsultations = () => {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleStartConsultation(appt)}
-                    className="bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1 transition-all w-full sm:w-auto justify-center"
-                  >
-                    <span>Start Consultation</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center space-x-2 w-full sm:w-auto shrink-0">
+                    <Link
+                      to={`/consultation/${appt._id}`}
+                      className="bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-md shadow-emerald-500/20 flex-1 sm:flex-none justify-center"
+                    >
+                      <Video className="w-4 h-4" />
+                      <span>Start Video Call</span>
+                    </Link>
+
+                    <button
+                      onClick={() => handleStartConsultation(appt)}
+                      className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1 transition-all border border-slate-700"
+                      title="Log notes manually"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="hidden sm:inline">Notes</span>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

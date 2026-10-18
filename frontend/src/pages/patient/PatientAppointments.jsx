@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import {
   Calendar,
@@ -244,12 +245,20 @@ const PatientAppointments = () => {
                     </div>
                   </div>
 
-                  <div className="text-left sm:text-right border-t sm:border-t-0 border-slate-850 pt-2.5 sm:pt-0 shrink-0">
+                  <div className="text-left sm:text-right border-t sm:border-t-0 border-slate-850 pt-2.5 sm:pt-0 shrink-0 flex flex-col sm:items-end">
                     <span className="text-[9px] font-bold text-slate-500 uppercase block">Appointment Schedule</span>
                     <div className="flex items-center text-[10px] text-slate-350 font-bold mt-1.5 space-x-1 sm:justify-end">
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       <span>{new Date(appt.dateTime).toLocaleString()}</span>
                     </div>
+
+                    <Link
+                      to={`/consultation/${appt._id}`}
+                      className="mt-2.5 inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all shadow-md shadow-brand-500/20"
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>Join Video Call</span>
+                    </Link>
                   </div>
                 </div>
               ))}

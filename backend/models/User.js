@@ -55,6 +55,24 @@ const userSchema = new mongoose.Schema(
       bloodGroup: { type: String, default: '' },
       allergies: [{ type: String }],
     },
+    accountStatus: {
+      type: String,
+      enum: ['active', 'suspended', 'banned'],
+      default: 'active',
+    },
+    doctorVerification: {
+      licenseNumber: { type: String, default: '' },
+      medicalCouncil: { type: String, default: '' },
+      hospitalAffiliation: { type: String, default: '' },
+      status: {
+        type: String,
+        enum: ['pending', 'verified', 'rejected'],
+        default: 'pending',
+      },
+      rejectionReason: { type: String, default: '' },
+      submittedAt: { type: Date, default: Date.now },
+      verifiedAt: { type: Date, default: null },
+    },
     emergencyAccess: {
       enabled: {
         type: Boolean,

@@ -22,6 +22,8 @@ import {
   updateEmergencySettings,
   regenerateEmergencyToken,
   getEmergencyProfileByToken,
+  getPatientCarePlans,
+  toggleCarePlanTask,
 } from '../controllers/patientController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -90,6 +92,11 @@ router.route('/doctors')
 
 router.route('/doctors/:id')
   .delete(protect, revokeDoctorAccess);
+
+router.route('/care-plans')
+  .get(protect, getPatientCarePlans);
+
+router.post('/care-plans/:id/tasks/:taskId/toggle', protect, toggleCarePlanTask);
 
 router.post('/upload', protect, upload.single('image'), uploadRecordImage);
 router.post('/analyze-report', protect, analyzeMedicalReport);

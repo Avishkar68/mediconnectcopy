@@ -30,6 +30,14 @@ const protect = async (req, res, next) => {
       return sendError(res, 'Account is not verified. Please complete OTP verification.', 403);
     }
 
+    // Check account standing status
+    if (user.accountStatus === 'banned') {
+      return sendError(res, 'Your account has been banned by system administrator.', 403);
+    }
+    if (user.accountStatus === 'suspended') {
+      return sendError(res, 'Your account has been temporarily suspended. Please contact support.', 403);
+    }
+
     req.user = user;
     next();
   } catch (error) {

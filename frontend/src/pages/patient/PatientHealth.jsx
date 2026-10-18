@@ -9,8 +9,10 @@ import {
   Clock,
   AlertCircle,
   FileSpreadsheet,
-  CheckCircle2
+  CheckCircle2,
+  TrendingUp,
 } from 'lucide-react';
+import HealthTrendChart from '../../components/HealthTrendChart';
 
 const PatientHealth = () => {
   const [profile, setProfile] = useState(null);
@@ -323,6 +325,9 @@ const PatientHealth = () => {
                 <p className="text-sm font-bold text-white mt-0.5">{latestVitals?.weight || '--'} kg</p>
               </div>
             </div>
+
+            {/* Interactive Health Trend Curves */}
+            <HealthTrendChart vitals={profile?.vitals || []} />
 
             {/* Historical list */}
             <div className="glass-card rounded-2xl p-6 border border-slate-800">

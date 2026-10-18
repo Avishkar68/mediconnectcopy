@@ -8,6 +8,7 @@ import DoctorAccess from '../models/DoctorAccess.js';
 import TimelineEvent from '../models/TimelineEvent.js';
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
+import CarePlan from '../models/CarePlan.js';
 import crypto from 'crypto';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 import { cloudinary, isConfigured } from '../utils/cloudinary.js';
@@ -209,7 +210,7 @@ export const getMedications = async (req, res) => {
  * @access  Private
  */
 export const createMedication = async (req, res) => {
-  const { name, dosage, frequency, startDate, endDate, instructions } = req.body;
+  const { name, dosage, frequency, startDate, endDate, instructions, doctor, doctorName } = req.body;
 
   if (!name || !dosage || !frequency) {
     return sendError(res, 'Medication name, dosage, and frequency are required', 400);
@@ -224,17 +225,19 @@ export const createMedication = async (req, res) => {
       startDate: startDate || new Date(),
       endDate: endDate || null,
       instructions: instructions || '',
+      doctor: doctor || null,
       status: 'active'
     });
 
+    const docText = doctorName ? ` by Dr. ${doctorName}` : '';
     await createTimelineEvent(
       req.user._id,
       'medication',
-      'Medication Added',
-      `Prescribed medication: ${name} (${dosage}, ${frequency}).`
+      'Medication Prescribed & Accepted',
+      `Prescribed medication: ${name} (${dosage}, ${frequency})${docText} during consultation.`
     );
 
-    return sendSuccess(res, 'Medication created successfully', medication, 201);
+    return sendSuccess(res, 'Medication accepted and added to profile', medication, 201);
   } catch (error) {
     console.error('createMedication error:', error.message);
     return sendError(res, 'Server error creating medication', 500);
@@ -2203,7 +2206,81 @@ export const emergencyFirstAidAssistant = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get care plans assigned to the logged-in patient
+ * @route   GET /api/patient/care-plans
+ * @access  Private (Patient only)
+ */
+export const getPatientCarePlans = async (req, res) => {
+  try {
+    const carePlans = await CarePlan.find({ patient: req.user._id })
+      .populate('doctor', 'name email profile.specialization profile.clinicAddress profile.phone')
+      .sort({ status: 1, createdAt: -1 });
 
+    return sendSuccess(res, 'Patient care plans retrieved successfully', carePlans);
+  } catch (error) {
+    console.error('getPatientCarePlans error:', error.message);
+    return sendError(res, 'Server error retrieving care plans', 500);
+  }
+};
 
+/**
+ * @desc    Toggle or log daily care plan task completion
+ * @route   POST /api/patient/care-plans/:id/tasks/:taskId/toggle
+ * @access  Private (Patient only)
+ */
+export const toggleCarePlanTask = async (req, res) => {
+  const { id, taskId } = req.params;
+  const { date, loggedValue, notes } = req.body;
 
+  const targetDate = date || new Date().toISOString().slice(0, 10);
 
+  try {
+    const carePlan = await CarePlan.findOne({ _id: id, patient: req.user._id });
+    if (!carePlan) {
+      return sendError(res, 'Care plan not found or unauthorized', 404);
+    }
+
+    // Verify task exists in care plan
+    const task = carePlan.dailyTasks.find((t) => t.taskId === taskId);
+    if (!task) {
+      return sendError(res, 'Specified task not found in care plan', 404);
+    }
+
+    const existingIndex = carePlan.taskCompletions.findIndex(
+      (c) => c.date === targetDate && c.taskId === taskId
+    );
+
+    let isCompleted = false;
+    if (existingIndex > -1) {
+      // Toggle off / remove completion
+      carePlan.taskCompletions.splice(existingIndex, 1);
+      isCompleted = false;
+    } else {
+      // Add completion
+      carePlan.taskCompletions.push({
+        date: targetDate,
+        taskId,
+        completedAt: new Date(),
+        loggedValue: loggedValue || 'completed',
+        notes: notes || '',
+      });
+      isCompleted = true;
+    }
+
+    await carePlan.save();
+
+    const populated = await CarePlan.findById(carePlan._id)
+      .populate('doctor', 'name email profile.specialization profile.phone');
+
+    return sendSuccess(res, `Task marked as ${isCompleted ? 'completed' : 'pending'}`, {
+      carePlan: populated,
+      isCompleted,
+      targetDate,
+      taskId,
+    });
+  } catch (error) {
+    console.error('toggleCarePlanTask error:', error.message);
+    return sendError(res, 'Server error toggling care plan task', 500);
+  }
+};

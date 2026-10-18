@@ -10,16 +10,29 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['info', 'success', 'warning'],
+      enum: ['info', 'success', 'warning', 'reminder'],
       default: 'info',
+    },
+    category: {
+      type: String,
+      enum: ['general', 'appointment', 'reminder', 'care_plan', 'medication', 'emergency', 'consent'],
+      default: 'general',
     },
     message: {
       type: String,
       required: true,
     },
+    actionUrl: {
+      type: String,
+      default: '',
+    },
     read: {
       type: Boolean,
       default: false,
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
   },
   {

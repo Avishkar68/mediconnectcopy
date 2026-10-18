@@ -354,30 +354,11 @@ const Dashboard = () => {
     return 'Patient Workspace Overview';
   };
 
-  // --- PATIENT MAIN VIEW WRAPPER ---
   // --- ADMIN MAIN VIEW WRAPPER ---
   if (user?.role === 'admin') {
     return (
-      <div className="max-w-7xl mx-auto py-8 px-6 text-left">
-        
-        {/* Welcome Banner */}
-        <div className="glass-card rounded-3xl p-8 border border-slate-800/80 mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
-          
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-display tracking-tight flex flex-wrap items-center">
-            <span>Welcome Back, </span>
-            <span className="text-brand-400 ml-1.5">{user?.name}</span>
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1.5 flex items-center space-x-2">
-            <span>MediConnect Secure Portal Status:</span>
-            <span className={`font-bold uppercase tracking-wider ${getRoleHeaderTag(user?.role)}`}>
-              {user?.role} Active Workspace
-            </span>
-          </p>
-        </div>
-
-        <AdminView />
-
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6">
+        <Outlet />
       </div>
     );
   }
