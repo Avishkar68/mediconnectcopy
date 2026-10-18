@@ -22,6 +22,7 @@ import PatientAppointments from "../pages/patient/PatientAppointments";
 import PatientDoctors from "../pages/patient/PatientDoctors";
 import PatientNotifications from "../pages/patient/PatientNotifications";
 import EmergencyAccess from "../pages/patient/EmergencyAccess";
+import PatientEmergencyAssistant from "../pages/patient/PatientEmergencyAssistant";
 import EmergencyProfile from "../pages/EmergencyProfile";
 
 // Doctor Workspace Pages
@@ -93,6 +94,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["patient"]}>
               <EmergencyAccess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="emergency-assistant"
+          element={
+            <ProtectedRoute allowedRoles={["patient"]}>
+              <PatientEmergencyAssistant />
             </ProtectedRoute>
           }
         />

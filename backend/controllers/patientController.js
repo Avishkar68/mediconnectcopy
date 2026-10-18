@@ -1539,5 +1539,671 @@ export const compareMedicalReports = async (req, res) => {
   }
 };
 
+/**
+ * Multi-Turn Conversational Clinical Emergency Engine
+ * Deeply personalized to patient medical history (allergies, medications, chronic conditions, blood group)
+ */
+async function callGeminiEmergencyAssistant(message, patientContext, history = []) {
+  if (!process.env.GEMINI_API_KEY) return null;
+
+  try {
+    const contactStr = patientContext.emergencyContact?.name
+      ? `${patientContext.emergencyContact.name} (${patientContext.emergencyContact.relation || 'Contact'}, ${patientContext.emergencyContact.phone})`
+      : 'None designated';
+
+    const systemPrompt = `You are MediConnect Emergency AI Assistant, a compassionate, highly trained clinical emergency physician conversing in real-time with patient ${patientContext.name}.
+
+PATIENT MEDICAL RECORD ON FILE:
+- Patient Name: ${patientContext.name}
+- Blood Group: ${patientContext.bloodGroup || 'Not specified'}
+- Documented Allergies: ${patientContext.allergies?.length ? patientContext.allergies.join(', ') : 'None documented'}
+- Active Chronic Conditions: ${patientContext.conditions?.length ? patientContext.conditions.join(', ') : 'None documented'}
+- Active Prescriptions / Medications: ${patientContext.activeMedications?.length ? patientContext.activeMedications.join('; ') : 'None documented'}
+- Recent Lab & Clinical History: ${patientContext.recentHistory?.length ? patientContext.recentHistory.join('; ') : 'None documented'}
+- Emergency Contact: ${contactStr}
+- Critical Health Notes: ${patientContext.criticalNotes || 'None'}
+
+CRITICAL INSTRUCTIONS:
+1. Address ${patientContext.name} directly, empathetically, and conversationally.
+2. YOU MUST ACTIVELY CROSS-REFERENCE THEIR EXACT MEDICAL HISTORY:
+   - If they have documented allergies (e.g. Aspirin, Penicillin, NSAIDs), ALWAYS check proposed first-aid medications against this list and warn explicitly against allergens!
+   - If they are on blood thinners, insulin, inhalers, or cardiac drugs, explicitly weave those specific medications and their dosages into your advice.
+   - If they have chronic conditions (e.g. Diabetes, Asthma, CAD, Hypertension), correlate their acute symptoms with those conditions.
+3. BE TRULY CONVERSATIONAL AND INTERACTIVE:
+   - If the user asks a follow-up question (e.g. "Can I drink water?", "Should I lie down or sit up?", "My pulse is 120", "My emergency contact is not picking up"), DIRECTLY ANSWER THEIR EXACT QUESTION FIRST with clear medical reasoning, and then provide the next immediate safe action.
+   - Do NOT produce a rigid, identical static template every time. Adapt to what the patient is actually asking right now.
+4. For acute life-threatening situations, prioritize calling 911 / 112 / 999, instruct them on immediate stabilization, what NOT to do, and provide a 20-second summary for arriving paramedics.
+5. Use clean GitHub-flavored markdown with bolding and bullet points.`;
+
+    // Format previous messages for Gemini
+    const contents = [];
+    if (Array.isArray(history) && history.length > 0) {
+      // Limit to last 6 messages for context efficiency
+      const recentHistory = history.slice(-6);
+      for (const h of recentHistory) {
+        if (!h.text) continue;
+        contents.push({
+          role: h.sender === 'assistant' ? 'model' : 'user',
+          parts: [{ text: h.text }]
+        });
+      }
+    }
+
+    contents.push({
+      role: 'user',
+      parts: [{ text: message }]
+    });
+
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    
+    const response = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+        contents,
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 1024,
+        }
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (rawText && rawText.trim()) {
+        return rawText.trim();
+      }
+    }
+  } catch (err) {
+    console.warn('Gemini emergency call failed, falling back to built-in conversational clinical engine:', err.message);
+  }
+
+  return null;
+}
+
+/**
+ * Built-in Conversational Emergency Clinical Dialogue Engine
+ * Generates dynamic, multi-turn conversational responses tailored to the patient's exact history
+ */
+function generateEmergencyFirstAidResponse(message, patientContext, history = []) {
+  const text = (message || '').toLowerCase().trim();
+  const patientName = patientContext.name || 'Patient';
+
+  // Helper check for patient conditions / allergies / meds
+  const hasAllergy = (regex) => (patientContext.allergies || []).some(a => regex.test(a));
+  const matchingMeds = (regex) => (patientContext.activeMedications || []).filter(m => regex.test(m));
+  const matchingConditions = (regex) => (patientContext.conditions || []).filter(c => regex.test(c));
+
+  const hasAspirinAllergy = hasAllergy(/aspirin|nsaid|salicylate|ibuprofen/i);
+  const onBloodThinners = matchingMeds(/warfarin|eliquis|xarelto|clopidogrel|plavix|heparin|aspirin/i);
+  const onDiabetesMeds = matchingMeds(/insulin|metformin|glipizide|glimepiride|januvia|jardiance/i);
+  const onAsthmaMeds = matchingMeds(/albuterol|salbutamol|inhaler|budesonide|fluticasone|formoterol|montelukast/i);
+  const onCardiacMeds = matchingMeds(/amlodipine|losartan|metoprolol|atenolol|lisinopril|nitro|nitroglycerin/i);
+
+  // Check if this is an ongoing dialogue (history contains prior messages)
+  const isOngoingChat = Array.isArray(history) && history.length > 1;
+
+  // Detect conversation intent
+  const isMedicationQuestion = /can\s*i\s*take|painkiller|aspirin|paracetamol|tylenol|ibuprofen|advil|medicine|pill|tablet|medication/i.test(text);
+  const isHydrationQuestion = /drink\s*water|water|thirsty|drink|eat|food|juice|tea|coffee/i.test(text);
+  const isPositionQuestion = /lie\s*down|sit\s*up|position|sleep|lie\s*on|flat|couch|bed/i.test(text);
+  const isWorseningQuestion = /worse|worsening|more\s*pain|spreading|can'?t\s*take\s*it|faint|passing\s*out|dizzy|nauseous/i.test(text);
+  const isVitalsReport = /pulse|heart\s*rate|bpm|blood\s*pressure|bp|sugar|glucose|saturation|spo2/i.test(text) && /\d+/.test(text);
+  const isAloneOrContactQuestion = /alone|nobody|contact.*not\s*answering|no\s*one\s*here|scared/i.test(text);
+
+  let emergencyType = 'general';
+  let severity = 'high';
+  let severityBadge = 'URGENT MEDICAL GUIDANCE — SEEK IMMEDIATE ATTENTION';
+  let primarySymptom = message;
+  let immediateSteps = [];
+  let whatNotToDo = [];
+  let redFlags = [];
+  let contraindications = [];
+  let conversationalReply = '';
+
+  // --- BRANCH A: INTERACTIVE FOLLOW-UP QUESTIONS ---
+
+  if (isMedicationQuestion && isOngoingChat) {
+    severity = 'high';
+    severityBadge = `MEDICATION SAFETY EVALUATION FOR ${patientName.toUpperCase()}`;
+    primarySymptom = 'Medication / Painkiller Query';
+
+    let medAdvice = '';
+    if (hasAspirinAllergy && /aspirin|nsaid|ibuprofen|advil|aleve/i.test(text)) {
+      medAdvice = `❌ **ABSOLUTELY DO NOT TAKE ASPIRIN OR NSAIDs (Ibuprofen, Advil, Aleve)**.\nYour medical record clearly documents an **allergy to Aspirin/NSAIDs**. Ingesting it during this acute episode could trigger life-threatening anaphylaxis or bronchospasm.`;
+      contraindications.push('CRITICAL: Aspirin/NSAID allergy on file.');
+    } else if (hasAspirinAllergy) {
+      medAdvice = `⚠️ **Patient Allergy Alert**: Please remember you have a documented **Aspirin/NSAID allergy** on file. Avoid any non-steroidal anti-inflammatory drugs.`;
+      contraindications.push('Aspirin/NSAID allergy on file.');
+    }
+
+    if (onBloodThinners.length > 0) {
+      medAdvice += `\n⚠️ **Blood Thinner Interaction**: You are actively prescribed **${onBloodThinners.join(', ')}**. Taking non-prescribed over-the-counter painkillers increases severe internal bleeding risks.`;
+      contraindications.push(`Active Anticoagulants: ${onBloodThinners.join(', ')}`);
+    }
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, regarding your question about taking medication right now:\n\n` +
+      `${medAdvice || `In acute emergency situations, **do not take oral painkillers or medications** without direct approval from the emergency dispatcher or attending physician, as they can mask vital diagnostic signs or interfere with emergency hospital procedures.`}\n\n` +
+      `#### ⚡ What you should do right now:\n` +
+      `1. **Focus on rest and posture**: Sit in a comfortable half-sitting position (45° angle) with your back and knees supported.\n` +
+      `2. **Have your medication list ready**: When paramedics arrive, show them your active prescriptions (${patientContext.activeMedications.length ? patientContext.activeMedications.join(', ') : 'None documented'}) and allergies (${patientContext.allergies.length ? patientContext.allergies.join(', ') : 'None documented'}).\n` +
+      `3. **If you have prescribed sublingual Nitroglycerin** (for cardiac angina) or **Rescue Inhaler** (for asthma), use only what was prescribed specifically for your acute condition.`;
+
+    immediateSteps = [
+      'Avoid unprescribed oral painkillers',
+      'Maintain supported half-sitting Fowler’s position',
+      'Keep your active prescriptions ready for arriving paramedics'
+    ];
+  }
+  else if (isHydrationQuestion && isOngoingChat) {
+    severity = 'high';
+    severityBadge = `HYDRATION & INGESTION SAFETY GUIDANCE`;
+    primarySymptom = 'Hydration Query During Emergency';
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, regarding drinking water or having food right now:\n\n` +
+      `⚠️ **DO NOT drink full glasses of water or consume any food during an acute emergency.**\n\n` +
+      `**Here is why this is critical for your safety:**\n` +
+      `1. **Aspiration Hazard**: If you feel dizzy, nauseous, or suddenly faint, liquids in your stomach can be inhaled into your lungs (aspiration pneumonia).\n` +
+      `2. **Hospital Delay**: If emergency doctors need to administer anesthesia, perform an emergency cardiac catheterization, or give IV contrast, having liquids or food in your stomach can delay these urgent procedures.\n\n` +
+      `👉 **Exception**: If your mouth is extremely dry, you may use a damp cloth to moisten your lips or take a **single tiny sip** of water to wet your throat, provided you are fully awake, alert, and sitting completely upright.\n\n` +
+      `Stay calmly seated and focus on slow, gentle breathing through your nose.`;
+
+    immediateSteps = [
+      'Do not gulp water or eat food',
+      'Moisten lips with a damp cloth if mouth is parched',
+      'Remain seated upright at 45 degrees'
+    ];
+  }
+  else if (isPositionQuestion && isOngoingChat) {
+    severity = 'high';
+    severityBadge = `OPTIMAL PATIENT POSITIONING PROTOCOL`;
+    primarySymptom = 'Body Positioning Guidance';
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, regarding how you should position your body right now:\n\n` +
+      `❌ **DO NOT LIE FLAT ON YOUR BACK.**\n\n` +
+      `The clinically recommended posture for suspected cardiac or breathing distress is **Fowler’s Position (Half-Sitting)**:\n\n` +
+      `1. **Sit on the floor, couch, or bed** with your upper body propped up at approximately **45 degrees** using firm pillows or cushions.\n` +
+      `2. **Bend your knees slightly**, placing a small pillow or folded towel under your knees.\n` +
+      `3. **Loosen tight clothing**: Unbutton collar buttons, loosen belts, and remove tight footwear.\n\n` +
+      `**Why this position helps your body:**\n` +
+      `• Lying flat forces more venous blood back to your heart, increasing myocardial strain, and compresses the lower lobes of your lungs.\n` +
+      `• Sitting at 45° allows gravity to assist diaphragm movement, making every breath significantly easier and reducing cardiac workload.`;
+
+    immediateSteps = [
+      'Sit up at 45 degrees in Fowler’s position',
+      'Do not lie flat on your back',
+      'Place a pillow under slightly bent knees',
+      'Loosen tight clothing around chest and neck'
+    ];
+  }
+  else if (isWorseningQuestion && isOngoingChat) {
+    severity = 'critical';
+    severityBadge = `🔴 CRITICAL ESCALATION — CALL EMERGENCY SERVICES (112 / 911)`;
+    primarySymptom = 'Escalating Emergency Symptoms';
+
+    const contactStr = patientContext.emergencyContact?.name
+      ? `Contacting your designated emergency contact **${patientContext.emergencyContact.name}** at **${patientContext.emergencyContact.phone}** is recommended.`
+      : 'Alert anyone nearby immediately.';
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, because your symptoms are worsening, **THIS IS AN IMMEDIATE MEDICAL EMERGENCY**.\n\n` +
+      `🚨 **TAKE THESE IMMEDIATE LIFE-SAVING STEPS RIGHT NOW:**\n\n` +
+      `1. **CALL 112 / 911 / 999 IMMEDIATELY**: Tell the dispatcher: *"Patient ${patientName}, experiencing worsening acute symptoms, feeling faint/clammy."*\n` +
+      `2. **UNLOCK YOUR FRONT DOOR**: If you are inside, unlock the entrance door right now so emergency paramedics do not lose critical minutes breaking in if you lose consciousness.\n` +
+      `3. **TURN ON OUTSIDE LIGHTS**: Switch on the exterior porch or entrance light so the ambulance team can spot your address instantly.\n` +
+      `4. **SIT DOWN ON THE FLOOR**: Do not stand or attempt to walk. Sitting on the floor prevents head trauma or injury if you faint.\n` +
+      `5. **EMERGENCY CONTACT**: ${contactStr}\n\n` +
+      `Stay on the phone line with the emergency operator. Do NOT hang up.`;
+
+    immediateSteps = [
+      'Call 112 / 911 immediately and keep dispatcher on speakerphone',
+      'Unlock front entrance door for arriving paramedics',
+      'Sit immediately on the floor with back supported to prevent falls',
+      'Turn on outside porch light for easy address identification'
+    ];
+  }
+  else if (isVitalsReport) {
+    severity = 'high';
+    severityBadge = `CLINICAL VITALS ANALYSIS FOR ${patientName.toUpperCase()}`;
+    primarySymptom = 'Vitals Update Evaluation';
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, thank you for logging those vital readings: **"${message}"**.\n\n` +
+      `I am cross-referencing this against your clinical baseline:\n` +
+      `• **Patient**: ${patientName} (${patientContext.bloodGroup})\n` +
+      `• **Known Conditions**: ${patientContext.conditions.length ? patientContext.conditions.join(', ') : 'None documented'}\n` +
+      `• **Active Prescriptions**: ${patientContext.activeMedications.length ? patientContext.activeMedications.join('; ') : 'None documented'}\n\n` +
+      `**Clinical Assessment**:\n` +
+      `Any acute spike in heart rate (>100 bpm) or abnormal blood pressure alongside your symptoms indicates significant physical distress or compensatory tachycardia. Write these numbers down or keep your meter handy to show the paramedics the moment they enter.`;
+
+    immediateSteps = [
+      'Record the exact time and reading on paper',
+      'Keep the measuring device next to you for paramedics',
+      'Continue resting quietly in half-sitting position'
+    ];
+  }
+  else if (isAloneOrContactQuestion && isOngoingChat) {
+    severity = 'high';
+    severityBadge = `EMERGENCY SUPPORT & REASSURANCE PROTOCOL`;
+    primarySymptom = 'Solo Patient Support';
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `**${patientName}**, please take a slow, deep breath. You are not alone, and help is reachable:\n\n` +
+      `1. **The 911 / 112 Dispatcher will stay with you**: When you call emergency dispatch, tell them you are home alone. Operators are clinically trained to remain on speakerphone with you until paramedics physically arrive.\n` +
+      `2. **Unlock your door now**: Make sure your door is unlocked so you do not have to get up again.\n` +
+      `3. **Keep your phone within arm’s reach**: Keep it plugged in or close to your hand.\n` +
+      `4. **Recorded Emergency Contact**: Your profile lists **${patientContext.emergencyContact?.name || 'Emergency Contact'}** (${patientContext.emergencyContact?.phone || 'No phone recorded'}). If you haven't called them, tap their number or text them: *"Emergency at my home, called ambulance."*`;
+
+    immediateSteps = [
+      'Keep emergency dispatcher on speakerphone',
+      'Unlock entrance door',
+      'Keep mobile phone directly within arm’s reach'
+    ];
+  }
+
+  // --- BRANCH B: INITIAL ACUTE EMERGENCY REPORT (CARDIAC, ASTHMA, BLEEDING, ETC.) ---
+  else {
+    // 1. CARDIAC / CHEST PAIN
+    if (/chest\s*pain|chest\s*tightness|chest\s*pressure|heart\s*attack|left\s*arm\s*pain|jaw\s*pain|angina|palpitation.*heavy/i.test(text)) {
+      emergencyType = 'cardiac';
+      severity = 'critical';
+      severityBadge = '🔴 CRITICAL EMERGENCY — SUSPECTED CARDIAC EVENT (CALL 911 / 112)';
+      primarySymptom = 'Acute Chest Pain / Suspected Cardiac Event';
+
+      if (hasAspirinAllergy) {
+        contraindications.push(`CRITICAL: DO NOT TAKE ASPIRIN. ${patientName}'s profile lists a documented allergy/sensitivity to Aspirin/NSAIDs.`);
+      } else if (onBloodThinners.length > 0) {
+        contraindications.push(`CAUTION: You are on prescribed blood thinners (${onBloodThinners.join(', ')}). Do not take additional Aspirin unless explicitly instructed by the emergency dispatcher.`);
+      } else {
+        immediateSteps.push('If conscious, not allergic to aspirin, and not bleeding, chew one adult 300mg Aspirin (or four 81mg baby aspirins) while awaiting EMS.');
+      }
+
+      if (onCardiacMeds.length > 0) {
+        contraindications.push(`Recorded cardiac medications: ${onCardiacMeds.join(', ')}. If you have prescribed Sublingual Nitroglycerin, take 1 dose under the tongue while seated.`);
+      }
+
+      immediateSteps.unshift(
+        'CALL EMERGENCY SERVICES (911 / 112 / 999) IMMEDIATELY. State clearly: "Suspected heart attack, patient experiencing acute chest pressure."',
+        'Stop all physical activity immediately. Sit down on the floor or bed in a half-sitting Fowler’s position (back supported at 45°, knees bent) to reduce cardiac workload.',
+        'Loosen any tight clothing around the neck, chest, and waist to facilitate effortless breathing.',
+        'Stay completely calm, breathe slowly and deeply through the nose and out the mouth. Do NOT walk or attempt to drive yourself to the hospital.'
+      );
+
+      whatNotToDo = [
+        'DO NOT walk, exert yourself, or attempt to drive yourself to the hospital.',
+        'DO NOT take Aspirin if you have an allergy, active ulcer, or taking blood thinners.',
+        'DO NOT consume heavy food or drink while waiting for paramedics.'
+      ];
+
+      redFlags = [
+        'Pain spreading to left arm, neck, jaw, back, or upper stomach',
+        'Sudden cold sweat, nausea, lightheadedness, or feeling faint',
+        'Severe shortness of breath or blue lips/fingertips'
+      ];
+    }
+    // 2. RESPIRATORY DISTRESS / ASTHMA / WHEEZING
+    else if (/breath|asthma|wheezing|can'?t\s*breathe|shortness\s*of\s*breath|gasping|suffocating|stridor/i.test(text)) {
+      emergencyType = 'respiratory';
+      severity = 'critical';
+      severityBadge = '🔴 CRITICAL RESPIRATORY DISTRESS — CALL 911 / 112';
+      primarySymptom = 'Severe Breathing Difficulty / Acute Asthma Exacerbation';
+
+      if (onAsthmaMeds.length > 0) {
+        immediateSteps.push(`IMMEDIATELY USE RESCUE INHALER: You have ${onAsthmaMeds.join(', ')} in your profile. Take 2 to 4 puffs immediately (with spacer if available), waiting 1 minute between each puff.`);
+        immediateSteps.push('If symptoms do not improve after 4 minutes, take another 4 puffs every 4 minutes until EMS arrives.');
+      } else {
+        immediateSteps.push('If an asthma rescue inhaler (Albuterol / Salbutamol) is available in the vicinity, take 2 to 4 puffs immediately.');
+      }
+
+      immediateSteps.unshift(
+        'CALL 911 / 112 IMMEDIATELY if you cannot speak full sentences or your lips/fingernails appear pale, gray, or blue.',
+        'Sit completely upright. Lean slightly forward with elbows on your knees (tripod position) to expand diaphragm capacity. DO NOT LIE DOWN.',
+        'Perform pursed-lip breathing: Inhale slowly through your nose for 2 counts, and exhale gently through pursed lips for 4 counts.'
+      );
+
+      whatNotToDo = [
+        'DO NOT lie flat on your back — this severely compresses your airway and lung volume.',
+        'DO NOT stay in an area with smoke, dust, cold air, or chemical fumes.',
+        'DO NOT panic: Rapid shallow gasping worsens carbon dioxide retention.'
+      ];
+
+      redFlags = [
+        'Inability to speak more than a couple of words between breaths',
+        'Cyanosis (blue/gray tint to lips, gums, or nail beds)',
+        'Chest and neck muscles pulling hard with each breath (retractions)'
+      ];
+    }
+    // 3. DIABETIC HYPOGLYCEMIA / HYPERGLYCEMIA
+    else if (/sugar|diabetes|diabetic|hypoglycemia|shaking|sweating|insulin|glucose|dizziness|faint|shaky/i.test(text)) {
+      emergencyType = 'diabetic';
+      primarySymptom = 'Diabetic Glucose Crisis / Suspected Acute Hypoglycemia';
+
+      if (onDiabetesMeds.length > 0) {
+        contraindications.push(`Active diabetes regimen noted: ${onDiabetesMeds.join(', ')}. Symptoms of sweating, tremor, and rapid heartbeat strongly suggest acute low blood sugar (Hypoglycemia < 70 mg/dL).`);
+      }
+
+      severity = 'high';
+      severityBadge = '⚠️ URGENT DIABETIC FIRST-AID — EXECUTE 15-15 RULE';
+
+      immediateSteps = [
+        'If you have a glucometer, check blood glucose immediately. If below 70 mg/dL (or if no meter is available and patient is conscious and shaky):',
+        'APPLY THE 15-15 RULE: Consume 15 grams of fast-acting simple carbohydrates right now (e.g., 1/2 cup fruit juice, 1/2 can regular soda, 3-4 glucose tablets, or 1 tablespoon honey/sugar).',
+        'Wait 15 minutes in a safe seated position without moving around.',
+        'Re-check blood glucose after 15 minutes. If still below 70 mg/dL, take another 15 grams of fast-acting carbohydrates.',
+        'Once glucose rises above 70 mg/dL, eat a small snack with complex carbs and protein to stabilize levels.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT give liquids or food if the person is drowsy, confused, or unconscious (severe choking hazard).',
+        'DO NOT take additional insulin or oral diabetes medication while feeling shaky or low.',
+        'DO NOT use chocolate or high-fat snacks for emergency hypoglycemia — fat delays sugar absorption.'
+      ];
+
+      redFlags = [
+        'Loss of consciousness or seizure — CALL 911 / 112 IMMEDIATELY. Place in recovery position.',
+        'Extreme confusion, slurred speech, or inability to swallow'
+      ];
+    }
+    // 4. UNCONTROLLED BLEEDING / DEEP LACERATION
+    else if (/bleed|blood|cut|laceration|wound|hemorrhage|stab|puncture/i.test(text)) {
+      emergencyType = 'bleeding';
+      primarySymptom = 'Acute Hemorrhage / Severe Bleeding Wound';
+
+      if (onBloodThinners.length > 0) {
+        severity = 'critical';
+        severityBadge = '🔴 CRITICAL BLEEDING — PATIENT ON PRESCRIBED ANTICOAGULANTS';
+        contraindications.push(`ALERT: Your profile records blood thinners (${onBloodThinners.join(', ')}). Normal clotting is significantly impaired. Uninterrupted firm pressure and emergency medical assistance are mandatory.`);
+      } else {
+        severity = 'high';
+        severityBadge = '⚠️ URGENT FIRST-AID — HEMORRHAGE CONTROL';
+      }
+
+      immediateSteps = [
+        'APPLY DIRECT, CONTINUOUS PRESSURE: Place a clean sterile gauze, clean towel, or cloth directly over the bleeding site and press firmly with both hands.',
+        'DO NOT REMOVE THE CLOTH: If blood soaks through, do NOT lift the first cloth (lifting destroys developing clots). Add more layers of cloth on top and maintain hard pressure.',
+        'ELEVATE THE WOUND: If the injury is on an arm or leg and there is no suspected bone fracture, elevate the limb above heart level while maintaining firm pressure.',
+        'HAVE THE PATIENT LIE DOWN: Rest quietly to reduce blood pressure and prevent fainting from hypovolemic shock. Keep patient warm with a blanket.',
+        'If blood is spurting brightly (arterial bleeding) or bleeding does not stop after 10 minutes of direct hard pressure, CALL 911 / 112 IMMEDIATELY.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT remove soaked dressings — always layer more on top.',
+        'DO NOT wash a deep, heavily bleeding wound with water while it is actively bleeding.',
+        'DO NOT attempt to remove large embedded objects (glass, knife, metal) — stabilize around the object.'
+      ];
+
+      redFlags = [
+        'Pulsating or spurting bright red blood',
+        'Dizziness, cold clammy skin, rapid weak pulse, or loss of consciousness',
+        'Bleeding that fails to stop after 10-15 minutes of uninterrupted direct pressure'
+      ];
+    }
+    // 5. STROKE / NEUROLOGICAL EMERGENCY (FAST)
+    else if (/stroke|face\s*droop|slurred|weakness.*arm|numbness.*side|confusion|paralysis|can'?t\s*speak/i.test(text)) {
+      emergencyType = 'stroke';
+      severity = 'critical';
+      severityBadge = '🔴 CRITICAL EMERGENCY — SUSPECTED STROKE (ACT F.A.S.T.)';
+      primarySymptom = 'Acute Neurological Deficit / Suspected Stroke';
+
+      immediateSteps = [
+        'CALL 911 / 112 IMMEDIATELY: State "Suspected acute stroke." Note the EXACT TIME symptoms first appeared — this dictates thrombolytic eligibility.',
+        'F - FACE: Ask the person to smile. Does one side of the face droop?',
+        'A - ARMS: Ask the person to raise both arms. Does one arm drift downward or feel weak/numb?',
+        'S - SPEECH: Ask the person to repeat a simple sentence. Is speech slurred, strange, or absent?',
+        'T - TIME: If any of these signs are present, time is brain tissue. Emergency transport is critical.',
+        'Position the patient comfortably on their side (recovery position) with head slightly elevated if conscious.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT give Aspirin — if the stroke is hemorrhagic (bleeding in brain), aspirin can be fatal.',
+        'DO NOT give any food, liquids, or oral medications (swallowing reflexes may be paralyzed).',
+        'DO NOT let the patient sleep or "wait it out" — every minute millions of neurons die.'
+      ];
+
+      redFlags = [
+        'Sudden severe "thunderclap" headache unlike any before',
+        'Sudden loss of vision in one or both eyes',
+        'Sudden loss of balance, vertigo, or inability to walk'
+      ];
+    }
+    // 6. ALLERGIC REACTION / ANAPHYLAXIS
+    else if (/allergic|allergy|anaphylaxis|swelling.*lip|swelling.*tongue|hives|throat.*close|bee\s*sting|peanut/i.test(text)) {
+      emergencyType = 'allergic_reaction';
+      severity = 'critical';
+      severityBadge = '🔴 CRITICAL ALLERGIC REACTION — SUSPECTED ANAPHYLAXIS';
+      primarySymptom = 'Acute Allergic Reaction / Anaphylaxis Risk';
+
+      if (patientContext.allergies?.length > 0) {
+        contraindications.push(`Known patient allergies on file: ${patientContext.allergies.join(', ')}. Check if any accidental ingestion or contact occurred.`);
+      }
+
+      immediateSteps = [
+        'CALL 911 / 112 IMMEDIATELY if there is swelling of the lips, tongue, throat tightness, or difficulty breathing.',
+        'ADMINISTER EPINEPHRINE AUTO-INJECTOR (EpiPen) IMMEDIATELY if prescribed or available: Inject firmly into the outer mid-thigh muscle, hold for 3-10 seconds, and massage area.',
+        'Have the patient lie flat with legs elevated (unless breathing is difficult, in which case sit upright). Avoid sudden standing.',
+        'If an oral antihistamine is available AND the patient can swallow safely without airway compromise, it may be administered alongside calling EMS.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT hesitate to use Epinephrine — it is the only life-saving first-line medication for anaphylaxis.',
+        'DO NOT have the patient stand up suddenly — rapid drop in blood pressure (anaphylactic shock) can cause collapse.',
+        'DO NOT give oral pills if the patient is struggling to breathe or tongue is swollen.'
+      ];
+
+      redFlags = [
+        'Hoarseness, feeling of a lump in the throat, or high-pitched sound on breathing (stridor)',
+        'Widespread itchy hives, severe dizziness, vomiting, or fainting'
+      ];
+    }
+    // 7. SEVERE BURNS
+    else if (/burn|scald|boiling\s*water|flame|fire|chemical\s*burn/i.test(text)) {
+      emergencyType = 'burn';
+      severity = 'high';
+      severityBadge = '⚠️ URGENT BURN FIRST-AID PROTOCOL';
+      primarySymptom = 'Thermal / Scald Burn Injury';
+
+      immediateSteps = [
+        'COOL THE BURN WITH COOL RUNNING WATER IMMEDIATELY for 10 to 20 minutes. Do NOT use ice or freezing water.',
+        'Gently remove rings, watches, tight belts, or jewelry near the burned area before swelling begins.',
+        'Cover the burn loosely with clean, sterile, non-adherent dressing or clean plastic food wrap.',
+        'Keep the patient warm with a clean blanket over non-burned areas to prevent hypothermia from prolonged cooling.',
+        'CALL 911 / 112 if the burn is larger than the patient’s palm, involves the face, hands, joints, or genitals, or appears charred/white/leathery.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT apply ice, ice water, butter, oils, toothpaste, or home ointments to the burn.',
+        'DO NOT burst blisters — intact blisters protect against severe bacterial infection.',
+        'DO NOT peel off clothing that is stuck to the burned skin.'
+      ];
+
+      redFlags = [
+        'Burn on face, neck, hands, feet, groin, or major joints',
+        'Burn appears charred black, leathery, or painless white (third-degree full thickness)',
+        'Inhalation of smoke or soot around nostrils / coughing up dark mucus'
+      ];
+    }
+    // 8. GENERAL EMERGENCY
+    else {
+      emergencyType = 'general';
+      severity = 'high';
+      severityBadge = `⚠️ EMERGENCY FIRST-AID TRIAGE FOR ${patientName.toUpperCase()}`;
+      primarySymptom = message;
+
+      immediateSteps = [
+        'ASSESS SCENE SAFETY: Ensure the immediate surroundings are safe for you and the patient.',
+        'CHECK RESPONSIVENESS & AIRWAY: Confirm the person is conscious, responding, and breathing normally.',
+        'REST IN A COMFORTABLE POSITION: Have the patient sit or lie down in a safe position to prevent falls or fainting.',
+        'CALL EMERGENCY SERVICES (911 / 112) or your attending physician if pain is severe, symptoms appeared suddenly, or condition is worsening.',
+        'Monitor vital signs (breathing rate, pulse, skin color) and stay with the patient until medical help arrives.'
+      ];
+
+      whatNotToDo = [
+        'DO NOT ignore sudden, severe, or worsening physical symptoms.',
+        'DO NOT administer prescription medications belonging to someone else.',
+        'DO NOT leave an unstable or disoriented patient unattended.'
+      ];
+
+      redFlags = [
+        'Sudden loss of consciousness, confusion, or slurred speech',
+        'Severe unremitting pain or difficulty breathing',
+        'Bluish tint to lips, profuse cold sweating, or uncontrolled bleeding'
+      ];
+    }
+
+    // Build personalized initial response
+    const allPatientAlerts = [];
+    if (contraindications.length > 0) {
+      allPatientAlerts.push(...contraindications);
+    }
+    if (patientContext.allergies?.length > 0 && !hasAspirinAllergy && emergencyType !== 'allergic_reaction') {
+      allPatientAlerts.push(`Documented Allergies: ${patientContext.allergies.join(', ')} (verify any proposed medication against this list).`);
+    }
+    if (patientContext.conditions?.length > 0) {
+      allPatientAlerts.push(`Active Medical History: ${patientContext.conditions.join(', ')}.`);
+    }
+    if (patientContext.activeMedications?.length > 0) {
+      allPatientAlerts.push(`Active Medications: ${patientContext.activeMedications.join('; ')}.`);
+    }
+
+    const contactStr = patientContext.emergencyContact?.name
+      ? `${patientContext.emergencyContact.name} (${patientContext.emergencyContact.relation || 'Contact'}, ${patientContext.emergencyContact.phone})`
+      : 'Not designated';
+
+    const handoverNote = `Patient: ${patientName} | Blood Group: ${patientContext.bloodGroup} | Chronic Conditions: ${patientContext.conditions.length ? patientContext.conditions.join(', ') : 'None documented'} | Documented Allergies: ${patientContext.allergies.length ? patientContext.allergies.join(', ') : 'None'} | Active Medications: ${patientContext.activeMedications.length ? patientContext.activeMedications.join('; ') : 'None'} | Acute Presentation: "${message}" | Emergency Contact: ${contactStr}`;
+
+    conversationalReply = `### ${severityBadge}\n\n` +
+      `Hello **${patientName}**, I have received your emergency report: **"${message}"**.\n\n` +
+      `I have cross-referenced your medical file: **Blood Group ${patientContext.bloodGroup}**, Allergies: **${patientContext.allergies.length ? patientContext.allergies.join(', ') : 'None documented'}**, Active Conditions: **${patientContext.conditions.length ? patientContext.conditions.join(', ') : 'None documented'}**.\n\n`;
+
+    if (allPatientAlerts.length > 0) {
+      conversationalReply += `> [!IMPORTANT]\n` +
+        `> **Patient History Warnings for ${patientName}:**\n` +
+        allPatientAlerts.map(a => `> • ${a}`).join('\n') + '\n\n';
+    }
+
+    conversationalReply += `#### ⚡ Immediate Life-Saving Steps (Do This Right Now):\n` +
+      immediateSteps.map((s, i) => `${i + 1}. **${s}**`).join('\n') + '\n\n';
+
+    if (whatNotToDo.length > 0) {
+      conversationalReply += `#### 🛑 Critical Warnings (What NOT To Do):\n` +
+        whatNotToDo.map(w => `• ${w}`).join('\n') + '\n\n';
+    }
+
+    if (redFlags.length > 0) {
+      conversationalReply += `#### 🚨 Red Flag Deterioration Signs:\n` +
+        redFlags.map(r => `• ${r}`).join('\n') + '\n\n';
+    }
+
+    conversationalReply += `#### 📋 20-Second EMT / Doctor Handover Briefing:\n` +
+      `\`\`\`text\n${handoverNote}\n\`\`\`\n\n` +
+      `*Emergency Dispatch: **911** (US/Canada) | **112** (Universal/Europe/India) | **999** (UK). You can ask me any follow-up question right now (e.g. "Should I drink water?", "Can I take pain medicine?", "What if symptoms worsen?").*`;
+  }
+
+  const allPatientAlerts = [];
+  if (contraindications.length > 0) {
+    allPatientAlerts.push(...contraindications);
+  }
+
+  const contactStr = patientContext.emergencyContact?.name
+    ? `${patientContext.emergencyContact.name} (${patientContext.emergencyContact.relation || 'Contact'}, ${patientContext.emergencyContact.phone})`
+    : 'Not designated';
+
+  const handoverNote = `Patient: ${patientName} | Blood Group: ${patientContext.bloodGroup} | Chronic Conditions: ${patientContext.conditions.length ? patientContext.conditions.join(', ') : 'None documented'} | Documented Allergies: ${patientContext.allergies.length ? patientContext.allergies.join(', ') : 'None'} | Active Medications: ${patientContext.activeMedications.length ? patientContext.activeMedications.join('; ') : 'None'} | Acute Presentation: "${message}" | Emergency Contact: ${contactStr}`;
+
+  return {
+    reply: conversationalReply,
+    structuredData: {
+      emergencyType,
+      severity,
+      severityBadge,
+      primarySymptom,
+      patientContextUsed: {
+        name: patientName,
+        bloodGroup: patientContext.bloodGroup,
+        allergies: patientContext.allergies,
+        conditions: patientContext.conditions,
+        activeMedications: patientContext.activeMedications,
+        emergencyContact: patientContext.emergencyContact,
+        criticalNotes: patientContext.criticalNotes
+      },
+      patientAlerts: allPatientAlerts,
+      immediateSteps,
+      whatNotToDo,
+      redFlags,
+      handoverNote,
+      emergencyNumbers: [
+        { label: 'Universal Emergency (India/EU)', number: '112' },
+        { label: 'US / Canada Emergency', number: '911' },
+        { label: 'UK Emergency', number: '999' }
+      ]
+    }
+  };
+}
+
+/**
+ * @desc    Patient Emergency AI Assistant: analyzes full history and gives instant context-aware first aid
+ * @route   POST /api/patient/emergency-assistant
+ * @access  Private (Patient)
+ */
+export const emergencyFirstAidAssistant = async (req, res) => {
+  const { message, history, profileOverride } = req.body;
+
+  if (!message || !message.trim()) {
+    return sendError(res, 'Please provide the acute symptom or problem you are experiencing.', 400);
+  }
+
+  try {
+    const patientId = req.user._id;
+
+    // 1. Fetch complete patient medical profile
+    const user = await User.findById(patientId).select('name email profile emergencyAccess');
+    const health = await HealthProfile.findOne({ patient: patientId });
+    const medications = await Medication.find({ patient: patientId, status: 'active' });
+    const recentRecords = await MedicalRecord.find({ patient: patientId }).sort({ createdAt: -1 }).limit(3);
+
+    // Merge database context with any testing persona override provided
+    const patientContext = {
+      name: profileOverride?.name || user?.name || 'Patient',
+      bloodGroup: profileOverride?.bloodGroup || user?.profile?.bloodGroup || 'Not specified',
+      allergies: profileOverride?.allergies !== undefined ? profileOverride.allergies : (user?.profile?.allergies || []),
+      conditions: profileOverride?.conditions !== undefined ? profileOverride.conditions : (health?.conditions?.filter(c => c.status === 'active').map(c => c.name) || []),
+      activeMedications: profileOverride?.activeMedications !== undefined
+        ? profileOverride.activeMedications
+        : medications.map(m => `${m.name} (${m.dosage || 'dosage unspecified'}, ${m.frequency || 'active'})`),
+      emergencyContact: profileOverride?.emergencyContact || user?.emergencyAccess?.emergencyContact || {},
+      criticalNotes: profileOverride?.criticalNotes || user?.emergencyAccess?.criticalNotes || '',
+      recentHistory: recentRecords.map(r => `${r.title} (${r.category})`)
+    };
+
+    // 2. If Gemini API key is present, try Gemini LLM first for ultra-natural generation
+    let geminiReply = null;
+    if (process.env.GEMINI_API_KEY) {
+      geminiReply = await callGeminiEmergencyAssistant(message, patientContext, history || []);
+    }
+
+    // 3. Run built-in Conversational Clinical Triage & First-Aid Engine
+    const assistantResult = generateEmergencyFirstAidResponse(message, patientContext, history || []);
+
+    // If Gemini provided a richer dynamic response, use its reply text while preserving safety structured data
+    if (geminiReply) {
+      assistantResult.reply = geminiReply;
+    }
+
+    return sendSuccess(res, 'Emergency first-aid guidance generated successfully', assistantResult);
+  } catch (error) {
+    console.error('emergencyFirstAidAssistant error:', error);
+    return sendError(res, 'Server error evaluating emergency first-aid', 500);
+  }
+};
+
+
+
 
 

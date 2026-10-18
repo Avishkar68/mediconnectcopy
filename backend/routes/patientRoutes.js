@@ -17,6 +17,7 @@ import {
   uploadRecordImage,
   analyzeMedicalReport,
   compareMedicalReports,
+  emergencyFirstAidAssistant,
   getEmergencySettings,
   updateEmergencySettings,
   regenerateEmergencyToken,
@@ -93,6 +94,7 @@ router.route('/doctors/:id')
 router.post('/upload', protect, upload.single('image'), uploadRecordImage);
 router.post('/analyze-report', protect, analyzeMedicalReport);
 router.post('/compare-reports', protect, compareMedicalReports);
+router.post('/emergency-assistant', protect, emergencyFirstAidAssistant);
 
 export default router;
 

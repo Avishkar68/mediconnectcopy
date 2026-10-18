@@ -21,7 +21,8 @@ import {
   Video,
   Sparkles,
   QrCode,
-  GitCompare
+  GitCompare,
+  HeartPulse
 } from 'lucide-react';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -241,6 +242,7 @@ const Dashboard = () => {
 
     const navItems = [
       { path: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
+      { path: '/dashboard/emergency-assistant', label: 'Emergency First-Aid AI', icon: HeartPulse, emergency: true },
       { path: '/dashboard/emergency-access', label: 'Emergency Medical QR', icon: QrCode },
       { path: '/dashboard/ai-analyzer', label: 'AI Report Analyzer', icon: Sparkles },
       { path: '/dashboard/compare-reports', label: 'Compare Reports', icon: GitCompare },
@@ -288,14 +290,23 @@ const Dashboard = () => {
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   active
-                    ? 'bg-brand-500 text-dark-950 shadow-md shadow-brand-500/10'
+                    ? item.emergency
+                      ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20'
+                      : 'bg-brand-500 text-dark-950 shadow-md shadow-brand-500/10'
+                    : item.emergency
+                    ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 hover:text-rose-300'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
                 }`}
               >
                 <div className="flex items-center space-x-2.5">
-                  <Icon className="w-4 h-4 shrink-0" />
+                  <Icon className={`w-4 h-4 shrink-0 ${item.emergency && !active ? 'animate-pulse text-rose-400' : ''}`} />
                   <span>{item.label}</span>
                 </div>
+                {item.emergency && !active && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full font-extrabold bg-rose-600 text-white uppercase tracking-wider">
+                    SOS
+                  </span>
+                )}
                 {item.badge && unreadNotificationsCount > 0 && (
                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${
                     active ? 'bg-dark-950 text-brand-400' : 'bg-red-500 text-white'
@@ -329,6 +340,7 @@ const Dashboard = () => {
 
     if (path.endsWith('/ai-analyzer')) return 'AI Medical Report Analyzer';
     if (path.endsWith('/compare-reports')) return 'Medical Report Comparison & Trends';
+    if (path.endsWith('/emergency-assistant')) return 'Emergency First-Aid AI Assistant';
     if (path.endsWith('/emergency-access')) return 'Emergency Medical QR Access';
     if (path.endsWith('/health')) return 'My Health Summary';
 

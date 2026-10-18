@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import api from "../../services/api";
 import Loader from "../../components/Loader";
@@ -17,6 +18,7 @@ import {
   Lock,
   Save,
   CheckCircle2,
+  HeartPulse,
 } from "lucide-react";
 
 const DEFAULT_SETTINGS = {
@@ -343,27 +345,37 @@ export default function EmergencyAccess() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800 shrink-0">
-            <div className="text-right">
-              <div className="text-[10px] font-bold text-slate-400 uppercase">Emergency Sharing</div>
-              <div className={`text-xs font-bold ${enabled ? "text-emerald-400" : "text-slate-500"}`}>
-                {enabled ? "Active & Resolvable" : "Sharing Disabled"}
-              </div>
-            </div>
-            <button
-              onClick={handleMasterToggle}
-              role="switch"
-              aria-checked={enabled}
-              className={`relative w-13 h-7 rounded-full transition-all cursor-pointer ${
-                enabled ? "bg-emerald-500 shadow-md shadow-emerald-500/20" : "bg-slate-700"
-              }`}
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <Link
+              to="/dashboard/emergency-assistant"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-rose-600/20"
             >
-              <span
-                className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all transform ${
-                  enabled ? "translate-x-7" : "translate-x-1"
+              <HeartPulse className="w-4 h-4 animate-pulse" />
+              <span>Emergency First-Aid AI</span>
+            </Link>
+
+            <div className="flex items-center space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+              <div className="text-right">
+                <div className="text-[10px] font-bold text-slate-400 uppercase">Emergency Sharing</div>
+                <div className={`text-xs font-bold ${enabled ? "text-emerald-400" : "text-slate-500"}`}>
+                  {enabled ? "Active & Resolvable" : "Sharing Disabled"}
+                </div>
+              </div>
+              <button
+                onClick={handleMasterToggle}
+                role="switch"
+                aria-checked={enabled}
+                className={`relative w-13 h-7 rounded-full transition-all cursor-pointer ${
+                  enabled ? "bg-emerald-500 shadow-md shadow-emerald-500/20" : "bg-slate-700"
                 }`}
-              />
-            </button>
+              >
+                <span
+                  className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all transform ${
+                    enabled ? "translate-x-7" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         </div>
 
