@@ -55,6 +55,38 @@ const userSchema = new mongoose.Schema(
       bloodGroup: { type: String, default: '' },
       allergies: [{ type: String }],
     },
+    emergencyAccess: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      token: {
+        type: String,
+        default: null,
+        index: true,
+      },
+      tokenExpiresAt: {
+        type: Date,
+        default: null,
+      },
+      settings: {
+        bloodGroup: { type: Boolean, default: true },
+        allergies: { type: Boolean, default: true },
+        medications: { type: Boolean, default: true },
+        conditions: { type: Boolean, default: true },
+        emergencyContact: { type: Boolean, default: true },
+        criticalNotes: { type: Boolean, default: false },
+      },
+      emergencyContact: {
+        name: { type: String, default: '' },
+        phone: { type: String, default: '' },
+        relation: { type: String, default: '' },
+      },
+      criticalNotes: {
+        type: String,
+        default: '',
+      },
+    },
   },
   {
     timestamps: true,

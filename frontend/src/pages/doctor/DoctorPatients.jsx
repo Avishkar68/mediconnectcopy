@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import api from '../../services/api';
 import {
   Users,
@@ -18,8 +19,15 @@ import {
   Send,
   Eye,
   RefreshCw,
-  Filter
+  Filter,
+  QrCode,
+  ExternalLink,
+  X,
+  Download,
+  Copy,
+  Check,
 } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const DoctorPatients = () => {
   const [directory, setDirectory] = useState([]);
@@ -34,6 +42,329 @@ const DoctorPatients = () => {
   const [success, setSuccess] = useState('');
   
   const [activeChartTab, setActiveChartTab] = useState('vitals'); // 'vitals', 'records', 'timeline'
+
+  // Emergency Modal states
+  const [emergencyModalOpen, setEmergencyModalOpen] = useState(false);
+  const [emergencyPatient, setEmergencyPatient] = useState(null);
+  const [emergencyData, setEmergencyData] = useState(null);
+  const [loadingEmergency, setLoadingEmergency] = useState(false);
+  const [emergencyError, setEmergencyError] = useState('');
+
+  const handleViewEmergencyProfile = async (patientId, patientName) => {
+    const targetId = patientId || selectedPatientId;
+    if (!targetId) {
+      console.error('No patient ID provided for emergency profile');
+      return;
+    }
+
+    setEmergencyPatient({ id: targetId, name: patientName || patientData?.patient?.name || "Patient" });
+    setEmergencyModalOpen(true);
+    setLoadingEmergency(true);
+    setEmergencyError('');
+    setEmergencyData(null);
+
+    try {
+      const response = await api.get(`/doctor/patients/${targetId}/emergency-profile`);
+      if (response && response.success && response.data) {
+        setEmergencyData(response.data);
+      } else {
+        setEmergencyError(response?.message || 'Unable to retrieve emergency records.');
+      }
+    } catch (err) {
+      console.error('Failed to load emergency profile:', err);
+      setEmergencyError(
+        err.response?.data?.message || err.message || 'Emergency profile unavailable or access denied.'
+      );
+    } finally {
+      setLoadingEmergency(false);
+    }
+  };
+
+  const [qrCopied, setQrCopied] = useState(false);
+
+  const handleDownloadDoctorQR = () => {
+    const canvas = document.getElementById("doctor-emergency-qr-canvas");
+    if (!canvas) return;
+
+    try {
+      const exportCanvas = document.createElement("canvas");
+      const ctx = exportCanvas.getContext("2d");
+      exportCanvas.width = 380;
+      exportCanvas.height = 470;
+
+      ctx.fillStyle = "#0b1220";
+      ctx.fillRect(0, 0, 380, 470);
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#ef4444";
+      ctx.strokeRect(10, 10, 360, 450);
+
+      ctx.fillStyle = "#ef4444";
+      ctx.font = "bold 16px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("MEDICONNECT EMERGENCY QR", 190, 45);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "12px sans-serif";
+      ctx.fillText("Patient: " + (emergencyPatient?.name || "Patient Profile"), 190, 68);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(70, 95, 240, 240);
+      ctx.drawImage(canvas, 80, 105, 220, 220);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "10px sans-serif";
+      ctx.fillText("Scan with clinical or emergency device for vital records", 190, 375);
+      ctx.fillText("Authorized Practitioner Clearance", 190, 395);
+
+      const pngUrl = exportCanvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      const patientName = (emergencyPatient?.name || "patient").toLowerCase().replace(/[^a-z0-9]/g, "-");
+      downloadLink.download = `emergency-qr-${patientName}.png`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    } catch {
+      const pngUrl = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = `emergency-qr-${emergencyPatient?.name || 'patient'}.png`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  };
+
+  const handleCopyDoctorQR = async (url) => {
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      setQrCopied(true);
+      setTimeout(() => setQrCopied(false), 2000);
+    } catch {
+      alert("Could not copy emergency link to clipboard.");
+    }
+  };
+
+  const renderEmergencyModal = () => {
+    if (!emergencyModalOpen) return null;
+
+    const modalContent = (
+      <div 
+        className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setEmergencyModalOpen(false);
+        }}
+      >
+        <div className="glass-card rounded-3xl border border-red-500/30 bg-[#0b1220] max-w-xl w-full p-6 text-left relative max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl shadow-red-950/40">
+          {/* Modal Header */}
+          <div className="flex justify-between items-start border-b border-slate-800 pb-3">
+            <div className="flex items-center space-x-3">
+              <div className="p-2.5 bg-red-500/15 border border-red-500/30 text-red-400 rounded-xl">
+                <QrCode className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
+                  Emergency Medical Clearance
+                </span>
+                <h3 className="text-base font-bold text-white font-display">
+                  {emergencyPatient?.name || "Patient"} - Emergency Profile
+                </h3>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEmergencyModalOpen(false)}
+              className="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-900 border border-slate-800 transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Loading state */}
+          {loadingEmergency && (
+            <div className="py-12 text-center text-xs text-slate-400 flex flex-col items-center space-y-2">
+              <Loader2 className="w-6 h-6 animate-spin text-red-400" />
+              <span>Decrypting emergency medical profile...</span>
+            </div>
+          )}
+
+          {/* Error State */}
+          {!loadingEmergency && emergencyError && (
+            <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-center space-y-2">
+              <AlertCircle className="w-8 h-8 text-red-400 mx-auto" />
+              <h4 className="text-sm font-bold text-white">Emergency Access Denied / Unavailable</h4>
+              <p className="text-xs text-slate-400">{emergencyError}</p>
+            </div>
+          )}
+
+          {/* Profile Data Display */}
+          {!loadingEmergency && emergencyData && (
+            <div className="space-y-4 text-xs">
+              {/* QR Code & Scan Card */}
+              {emergencyData.token && (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-red-500/10 via-slate-900/60 to-slate-900/60 border border-red-500/30 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="bg-white p-3 rounded-2xl shadow-xl border-2 border-slate-700 shrink-0">
+                    <QRCodeCanvas
+                      id="doctor-emergency-qr-canvas"
+                      value={`${window.location.origin}/emergency/${emergencyData.token}`}
+                      size={140}
+                      level="H"
+                      includeMargin={false}
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0 text-left space-y-2 w-full">
+                    <div>
+                      <div className="flex items-center space-x-1.5 text-emerald-400 text-[10px] font-bold">
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        <span>Emergency QR Code Active</span>
+                      </div>
+                      <p className="text-[11px] text-slate-300 font-semibold mt-0.5">
+                        Scan with mobile device or clinical tablet
+                      </p>
+                      <p className="text-[10px] font-mono text-slate-400 truncate bg-slate-950/70 px-2 py-1 rounded border border-slate-800 mt-1">
+                        {`${window.location.origin}/emergency/${emergencyData.token}`}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleDownloadDoctorQR}
+                        className="px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-400 text-black font-extrabold text-[11px] flex items-center space-x-1.5 transition cursor-pointer shadow-sm shadow-red-500/10"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download QR</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleCopyDoctorQR(`${window.location.origin}/emergency/${emergencyData.token}`)}
+                        className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] flex items-center space-x-1.5 transition cursor-pointer"
+                      >
+                        {qrCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{qrCopied ? "Copied!" : "Copy Link"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => window.open(`/emergency/${emergencyData.token}`, '_blank')}
+                        className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] flex items-center space-x-1.5 transition cursor-pointer"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Open Full View</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Blood Group */}
+              {emergencyData.settings?.bloodGroup && (
+                <div className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl flex justify-between items-center">
+                  <span className="font-bold text-slate-300">Blood Group</span>
+                  <span className="text-lg font-bold text-red-400 bg-red-500/20 px-3 py-0.5 rounded-lg border border-red-500/30">
+                    {emergencyData.patientData?.bloodGroup || "Not Specified"}
+                  </span>
+                </div>
+              )}
+
+              {/* Allergies */}
+              {emergencyData.settings?.allergies && (
+                <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
+                  <div className="font-bold text-slate-300">Allergies & Sensitivities</div>
+                  {emergencyData.patientData?.allergies?.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {emergencyData.patientData.allergies.map((a, i) => (
+                        <span key={i} className="px-2 py-0.5 bg-red-500/10 text-red-300 border border-red-500/20 rounded text-[11px] font-semibold">
+                          {a}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-500 italic text-[11px]">No allergies recorded.</p>
+                  )}
+                </div>
+              )}
+
+              {/* Current Medications */}
+              {emergencyData.settings?.medications && (
+                <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
+                  <div className="font-bold text-slate-300">Active Medications</div>
+                  {emergencyData.patientData?.medications?.length > 0 ? (
+                    <div className="space-y-1">
+                      {emergencyData.patientData.medications.map((m, i) => (
+                        <div key={i} className="p-2 bg-slate-950/60 rounded text-[11px] text-slate-200">
+                          {m}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-500 italic text-[11px]">No active medications.</p>
+                  )}
+                </div>
+              )}
+
+              {/* Existing Conditions */}
+              {emergencyData.settings?.conditions && (
+                <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
+                  <div className="font-bold text-slate-300">Diagnosed Medical Conditions</div>
+                  {emergencyData.patientData?.conditions?.length > 0 ? (
+                    <div className="space-y-1">
+                      {emergencyData.patientData.conditions.map((c, i) => (
+                        <div key={i} className="p-2 bg-slate-950/60 rounded text-[11px] text-slate-200">
+                          {c}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-500 italic text-[11px]">No medical conditions recorded.</p>
+                  )}
+                </div>
+              )}
+
+              {/* Emergency Contact */}
+              {emergencyData.settings?.emergencyContact && emergencyData.patientData?.emergencyContact && (
+                <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2">
+                  <div className="font-bold text-slate-300">Emergency Contact</div>
+                  <div className="flex justify-between items-center text-xs">
+                    <div>
+                      <div className="font-semibold text-white">{emergencyData.patientData.emergencyContact.name || "Emergency Contact"}</div>
+                      <div className="text-[11px] text-slate-400">Relation: {emergencyData.patientData.emergencyContact.relation || "N/A"}</div>
+                      <div className="text-emerald-400 font-mono font-bold mt-0.5">{emergencyData.patientData.emergencyContact.phone || "No phone listed"}</div>
+                    </div>
+                    {emergencyData.patientData.emergencyContact.phone && (
+                      <a
+                        href={`tel:${emergencyData.patientData.emergencyContact.phone}`}
+                        className="px-3 py-1.5 rounded-lg bg-emerald-500 text-dark-950 font-bold text-xs flex items-center space-x-1"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>Call</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Critical Notes */}
+              {emergencyData.settings?.criticalNotes && emergencyData.patientData?.criticalNotes && (
+                <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1">
+                  <div className="font-bold text-slate-300">Critical Medical Notes</div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed whitespace-pre-wrap">
+                    {emergencyData.patientData.criticalNotes}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+
+    return createPortal(modalContent, document.body);
+  };
 
   const fetchDirectory = async () => {
     try {
@@ -150,20 +481,88 @@ const DoctorPatients = () => {
               </div>
             </div>
 
-            {latestVitals && (
-              <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-2xl flex space-x-6 text-xs text-left">
-                <div>
-                  <span className="text-[9px] uppercase font-bold text-slate-550 block">Blood Pressure</span>
-                  <span className="font-bold text-white mt-0.5">{latestVitals.bloodPressureSystolic}/{latestVitals.bloodPressureDiastolic} mmHg</span>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              {latestVitals && (
+                <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-2xl flex space-x-6 text-xs text-left">
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-slate-550 block">Blood Pressure</span>
+                    <span className="font-bold text-white mt-0.5">{latestVitals.bloodPressureSystolic}/{latestVitals.bloodPressureDiastolic} mmHg</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-slate-550 block">Pulse Rate</span>
+                    <span className="font-bold text-white mt-0.5">{latestVitals.heartRate} bpm</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[9px] uppercase font-bold text-slate-550 block">Pulse Rate</span>
-                  <span className="font-bold text-white mt-0.5">{latestVitals.heartRate} bpm</span>
-                </div>
-              </div>
-            )}
+              )}
+              <button
+                type="button"
+                id="doctor-emergency-qr-btn"
+                onClick={() => handleViewEmergencyProfile(selectedPatientId || patient?._id, patient?.name)}
+                className="px-3.5 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-2xl text-xs font-bold transition flex items-center space-x-2 shrink-0 cursor-pointer shadow-sm shadow-red-500/5 hover:border-red-500/60 active:scale-95"
+                title="View Emergency Medical QR Information"
+              >
+                {loadingEmergency ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-red-400" />
+                ) : (
+                  <QrCode className="w-4 h-4 text-red-400" />
+                )}
+                <span>Emergency QR Info</span>
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Inline Emergency QR Code Banner (Accessible directly in patient file) */}
+        {emergencyData && emergencyData.token && emergencyData.patientId === (selectedPatientId || patient?._id) && (
+          <div className="glass-card rounded-3xl p-5 border border-red-500/30 bg-gradient-to-r from-red-500/10 via-slate-900/80 to-slate-900/60 flex flex-col md:flex-row items-center justify-between gap-5 text-left relative overflow-hidden shadow-lg shadow-red-950/20">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white p-2.5 rounded-2xl border-2 border-slate-700 shadow-xl shrink-0">
+                <QRCodeCanvas
+                  value={`${window.location.origin}/emergency/${emergencyData.token}`}
+                  size={100}
+                  level="H"
+                  includeMargin={false}
+                />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
+                    Emergency Medical QR Clearance
+                  </span>
+                  <span className="flex items-center space-x-1 text-emerald-400 text-[10px] font-bold">
+                    <CheckCircle className="w-3 h-3" />
+                    <span>Active</span>
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white font-display mt-0.5">
+                  {patient?.name} - Rapid Clinical Scan
+                </h4>
+                <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                  {`${window.location.origin}/emergency/${emergencyData.token}`}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setEmergencyModalOpen(true)}
+                className="px-3.5 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 font-bold text-xs flex items-center space-x-1.5 transition cursor-pointer"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+                <span>View Full Emergency Profile</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCopyDoctorQR(`${window.location.origin}/emergency/${emergencyData.token}`)}
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center space-x-1.5 transition cursor-pointer"
+              >
+                {qrCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{qrCopied ? "Copied!" : "Copy Link"}</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Tab selection */}
         <div className="flex space-x-2 border-b border-slate-800 pb-px">
@@ -330,6 +729,8 @@ const DoctorPatients = () => {
           </div>
         )}
 
+        {/* Emergency Medical QR Profile Modal */}
+        {renderEmergencyModal()}
       </div>
     );
   }
@@ -491,46 +892,58 @@ const DoctorPatients = () => {
 
                       {/* Action Button */}
                       <td className="p-4 text-right">
-                        {isApproved && (
+                        <div className="flex items-center justify-end space-x-1.5 ml-auto">
                           <button
-                            onClick={() => handleSelectPatient(pat._id)}
-                            className="bg-emerald-500 hover:bg-emerald-450 text-dark-950 text-[10px] font-extrabold px-3 py-1.5 rounded-lg flex items-center space-x-1 ml-auto"
+                            type="button"
+                            onClick={() => handleViewEmergencyProfile(pat._id, pat.name)}
+                            className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 transition-all cursor-pointer shrink-0"
+                            title="View Emergency Medical QR Information"
                           >
-                            <Eye className="w-3.5 h-3.5" />
-                            <span>View Patient</span>
+                            <QrCode className="w-3 h-3" />
+                            <span>Emergency QR</span>
                           </button>
-                        )}
 
-                        {isPending && (
-                          <button
-                            disabled
-                            className="bg-slate-900 text-slate-500 border border-slate-850 text-[10px] font-bold px-3 py-1.5 rounded-lg cursor-not-allowed ml-auto"
-                          >
-                            Request Pending
-                          </button>
-                        )}
+                          {isApproved && (
+                            <button
+                              onClick={() => handleSelectPatient(pat._id)}
+                              className="bg-emerald-500 hover:bg-emerald-450 text-dark-950 text-[10px] font-extrabold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>View Patient</span>
+                            </button>
+                          )}
 
-                        {hasNone && (
-                          <button
-                            onClick={() => handleRequestAccess(pat._id)}
-                            disabled={actionLoading}
-                            className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 ml-auto transition-all"
-                          >
-                            <Send className="w-3 h-3" />
-                            <span>Request Access</span>
-                          </button>
-                        )}
+                          {isPending && (
+                            <button
+                              disabled
+                              className="bg-slate-900 text-slate-500 border border-slate-850 text-[10px] font-bold px-3 py-1.5 rounded-lg cursor-not-allowed shrink-0"
+                            >
+                              Request Pending
+                            </button>
+                          )}
 
-                        {(isRevoked || isRejected) && (
-                          <button
-                            onClick={() => handleRequestAccess(pat._id)}
-                            disabled={actionLoading}
-                            className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 ml-auto transition-all"
-                          >
-                            <RefreshCw className="w-3.5 h-3.5" />
-                            <span>Request Access Again</span>
-                          </button>
-                        )}
+                          {hasNone && (
+                            <button
+                              onClick={() => handleRequestAccess(pat._id)}
+                              disabled={actionLoading}
+                              className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0 transition-all"
+                            >
+                              <Send className="w-3 h-3" />
+                              <span>Request Access</span>
+                            </button>
+                          )}
+
+                          {(isRevoked || isRejected) && (
+                            <button
+                              onClick={() => handleRequestAccess(pat._id)}
+                              disabled={actionLoading}
+                              className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0 transition-all"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" />
+                              <span>Request Access Again</span>
+                            </button>
+                          )}
+                        </div>
                       </td>
 
                     </tr>
@@ -541,6 +954,9 @@ const DoctorPatients = () => {
           </div>
         </div>
       )}
+
+      {/* EMERGENCY PROFILE MODAL FOR DOCTORS */}
+      {renderEmergencyModal()}
 
     </div>
   );

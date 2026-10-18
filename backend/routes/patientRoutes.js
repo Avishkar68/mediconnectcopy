@@ -16,11 +16,48 @@ import {
   revokeDoctorAccess,
   uploadRecordImage,
   analyzeMedicalReport,
+  getEmergencySettings,
+  updateEmergencySettings,
+  regenerateEmergencyToken,
+  getEmergencyProfileByToken,
 } from '../controllers/patientController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+
+// In-memory rate limiter for emergency access endpoints to prevent brute-force token enumeration
+const emergencyRateLimiter = (() => {
+  const requests = new Map();
+  return (req, res, next) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+    const now = Date.now();
+    const windowMs = 15 * 60 * 1000; // 15 minutes
+    const maxRequests = 60; // 60 requests per 15 minutes
+
+    const userReqs = requests.get(ip) || [];
+    const validReqs = userReqs.filter((t) => now - t < windowMs);
+
+    if (validReqs.length >= maxRequests) {
+      return res.status(429).json({
+        success: false,
+        message: 'Too many emergency requests from this IP. Please try again later.',
+      });
+    }
+
+    validReqs.push(now);
+    requests.set(ip, validReqs);
+    next();
+  };
+})();
+
+// Emergency Access Routes
+router.route('/emergency')
+  .get(protect, getEmergencySettings)
+  .post(protect, updateEmergencySettings);
+
+router.post('/emergency/regenerate', protect, regenerateEmergencyToken);
+router.get('/emergency-view/:token', emergencyRateLimiter, protect, getEmergencyProfileByToken);
 
 // All routes are protected by JWT authentication
 router.route('/health')

@@ -43,6 +43,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/emergency/:token" element={<EmergencyProfile />} />
 
       {/* Protected Core Pages */}
       <Route

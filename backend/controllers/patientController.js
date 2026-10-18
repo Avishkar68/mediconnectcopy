@@ -6,7 +6,9 @@ import Medication from '../models/Medication.js';
 import Appointment from '../models/Appointment.js';
 import DoctorAccess from '../models/DoctorAccess.js';
 import TimelineEvent from '../models/TimelineEvent.js';
+import Notification from '../models/Notification.js';
 import User from '../models/User.js';
+import crypto from 'crypto';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 import { cloudinary, isConfigured } from '../utils/cloudinary.js';
 
@@ -905,4 +907,300 @@ function generateFallbackMedicalAnalysis(text, title = '') {
     }
   };
 }
+
+/**
+ * @desc    Get patient emergency access configuration and preview data
+ * @route   GET /api/patient/emergency
+ * @access  Private (Patient)
+ */
+export const getEmergencySettings = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return sendError(res, 'User not found', 404);
+    }
+
+    const [healthProfile, medications] = await Promise.all([
+      HealthProfile.findOne({ patient: req.user._id }),
+      Medication.find({ patient: req.user._id, status: 'active' }).select('name dosage frequency instructions')
+    ]);
+
+    const activeConditions = healthProfile?.conditions?.filter(c => c.status === 'active') || [];
+
+    const defaultSettings = {
+      bloodGroup: true,
+      allergies: true,
+      medications: true,
+      conditions: true,
+      emergencyContact: true,
+      criticalNotes: false,
+    };
+
+    const emergencyAccess = user.emergencyAccess || {
+      enabled: false,
+      token: null,
+      tokenExpiresAt: null,
+      settings: defaultSettings,
+      emergencyContact: { name: '', phone: '', relation: '' },
+      criticalNotes: '',
+    };
+
+    return sendSuccess(res, 'Emergency settings retrieved successfully', {
+      enabled: Boolean(emergencyAccess.enabled),
+      token: emergencyAccess.token || null,
+      tokenExpiresAt: emergencyAccess.tokenExpiresAt || null,
+      settings: emergencyAccess.settings ? { ...defaultSettings, ...emergencyAccess.settings.toObject?.() || emergencyAccess.settings } : defaultSettings,
+      emergencyContact: emergencyAccess.emergencyContact || { name: '', phone: '', relation: '' },
+      criticalNotes: emergencyAccess.criticalNotes || '',
+      patientData: {
+        name: user.name,
+        bloodGroup: user.profile?.bloodGroup || '',
+        allergies: user.profile?.allergies || [],
+        medications: medications.map(m => `${m.name} (${m.dosage}, ${m.frequency})`),
+        conditions: activeConditions.map(c => c.name),
+        emergencyContact: emergencyAccess.emergencyContact || { name: '', phone: '', relation: '' },
+        criticalNotes: emergencyAccess.criticalNotes || '',
+      }
+    });
+  } catch (error) {
+    console.error('getEmergencySettings error:', error.message);
+    return sendError(res, 'Server error retrieving emergency settings', 500);
+  }
+};
+
+/**
+ * @desc    Update patient emergency access configuration and contact
+ * @route   POST /api/patient/emergency
+ * @access  Private (Patient)
+ */
+export const updateEmergencySettings = async (req, res) => {
+  const { enabled, settings, emergencyContact, criticalNotes } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return sendError(res, 'User not found', 404);
+    }
+
+    if (!user.emergencyAccess) {
+      user.emergencyAccess = {
+        enabled: false,
+        token: null,
+        tokenExpiresAt: null,
+        settings: {
+          bloodGroup: true,
+          allergies: true,
+          medications: true,
+          conditions: true,
+          emergencyContact: true,
+          criticalNotes: false,
+        },
+        emergencyContact: { name: '', phone: '', relation: '' },
+        criticalNotes: '',
+      };
+    }
+
+    if (typeof enabled === 'boolean') {
+      user.emergencyAccess.enabled = enabled;
+      // If enabling and token doesn't exist or is expired, generate one
+      if (enabled && (!user.emergencyAccess.token || (user.emergencyAccess.tokenExpiresAt && new Date(user.emergencyAccess.tokenExpiresAt) < new Date()))) {
+        user.emergencyAccess.token = 'mc_emg_' + crypto.randomBytes(24).toString('hex');
+        user.emergencyAccess.tokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000); // 90 days validity
+      }
+    }
+
+    if (settings && typeof settings === 'object') {
+      user.emergencyAccess.settings = {
+        bloodGroup: Boolean(settings.bloodGroup),
+        allergies: Boolean(settings.allergies),
+        medications: Boolean(settings.medications),
+        conditions: Boolean(settings.conditions),
+        emergencyContact: Boolean(settings.emergencyContact),
+        criticalNotes: Boolean(settings.criticalNotes),
+      };
+    }
+
+    if (emergencyContact && typeof emergencyContact === 'object') {
+      user.emergencyAccess.emergencyContact = {
+        name: typeof emergencyContact.name === 'string' ? emergencyContact.name.trim() : user.emergencyAccess.emergencyContact?.name || '',
+        phone: typeof emergencyContact.phone === 'string' ? emergencyContact.phone.trim() : user.emergencyAccess.emergencyContact?.phone || '',
+        relation: typeof emergencyContact.relation === 'string' ? emergencyContact.relation.trim() : user.emergencyAccess.emergencyContact?.relation || '',
+      };
+    }
+
+    if (typeof criticalNotes === 'string') {
+      user.emergencyAccess.criticalNotes = criticalNotes.trim();
+    }
+
+    await user.save();
+
+    await createTimelineEvent(
+      req.user._id,
+      'condition',
+      'Emergency Settings Updated',
+      user.emergencyAccess.enabled
+        ? 'Emergency Medical QR profile updated and sharing enabled.'
+        : 'Emergency Medical QR profile sharing disabled.'
+    );
+
+    return sendSuccess(res, 'Emergency settings updated successfully', {
+      enabled: user.emergencyAccess.enabled,
+      token: user.emergencyAccess.token,
+      tokenExpiresAt: user.emergencyAccess.tokenExpiresAt,
+      settings: user.emergencyAccess.settings,
+      emergencyContact: user.emergencyAccess.emergencyContact,
+      criticalNotes: user.emergencyAccess.criticalNotes,
+    });
+  } catch (error) {
+    console.error('updateEmergencySettings error:', error.message);
+    return sendError(res, 'Server error updating emergency settings', 500);
+  }
+};
+
+/**
+ * @desc    Regenerate emergency access token (immediately revokes old token)
+ * @route   POST /api/patient/emergency/regenerate
+ * @access  Private (Patient)
+ */
+export const regenerateEmergencyToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return sendError(res, 'User not found', 404);
+    }
+
+    if (!user.emergencyAccess) {
+      user.emergencyAccess = {};
+    }
+
+    const newToken = 'mc_emg_' + crypto.randomBytes(24).toString('hex');
+    user.emergencyAccess.token = newToken;
+    user.emergencyAccess.tokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000); // 90 days validity
+    user.emergencyAccess.enabled = true; // Automatically active
+
+    await user.save();
+
+    await createTimelineEvent(
+      req.user._id,
+      'condition',
+      'Emergency QR Code Regenerated',
+      'A new Emergency Medical QR token was generated. Any previously printed or shared QR codes are now revoked.'
+    );
+
+    return sendSuccess(res, 'Emergency QR regenerated successfully', {
+      token: user.emergencyAccess.token,
+      tokenExpiresAt: user.emergencyAccess.tokenExpiresAt,
+      enabled: user.emergencyAccess.enabled,
+    });
+  } catch (error) {
+    console.error('regenerateEmergencyToken error:', error.message);
+    return sendError(res, 'Server error regenerating emergency QR token', 500);
+  }
+};
+
+/**
+ * @desc    Retrieve patient's emergency medical profile via secure token
+ * @route   GET /api/patient/emergency-view/:token
+ * @access  Private (Authorized Doctor or the Patient owner)
+ */
+export const getEmergencyProfileByToken = async (req, res) => {
+  const { token } = req.params;
+
+  if (!token) {
+    return sendError(res, 'Emergency token is required', 400);
+  }
+
+  try {
+    const patient = await User.findOne({ 'emergencyAccess.token': token });
+
+    if (!patient) {
+      return sendError(res, 'Emergency profile not found or invalid token', 404);
+    }
+
+    // 1. Verify emergency access is enabled
+    if (!patient.emergencyAccess?.enabled) {
+      return sendError(res, 'Emergency medical profile sharing has been disabled by the patient', 403);
+    }
+
+    // 2. Check token expiration
+    if (patient.emergencyAccess?.tokenExpiresAt && new Date(patient.emergencyAccess.tokenExpiresAt) < new Date()) {
+      return sendError(res, 'This Emergency QR code has expired. Please ask the patient for an updated QR code.', 403);
+    }
+
+    // 3. Authorization verification: Doctor role OR the patient owner themselves
+    const isOwner = req.user._id.toString() === patient._id.toString();
+    const isDoctor = req.user.role === 'doctor';
+
+    if (!isOwner && !isDoctor) {
+      return sendError(
+        res,
+        'Access denied. Only licensed medical doctors or the patient can access this emergency medical profile.',
+        403
+      );
+    }
+
+    // 4. Fetch medical data
+    const [healthProfile, medications] = await Promise.all([
+      HealthProfile.findOne({ patient: patient._id }),
+      Medication.find({ patient: patient._id, status: 'active' }).select('name dosage frequency instructions')
+    ]);
+
+    const activeConditions = healthProfile?.conditions?.filter(c => c.status === 'active') || [];
+    const settings = patient.emergencyAccess.settings || {};
+
+    // 5. Build response containing ONLY explicitly enabled fields
+    const emergencyProfileData = {
+      patientName: patient.name,
+      settings: {
+        bloodGroup: Boolean(settings.bloodGroup),
+        allergies: Boolean(settings.allergies),
+        medications: Boolean(settings.medications),
+        conditions: Boolean(settings.conditions),
+        emergencyContact: Boolean(settings.emergencyContact),
+        criticalNotes: Boolean(settings.criticalNotes),
+      },
+      patientData: {
+        name: patient.name,
+        bloodGroup: settings.bloodGroup ? (patient.profile?.bloodGroup || '') : undefined,
+        allergies: settings.allergies ? (patient.profile?.allergies || []) : undefined,
+        medications: settings.medications ? medications.map(m => `${m.name} (${m.dosage}, ${m.frequency})`) : undefined,
+        conditions: settings.conditions ? activeConditions.map(c => c.name) : undefined,
+        emergencyContact: settings.emergencyContact ? (patient.emergencyAccess.emergencyContact || { name: '', phone: '', relation: '' }) : undefined,
+        criticalNotes: settings.criticalNotes ? (patient.emergencyAccess.criticalNotes || '') : undefined,
+      },
+      updatedAt: patient.updatedAt,
+      tokenExpiresAt: patient.emergencyAccess.tokenExpiresAt,
+      viewer: {
+        role: req.user.role,
+        name: req.user.name,
+      }
+    };
+
+    // 6. If accessed by a doctor, log timeline audit event and notify patient
+    if (isDoctor && !isOwner) {
+      await createTimelineEvent(
+        patient._id,
+        'condition',
+        'Emergency Profile Accessed',
+        `Emergency medical profile was accessed via QR by Dr. ${req.user.name}.`
+      );
+
+      try {
+        await Notification.create({
+          recipient: patient._id,
+          type: 'warning',
+          message: `Dr. ${req.user.name} accessed your Emergency Medical profile via Emergency QR.`
+        });
+      } catch (err) {
+        console.error('Failed to create emergency access notification:', err.message);
+      }
+    }
+
+    return sendSuccess(res, 'Emergency medical profile retrieved successfully', emergencyProfileData);
+  } catch (error) {
+    console.error('getEmergencyProfileByToken error:', error.message);
+    return sendError(res, 'Server error retrieving emergency profile', 500);
+  }
+};
+
 

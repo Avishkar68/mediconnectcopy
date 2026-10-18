@@ -13,7 +13,8 @@ import {
   PlusCircle,
   ArrowRight,
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  QrCode
 } from 'lucide-react';
 
 const PatientOverview = () => {
@@ -27,7 +28,8 @@ const PatientOverview = () => {
     medications: [],
     appointments: [],
     consents: [],
-    notifications: []
+    notifications: [],
+    emergency: null,
   });
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +43,8 @@ const PatientOverview = () => {
           medsRes,
           appointmentsRes,
           doctorsRes,
-          notificationsRes
+          notificationsRes,
+          emergencyRes
         ] = await Promise.all([
           api.get('/patient/health').catch(() => ({ success: false })),
           api.get('/patient/records').catch(() => ({ success: false })),
@@ -49,7 +52,8 @@ const PatientOverview = () => {
           api.get('/patient/medications').catch(() => ({ success: false })),
           api.get('/patient/appointments').catch(() => ({ success: false })),
           api.get('/patient/doctors').catch(() => ({ success: false })),
-          api.get('/notifications').catch(() => ({ success: false }))
+          api.get('/notifications').catch(() => ({ success: false })),
+          api.get('/patient/emergency').catch(() => ({ success: false }))
         ]);
 
         setData({
@@ -61,7 +65,8 @@ const PatientOverview = () => {
           medications: medsRes.success ? medsRes.data : [],
           appointments: appointmentsRes.success ? appointmentsRes.data : [],
           consents: doctorsRes.success ? doctorsRes.data.consents : [],
-          notifications: notificationsRes.success ? notificationsRes.data : []
+          notifications: notificationsRes.success ? notificationsRes.data : [],
+          emergency: emergencyRes.success ? emergencyRes.data : null
         });
       } catch (err) {
         console.error('Error fetching overview data:', err);
@@ -100,6 +105,41 @@ const PatientOverview = () => {
   return (
     <div className="space-y-6">
       
+      {/* Emergency Medical QR Section */}
+      <div className="glass-card rounded-2xl p-5 border border-red-500/30 bg-gradient-to-r from-red-500/10 via-[#0b1220] to-[#0b1220] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-left">
+        <div className="flex items-center space-x-3.5">
+          <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-400 shrink-0">
+            <QrCode className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <h3 className="text-sm font-bold text-white">Emergency Medical QR</h3>
+              {data.emergency?.enabled ? (
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase">
+                  Sharing Enabled
+                </span>
+              ) : (
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 uppercase">
+                  Disabled
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              {data.emergency?.enabled 
+                ? 'Authorized medical professionals can scan your secure QR in emergency situations to view permitted health data.'
+                : 'Emergency profile is currently disabled. Configure permitted fields and enable your QR to assist first responders.'}
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/dashboard/emergency-access"
+          className="px-4 py-2 rounded-xl bg-red-500 hover:bg-red-400 text-black text-xs font-bold transition flex items-center space-x-1.5 shrink-0"
+        >
+          <span>{data.emergency?.enabled ? 'View & Download QR' : 'Configure Emergency QR'}</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
       {/* Vitals Summary Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Heart Rate / Vitals Card */}

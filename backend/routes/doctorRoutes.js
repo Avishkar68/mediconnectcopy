@@ -12,6 +12,7 @@ import {
   getPatientDirectory,
   requestPatientAccess,
   getSentRequests,
+  getPatientEmergencyProfile,
 } from '../controllers/doctorController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
 
@@ -23,6 +24,7 @@ router.use(authorizeRoles('doctor'));
 
 router.get('/patients', getPatients);
 router.get('/patients/:patientId/medical-history', getPatientMedicalHistory);
+router.get('/patients/:patientId/emergency-profile', getPatientEmergencyProfile);
 router.get('/directory', getPatientDirectory);
 router.route('/requests')
   .get(getSentRequests)

@@ -6,6 +6,7 @@ import TimelineEvent from '../models/TimelineEvent.js';
 import Notification from '../models/Notification.js';
 import HealthProfile from '../models/HealthProfile.js';
 import MedicalRecord from '../models/MedicalRecord.js';
+import crypto from 'crypto';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 
 // Helper to log timeline events
@@ -374,7 +375,7 @@ export const getPatientDirectory = async (req, res) => {
   try {
     // 1. Fetch all patients in the system
     const patients = await User.find({ role: 'patient' })
-      .select('name email profile.gender profile.phone profile.dateOfBirth');
+      .select('name email profile.gender profile.phone profile.dateOfBirth emergencyAccess.enabled emergencyAccess.token');
 
     // 2. Fetch all access consent records for this doctor
     const consents = await DoctorAccess.find({ doctor: req.user._id });
@@ -406,7 +407,9 @@ export const getPatientDirectory = async (req, res) => {
         gender: p.profile?.gender || '',
         age,
         accessStatus: consent ? consent.status : 'none',
-        accessId: consent ? consent._id : null
+        accessId: consent ? consent._id : null,
+        emergencyEnabled: Boolean(p.emergencyAccess?.enabled),
+        emergencyToken: p.emergencyAccess?.enabled ? p.emergencyAccess?.token : null,
       };
     });
 
@@ -496,3 +499,111 @@ export const getSentRequests = async (req, res) => {
     return sendError(res, 'Server error retrieving sent requests list', 500);
   }
 };
+
+/**
+ * @desc    Get emergency medical profile of a patient by ID
+ * @route   GET /api/doctor/patients/:patientId/emergency-profile
+ * @access  Private (Doctor only)
+ */
+export const getPatientEmergencyProfile = async (req, res) => {
+  const { patientId } = req.params;
+
+  try {
+    const patient = await User.findById(patientId);
+    if (!patient) {
+      return sendError(res, 'Patient not found', 404);
+    }
+
+    if (!patient.emergencyAccess) {
+      patient.emergencyAccess = {
+        enabled: true,
+        token: null,
+        tokenExpiresAt: null,
+        settings: {
+          bloodGroup: true,
+          allergies: true,
+          medications: true,
+          conditions: true,
+          emergencyContact: true,
+          criticalNotes: false,
+        },
+        emergencyContact: { name: '', phone: '', relation: '' },
+        criticalNotes: '',
+      };
+    }
+
+    // Ensure patient has an active emergency QR token so the QR code can be scanned and viewed
+    let needsSave = false;
+    if (
+      !patient.emergencyAccess.token ||
+      (patient.emergencyAccess.tokenExpiresAt && new Date(patient.emergencyAccess.tokenExpiresAt) < new Date())
+    ) {
+      patient.emergencyAccess.token = 'mc_emg_' + crypto.randomBytes(24).toString('hex');
+      patient.emergencyAccess.tokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+      patient.emergencyAccess.enabled = true;
+      needsSave = true;
+    }
+
+    if (!patient.emergencyAccess.enabled) {
+      patient.emergencyAccess.enabled = true;
+      needsSave = true;
+    }
+
+    if (needsSave) {
+      await patient.save();
+    }
+
+    const [healthProfile, medications] = await Promise.all([
+      HealthProfile.findOne({ patient: patient._id }),
+      Medication.find({ patient: patient._id, status: 'active' }).select('name dosage frequency instructions')
+    ]);
+
+    const activeConditions = healthProfile?.conditions?.filter(c => c.status === 'active') || [];
+    const settings = patient.emergencyAccess.settings || {};
+
+    const emergencyProfileData = {
+      patientId: patient._id,
+      patientName: patient.name,
+      token: patient.emergencyAccess.token,
+      tokenExpiresAt: patient.emergencyAccess.tokenExpiresAt,
+      settings: {
+        bloodGroup: Boolean(settings.bloodGroup),
+        allergies: Boolean(settings.allergies),
+        medications: Boolean(settings.medications),
+        conditions: Boolean(settings.conditions),
+        emergencyContact: Boolean(settings.emergencyContact),
+        criticalNotes: Boolean(settings.criticalNotes),
+      },
+      patientData: {
+        name: patient.name,
+        bloodGroup: settings.bloodGroup ? (patient.profile?.bloodGroup || '') : undefined,
+        allergies: settings.allergies ? (patient.profile?.allergies || []) : undefined,
+        medications: settings.medications ? medications.map(m => `${m.name} (${m.dosage}, ${m.frequency})`) : undefined,
+        conditions: settings.conditions ? activeConditions.map(c => c.name) : undefined,
+        emergencyContact: settings.emergencyContact ? (patient.emergencyAccess.emergencyContact || { name: '', phone: '', relation: '' }) : undefined,
+        criticalNotes: settings.criticalNotes ? (patient.emergencyAccess.criticalNotes || '') : undefined,
+      },
+      viewedAt: new Date()
+    };
+
+    // Log timeline event and notify patient of emergency access
+    await createTimelineEvent(
+      patient._id,
+      'condition',
+      'Emergency Profile Accessed',
+      `Emergency medical profile was accessed by Dr. ${req.user.name}.`
+    );
+
+    await createPatientNotification(
+      patient._id,
+      `Dr. ${req.user.name} accessed your Emergency Medical profile.`,
+      'warning'
+    );
+
+    return sendSuccess(res, 'Patient emergency profile retrieved successfully', emergencyProfileData);
+  } catch (error) {
+    console.error('getPatientEmergencyProfile error:', error.message);
+    return sendError(res, 'Server error retrieving patient emergency profile', 500);
+  }
+};
+

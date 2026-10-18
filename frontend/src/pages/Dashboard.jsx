@@ -23,7 +23,8 @@ import {
   Menu,
   X,
   Video,
-  Sparkles
+  Sparkles,
+  QrCode
 } from 'lucide-react';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -243,6 +244,7 @@ const Dashboard = () => {
 
     const navItems = [
       { path: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true },
+      { path: '/dashboard/emergency-access', label: 'Emergency Medical QR', icon: QrCode },
       { path: '/dashboard/ai-analyzer', label: 'AI Report Analyzer', icon: Sparkles },
       { path: '/dashboard/health', label: 'My Health', icon: Heart },
       { path: '/dashboard/records', label: 'Medical Records', icon: FileText },
@@ -328,6 +330,7 @@ const Dashboard = () => {
     }
 
     if (path.endsWith('/ai-analyzer')) return 'AI Medical Report Analyzer';
+    if (path.endsWith('/emergency-access')) return 'Emergency Medical QR Access';
     if (path.endsWith('/health')) return 'My Health Summary';
 
     if (path.endsWith('/records')) return 'Medical Records Archive';
