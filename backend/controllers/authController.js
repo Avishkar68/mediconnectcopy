@@ -22,6 +22,9 @@ const registerUser = async (req, res) => {
 
   // Validate Role
   const allowedRoles = ['patient', 'doctor', 'admin'];
+  if (role != null && typeof role !== 'string') {
+    return sendError(res, 'Invalid user role specified', 400);
+  }
   const userRole = role ? role.toLowerCase() : 'patient';
   if (!allowedRoles.includes(userRole)) {
     return sendError(res, 'Invalid user role specified', 400);

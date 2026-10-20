@@ -161,7 +161,7 @@ const DoctorPatients = () => {
           if (e.target === e.currentTarget) setEmergencyModalOpen(false);
         }}
       >
-        <div className="glass-card rounded-3xl border border-red-500/30 bg-[#0b1220] max-w-xl w-full p-6 text-left relative max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl shadow-red-950/40">
+        <div className="glass-card rounded-3xl border border-red-500/30 bg-white max-w-xl w-full p-6 text-left relative max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl shadow-red-950/40">
           {/* Modal Header */}
           <div className="flex justify-between items-start border-b border-slate-800 pb-3">
             <div className="flex items-center space-x-3">

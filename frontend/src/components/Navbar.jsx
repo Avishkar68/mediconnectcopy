@@ -102,7 +102,7 @@ const Navbar = () => {
           <div className="bg-brand-500 p-2 rounded-xl text-dark-950 group-hover:scale-105 transition-transform">
             <HeartPulse className="w-5 h-5" />
           </div>
-          <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-brand-300 bg-clip-text text-transparent">
+          <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-slate-700 to-brand-600 bg-clip-text text-transparent">
             MediConnect
           </span>
         </Link>

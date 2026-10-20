@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "test": "node --test --test-reporter=spec test/auth.test.js test/nonfunctional.test.js",
+    "test:functional": "node --test --test-reporter=spec test/auth.test.js",
+    "test:nonfunctional": "node --test --test-reporter=spec test/nonfunctional.test.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

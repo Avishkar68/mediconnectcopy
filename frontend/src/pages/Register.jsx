@@ -124,10 +124,11 @@ const Register = () => {
             />
 
             <div className="flex flex-col space-y-1.5 w-full">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <label htmlFor="registration-role" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 User Role
               </label>
               <select
+                id="registration-role"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}

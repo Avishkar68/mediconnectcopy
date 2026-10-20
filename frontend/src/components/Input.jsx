@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 /**
  * Reusable glassmorphic text input component
  * @param {String} label - Field label text
  * @param {String} error - Error message text (renders field red if present)
  */
-const Input = ({ label, error, type = 'text', className = '', ...props }) => {
+const Input = ({ label, error, type = 'text', className = '', id, ...props }) => {
+  const generatedId = useId();
+  const inputId = id || generatedId;
+
   return (
     <div className="flex flex-col space-y-1.5 w-full">
       {label && (
-        <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <label htmlFor={inputId} className="text-xs font-semibold uppercase tracking-wider text-slate-400">
           {label}
         </label>
       )}
       <input
+        id={inputId}
         type={type}
         className={`glass-input px-4 py-2.5 rounded-lg text-sm transition-all placeholder:text-slate-500 ${
           error 

@@ -54,7 +54,7 @@ export default function EmergencyProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050914] text-white flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center justify-center p-6">
         <Loader fullPage={false} />
         <p className="text-slate-400 text-xs mt-3 font-mono animate-pulse">
           Verifying clinician authorization and decrypting emergency records...
@@ -69,7 +69,7 @@ export default function EmergencyProfile() {
     const isForbidden = errorStatus === 403 || errorMessage.toLowerCase().includes("access denied") || errorMessage.toLowerCase().includes("disabled") || errorMessage.toLowerCase().includes("expired");
 
     return (
-      <div className="min-h-screen bg-[#050914] text-white flex items-center justify-center p-6 text-left">
+      <div className="min-h-screen bg-white text-slate-900 flex items-center justify-center p-6 text-left">
         <div className="max-w-md w-full glass-card rounded-3xl p-8 border border-slate-800 text-center space-y-5">
           <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl bg-red-500/10 border border-red-500/20 text-red-400">
             {isUnauthenticated ? <Lock className="w-8 h-8" /> : <ShieldAlert className="w-8 h-8" />}

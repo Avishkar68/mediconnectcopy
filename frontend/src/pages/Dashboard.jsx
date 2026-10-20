@@ -435,7 +435,7 @@ const Dashboard = () => {
 
       {/* MOBILE STICKY BOTTOM NAVIGATION BAR (Screens < lg) */}
       {!isDoctor && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-slate-800 bg-[#0a1120]/95 backdrop-blur-lg px-2 py-2">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-slate-800 bg-white/95 backdrop-blur-lg px-2 py-2">
           <div className="max-w-md mx-auto grid grid-cols-5 gap-1 text-center">
             <Link
               to="/dashboard"
