@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -133,14 +134,14 @@ const Community = () => {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold font-display text-white">Community Forum</h1>
+          <h1 className="text-2xl font-bold font-display text-white">{i18n.t("Community Forum")}</h1>
           <p className="text-slate-400 text-xs mt-0.5">
-            Share advice, tips, and seek support in our encrypted medical community.
+            {i18n.t("Share advice, tips, and seek support in our encrypted medical community.")}
           </p>
         </div>
         <Button onClick={() => setModalOpen(true)} className="flex items-center space-x-1">
           <PlusCircle className="w-4 h-4" />
-          <span>New Discussion</span>
+          <span>{i18n.t("New Discussion")}</span>
         </Button>
       </div>
 
@@ -167,9 +168,9 @@ const Community = () => {
       ) : posts.length === 0 ? (
         <div className="glass-card rounded-2xl p-12 text-center border border-slate-800">
           <MessageSquare className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <h3 className="font-bold text-white text-base">No discussions found</h3>
+          <h3 className="font-bold text-white text-base">{i18n.t("No discussions found")}</h3>
           <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-            Be the first to start a thread in this category! Ask a question or share a healthcare tip.
+            {i18n.t("Be the first to start a thread in this category! Ask a question or share a healthcare tip.")}
           </p>
         </div>
       ) : (
@@ -254,13 +255,13 @@ const Community = () => {
                 <form onSubmit={(e) => handleCommentSubmit(e, post._id)} className="mt-4 flex gap-2">
                   <input
                     type="text"
-                    placeholder="Add comment to conversation..."
+                    placeholder={i18n.t("Add comment to conversation...")}
                     value={commentInputs[post._id] || ''}
                     onChange={(e) => handleCommentInputChange(post._id, e.target.value)}
                     className="glass-input flex-1 px-3 py-1.5 rounded-lg text-xs bg-slate-900 border border-slate-800 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_1px_rgba(14,165,233,0.15)]"
                   />
                   <Button type="submit" variant="secondary" className="px-3 py-1.5 text-xs">
-                    Reply
+                    {i18n.t("Reply")}
                   </Button>
                 </form>
 
@@ -271,7 +272,7 @@ const Community = () => {
       )}
 
       {/* Create Post Modal */}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Start New Discussion">
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={i18n.t("Start New Discussion")}>
         <form onSubmit={handleCreatePost} className="space-y-4">
           {createError && (
             <div className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold text-center">
@@ -280,15 +281,15 @@ const Community = () => {
           )}
 
           <Input
-            label="Discussion Title"
-            placeholder="e.g., Quick tips on managing hypertension diet"
+            label={i18n.t("Discussion Title")}
+            placeholder={i18n.t("e.g., Quick tips on managing hypertension diet")}
             value={postTitle}
             onChange={(e) => setPostTitle(e.target.value)}
           />
 
           <div className="flex flex-col space-y-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Discussion Category
+              {i18n.t("Discussion Category")}
             </label>
             <select
               value={postCategory}
@@ -305,10 +306,10 @@ const Community = () => {
 
           <div className="flex flex-col space-y-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Discussion Content
+              {i18n.t("Discussion Content")}
             </label>
             <textarea
-              placeholder="Describe your question or advice in detail here..."
+              placeholder={i18n.t("Describe your question or advice in detail here...")}
               value={postContent}
               onChange={(e) => setPostContent(e.target.value)}
               className="glass-input px-4 py-2.5 rounded-lg text-sm bg-slate-900 border border-slate-700/50 text-slate-100 focus:border-brand-500 focus:outline-none h-32 resize-none"
@@ -317,10 +318,10 @@ const Community = () => {
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>
-              Cancel
+              {i18n.t("Cancel")}
             </Button>
             <Button type="submit" loading={createLoading}>
-              Publish Post
+              {i18n.t("Publish Post")}
             </Button>
           </div>
         </form>

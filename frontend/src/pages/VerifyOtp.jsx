@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -87,10 +88,10 @@ const VerifyOtp = () => {
             <ShieldCheck className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold font-display text-white tracking-tight">
-            Security Verification
+            {i18n.t("Security Verification")}
           </h2>
           <p className="text-slate-400 text-sm mt-1 text-center">
-            Verify your email identity to activate your account.
+            {i18n.t("Verify your email identity to activate your account.")}
           </p>
         </div>
 
@@ -101,7 +102,7 @@ const VerifyOtp = () => {
               <div className="bg-emerald-500/10 text-emerald-400 p-4 rounded-full border border-emerald-500/20">
                 <CheckCircle2 className="w-12 h-12 animate-bounce" />
               </div>
-              <h3 className="text-lg font-bold text-white">Verified!</h3>
+              <h3 className="text-lg font-bold text-white">{i18n.t("Verified!")}</h3>
               <p className="text-xs text-slate-400 max-w-xs">{success}</p>
             </div>
           ) : (
@@ -113,17 +114,17 @@ const VerifyOtp = () => {
               )}
 
               <Input
-                label="Email Address"
+                label={i18n.t("Email Address")}
                 type="email"
-                placeholder="example@mediconnect.com"
+                placeholder={i18n.t("example@mediconnect.com")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={!!new URLSearchParams(location.search).get('email')}
               />
 
               <Input
-                label="6-Digit OTP Code"
-                placeholder="Enter 6-digit code"
+                label={i18n.t("6-Digit OTP Code")}
+                placeholder={i18n.t("Enter 6-digit code")}
                 maxLength={6}
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))} // only numbers
@@ -134,14 +135,13 @@ const VerifyOtp = () => {
                 <div className="flex space-x-2">
                   <Mail className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
                   <div>
-                    <h5 className="text-xs font-bold text-slate-300">Local Testing Hint:</h5>
+                    <h5 className="text-xs font-bold text-slate-300">{i18n.t("Local Testing Hint:")}</h5>
                     <p className="text-[10px] text-slate-500 mt-0.5">
-                      Since we are running locally, the OTP has been printed directly to your
-                      **Node.js server terminal logs**. Copy it from there!
+                      {i18n.t("Since we are running locally, the OTP has been printed directly to your **Node.js server terminal logs**. Copy it from there!")}
                     </p>
                     {devOtp && (
                       <div className="mt-2 p-2 bg-brand-500/10 border border-brand-500/20 rounded-lg text-xs font-bold text-brand-400 text-center select-all">
-                        Active OTP: {devOtp}
+                        {i18n.t("Active OTP:")} {devOtp}
                       </div>
                     )}
                   </div>
@@ -149,7 +149,7 @@ const VerifyOtp = () => {
               </div>
 
               <Button type="submit" loading={loading} className="w-full mt-6">
-                Verify Account
+                {i18n.t("Verify Account")}
               </Button>
             </form>
           )}
@@ -157,9 +157,9 @@ const VerifyOtp = () => {
           {/* Footer link */}
           <div className="mt-6 text-center">
             <p className="text-slate-400 text-xs">
-              Did something go wrong?{' '}
+              {i18n.t("Did something go wrong?")}{' '}
               <Link to="/register" className="text-brand-400 hover:text-brand-300 font-semibold underline">
-                Restart Register
+                {i18n.t("Restart Register")}
               </Link>
             </p>
           </div>

@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
@@ -57,7 +58,7 @@ export default function EmergencyProfile() {
       <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center justify-center p-6">
         <Loader fullPage={false} />
         <p className="text-slate-400 text-xs mt-3 font-mono animate-pulse">
-          Verifying clinician authorization and decrypting emergency records...
+          {i18n.t("Verifying clinician authorization and decrypting emergency records...")}
         </p>
       </div>
     );
@@ -98,7 +99,7 @@ export default function EmergencyProfile() {
                 className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-bold text-xs transition flex items-center justify-center space-x-2"
               >
                 <LogIn className="w-4 h-4" />
-                <span>Log In with Doctor Credentials</span>
+                <span>{i18n.t("Log In with Doctor Credentials")}</span>
               </Link>
             ) : null}
 
@@ -107,12 +108,12 @@ export default function EmergencyProfile() {
               className="w-full py-2.5 px-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold text-xs transition flex items-center justify-center space-x-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Return to Dashboard</span>
+              <span>{i18n.t("Return to Dashboard")}</span>
             </Link>
           </div>
 
           <div className="text-[10px] text-slate-500 border-t border-slate-850 pt-3">
-            MediConnect Emergency Medical Security &bull; HIPAA Compliant
+            {i18n.t("MediConnect Emergency Medical Security • HIPAA Compliant")}
           </div>
         </div>
       </div>
@@ -131,12 +132,12 @@ export default function EmergencyProfile() {
             className="inline-flex items-center space-x-1.5 text-slate-400 hover:text-white transition font-semibold"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Dashboard</span>
+            <span>{i18n.t("Dashboard")}</span>
           </Link>
 
           <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
             <CheckCircle className="w-3 h-3 text-emerald-400" />
-            <span>Verified Clinician Access ({viewer?.name || "Authorized Doctor"})</span>
+            <span>{i18n.t("Verified Clinician Access (")}{viewer?.name || "Authorized Doctor"})</span>
           </span>
         </div>
 
@@ -150,13 +151,13 @@ export default function EmergencyProfile() {
             </div>
             <div>
               <p className="text-[10px] uppercase font-extrabold text-red-400 tracking-wider">
-                Emergency Medical Record
+                {i18n.t("Emergency Medical Record")}
               </p>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-display mt-0.5">
                 {patientData.name}
               </h1>
               <p className="text-xs text-slate-400 mt-1">
-                Authorized patient emergency profile &bull; Timestamped access
+                {i18n.t("Authorized patient emergency profile • Timestamped access")}
               </p>
             </div>
           </div>
@@ -164,7 +165,7 @@ export default function EmergencyProfile() {
           <div className="mt-5 rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-300 flex items-center space-x-2">
             <ShieldCheck className="w-4 h-4 text-red-400 shrink-0" />
             <span>
-              This information has been explicitly authorized by the patient for emergency medical reference.
+              {i18n.t("This information has been explicitly authorized by the patient for emergency medical reference.")}
             </span>
           </div>
         </div>
@@ -175,9 +176,9 @@ export default function EmergencyProfile() {
             <div className="flex justify-between items-center">
               <div>
                 <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-                  Critical Transfusion Factor
+                  {i18n.t("Critical Transfusion Factor")}
                 </span>
-                <h3 className="text-sm font-bold text-white mt-0.5">Blood Group</h3>
+                <h3 className="text-sm font-bold text-white mt-0.5">{i18n.t("Blood Group")}</h3>
               </div>
               <div className="text-3xl sm:text-4xl font-extrabold text-red-400 bg-red-500/20 px-4 py-1.5 rounded-2xl border border-red-500/30 font-display">
                 {patientData.bloodGroup || "Not Specified"}
@@ -192,7 +193,7 @@ export default function EmergencyProfile() {
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
               <span className="text-xl">⚠️</span>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Known Allergies & Sensitivities
+                {i18n.t("Known Allergies & Sensitivities")}
               </h3>
             </div>
 
@@ -209,7 +210,7 @@ export default function EmergencyProfile() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic py-1">No allergies recorded in patient profile.</p>
+              <p className="text-xs text-slate-500 italic py-1">{i18n.t("No allergies recorded in patient profile.")}</p>
             )}
           </div>
         )}
@@ -220,7 +221,7 @@ export default function EmergencyProfile() {
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
               <span className="text-xl">💊</span>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Current Active Medications
+                {i18n.t("Current Active Medications")}
               </h3>
             </div>
 
@@ -237,7 +238,7 @@ export default function EmergencyProfile() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic py-1">No active medications registered.</p>
+              <p className="text-xs text-slate-500 italic py-1">{i18n.t("No active medications registered.")}</p>
             )}
           </div>
         )}
@@ -248,7 +249,7 @@ export default function EmergencyProfile() {
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
               <span className="text-xl">🏥</span>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Diagnosed Medical Conditions
+                {i18n.t("Diagnosed Medical Conditions")}
               </h3>
             </div>
 
@@ -265,7 +266,7 @@ export default function EmergencyProfile() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic py-1">No chronic or diagnosed conditions listed.</p>
+              <p className="text-xs text-slate-500 italic py-1">{i18n.t("No chronic or diagnosed conditions listed.")}</p>
             )}
           </div>
         )}
@@ -276,7 +277,7 @@ export default function EmergencyProfile() {
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
               <span className="text-xl">📞</span>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Primary Emergency Contact
+                {i18n.t("Primary Emergency Contact")}
               </h3>
             </div>
 
@@ -287,7 +288,7 @@ export default function EmergencyProfile() {
                 </h4>
                 {patientData.emergencyContact.relation && (
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Relationship: <span className="text-slate-300 font-medium">{patientData.emergencyContact.relation}</span>
+                    {i18n.t("Relationship:")} <span className="text-slate-300 font-medium">{patientData.emergencyContact.relation}</span>
                   </p>
                 )}
                 {patientData.emergencyContact.phone && (
@@ -303,7 +304,7 @@ export default function EmergencyProfile() {
                   className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-bold text-xs transition flex items-center space-x-2 shrink-0 shadow-md shadow-emerald-500/10"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>Call Emergency Contact</span>
+                  <span>{i18n.t("Call Emergency Contact")}</span>
                 </a>
               )}
             </div>
@@ -316,7 +317,7 @@ export default function EmergencyProfile() {
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
               <span className="text-xl">📋</span>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Critical Medical Notes & Directives
+                {i18n.t("Critical Medical Notes & Directives")}
               </h3>
             </div>
             <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-850 text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
@@ -328,10 +329,10 @@ export default function EmergencyProfile() {
         {/* AUDIT & SECURITY FOOTER */}
         <div className="glass-card rounded-2xl border border-slate-800 p-4 text-center space-y-1">
           <p className="text-[11px] font-semibold text-slate-400">
-            MediConnect Emergency Access Log &bull; Session Audited &bull; Recorded on Timeline
+            {i18n.t("MediConnect Emergency Access Log • Session Audited • Recorded on Timeline")}
           </p>
           <p className="text-[10px] text-slate-600">
-            Emergency records access is logged and timestamped for patient transparency and medical audit trails.
+            {i18n.t("Emergency records access is logged and timestamped for patient transparency and medical audit trails.")}
           </p>
         </div>
       </div>

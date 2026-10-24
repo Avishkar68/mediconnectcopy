@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -26,8 +27,10 @@ import {
 } from 'lucide-react';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
@@ -73,27 +76,27 @@ const Dashboard = () => {
 
     const sections = [
       {
-        title: 'Practice & Patients',
+        title: t('Practice & Patients'),
         items: [
-          { path: '/dashboard', label: 'Practice Home', icon: LayoutDashboard, exact: true },
-          { path: '/dashboard/patients', label: 'My Patients', icon: Users },
-          { path: '/dashboard/requests', label: 'Record Requests', icon: UserPlus },
+          { path: '/dashboard', label: t('Practice Home'), icon: LayoutDashboard, exact: true },
+          { path: '/dashboard/patients', label: t('My Patients'), icon: Users },
+          { path: '/dashboard/requests', label: t('Record Requests'), icon: UserPlus },
         ]
       },
       {
-        title: 'Care & Consultations',
+        title: t('Care & Consultations'),
         items: [
-          { path: '/dashboard/consultations', label: 'Video Consultations', icon: Video },
-          { path: '/dashboard/prescriptions', label: 'Prescriptions', icon: FileText },
-          { path: '/dashboard/care-plans', label: 'Care Plans', icon: ClipboardList },
-          { path: '/dashboard/follow-ups', label: 'Follow-ups', icon: Clock },
+          { path: '/dashboard/consultations', label: t('Video Consultations'), icon: Video },
+          { path: '/dashboard/prescriptions', label: t('Prescriptions'), icon: FileText },
+          { path: '/dashboard/care-plans', label: t('Care Plans'), icon: ClipboardList },
+          { path: '/dashboard/follow-ups', label: t('Follow-ups'), icon: Clock },
         ]
       },
       {
-        title: 'Insights & Alerts',
+        title: t('Insights & Alerts'),
         items: [
-          { path: '/dashboard/trends', label: 'Patient Trends', icon: TrendingUp },
-          { path: '/dashboard/notifications', label: 'Notifications', icon: Bell, badge: true },
+          { path: '/dashboard/trends', label: t('Patient Trends'), icon: TrendingUp },
+          { path: '/dashboard/notifications', label: t('Notifications'), icon: Bell, badge: true },
         ]
       }
     ];
@@ -109,7 +112,7 @@ const Dashboard = () => {
       <div className="glass-card rounded-3xl border border-slate-800/80 p-4">
         {/* Mobile Header Toggle */}
         <div className="flex lg:hidden justify-between items-center pb-3 border-b border-slate-800 mb-3 text-left">
-          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Doctor Menu</span>
+          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">{t('Doctor Menu')}</span>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-1.5 text-slate-300 hover:text-white rounded-lg bg-slate-900 border border-slate-800"
@@ -169,8 +172,8 @@ const Dashboard = () => {
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">System Users</h5>
-            <h3 className="text-lg font-bold text-white mt-0.5">Active</h3>
+            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("System Users")}</h5>
+            <h3 className="text-lg font-bold text-white mt-0.5">{i18n.t("Active")}</h3>
           </div>
         </div>
         <div className="glass-card rounded-2xl p-6 border border-slate-800 flex items-center space-x-4">
@@ -178,8 +181,8 @@ const Dashboard = () => {
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">System Status</h5>
-            <h3 className="text-lg font-bold text-white mt-0.5">Healthy & Secure</h3>
+            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("System Status")}</h5>
+            <h3 className="text-lg font-bold text-white mt-0.5">{i18n.t("Healthy & Secure")}</h3>
           </div>
         </div>
         <div className="glass-card rounded-2xl p-6 border border-slate-800 flex items-center space-x-4">
@@ -187,8 +190,8 @@ const Dashboard = () => {
             <TrendingUp className="w-6 h-6" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Server Response</h5>
-            <h3 className="text-lg font-bold text-white mt-0.5">99.9% Uptime</h3>
+            <h5 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("Server Response")}</h5>
+            <h3 className="text-lg font-bold text-white mt-0.5">{i18n.t("99.9% Uptime")}</h3>
           </div>
         </div>
       </div>
@@ -196,9 +199,9 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <div className="glass-card rounded-2xl p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-2">Admin Control Center</h3>
+            <h3 className="text-base font-bold text-white mb-2">{i18n.t("Admin Control Center")}</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Manage doctor verification approvals, review security audit logs, and monitor platform health.
+              {i18n.t("Manage doctor verification approvals, review security audit logs, and monitor platform health.")}
             </p>
           </div>
         </div>
@@ -214,12 +217,12 @@ const Dashboard = () => {
     <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
       <div className="flex items-center space-x-1.5 border-b border-slate-800 pb-2">
         <Bell className="w-4 h-4 text-brand-400" />
-        <h3 className="text-sm font-bold text-white">Recent Notifications</h3>
+        <h3 className="text-sm font-bold text-white">{i18n.t("Recent Notifications")}</h3>
       </div>
       
       <div className="space-y-2 max-h-80 overflow-y-auto">
         {notifications.length === 0 ? (
-          <p className="text-xs text-slate-400 text-center py-4">No new notifications</p>
+          <p className="text-xs text-slate-400 text-center py-4">{i18n.t("No new notifications")}</p>
         ) : (
           notifications.map(n => (
             <div
@@ -249,31 +252,31 @@ const Dashboard = () => {
 
     const sections = [
       {
-        title: 'Everyday Health',
+        title: t('Everyday Health'),
         items: [
-          { path: '/dashboard', label: 'Home Dashboard', icon: LayoutDashboard, exact: true },
-          { path: '/dashboard/medications', label: 'My Daily Medicines', icon: Activity },
-          { path: '/dashboard/care-plan', label: "Doctor's Care Plan", icon: ClipboardList },
-          { path: '/dashboard/health', label: 'My Vitals (BP & Sugar)', icon: Heart },
+          { path: '/dashboard', label: t('Home Dashboard'), icon: LayoutDashboard, exact: true },
+          { path: '/dashboard/medications', label: t('My Daily Medicines'), icon: Activity },
+          { path: '/dashboard/care-plan', label: t("Doctor's Care Plan"), icon: ClipboardList },
+          { path: '/dashboard/health', label: t('My Vitals (BP & Sugar)'), icon: Heart },
         ]
       },
       {
-        title: 'Reports & Doctors',
+        title: t('Reports & Doctors'),
         items: [
-          { path: '/dashboard/ai-analyzer', label: 'Explain My Lab Report', icon: Sparkles },
-          { path: '/dashboard/compare-reports', label: 'Compare 2 Reports', icon: GitCompare },
-          { path: '/dashboard/records', label: 'My Medical Files', icon: FileText },
-          { path: '/dashboard/appointments', label: 'Doctor Visits & Calls', icon: Calendar },
-          { path: '/dashboard/doctors', label: 'My Approved Doctors', icon: UserCheck },
+          { path: '/dashboard/ai-analyzer', label: t('Explain My Lab Report'), icon: Sparkles },
+          { path: '/dashboard/compare-reports', label: t('Compare 2 Reports'), icon: GitCompare },
+          { path: '/dashboard/records', label: t('My Medical Files'), icon: FileText },
+          { path: '/dashboard/appointments', label: t('Doctor Visits & Calls'), icon: Calendar },
+          { path: '/dashboard/doctors', label: t('My Approved Doctors'), icon: UserCheck },
         ]
       },
       {
-        title: 'Life Safety & History',
+        title: t('Life Safety & History'),
         items: [
-          { path: '/dashboard/emergency-assistant', label: 'Emergency First-Aid SOS', icon: HeartPulse, emergency: true },
-          { path: '/dashboard/emergency-access', label: 'Emergency QR Health Card', icon: QrCode },
-          { path: '/dashboard/timeline', label: 'My Health Timeline', icon: Clock },
-          { path: '/dashboard/notifications', label: 'Notifications', icon: Bell, badge: true }
+          { path: '/dashboard/emergency-assistant', label: t('Emergency First-Aid SOS'), icon: HeartPulse, emergency: true },
+          { path: '/dashboard/emergency-access', label: t('Emergency QR Health Card'), icon: QrCode },
+          { path: '/dashboard/timeline', label: t('My Health Timeline'), icon: Clock },
+          { path: '/dashboard/notifications', label: t('Notifications'), icon: Bell, badge: true }
         ]
       }
     ];
@@ -290,7 +293,7 @@ const Dashboard = () => {
         {/* Mobile Header Toggle */}
         <div className="flex lg:hidden justify-between items-center pb-3 border-b border-slate-800 mb-3 text-left">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-bold text-white uppercase tracking-wider">All Health Features</span>
+            <span className="text-xs font-bold text-white uppercase tracking-wider">{i18n.t("All Health Features")}</span>
           </div>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -332,7 +335,7 @@ const Dashboard = () => {
                     </div>
                     {item.emergency && !active && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full font-extrabold bg-rose-600 text-white tracking-wider">
-                        SOS
+                        {i18n.t("SOS")}
                       </span>
                     )}
                     {item.badge && unreadNotificationsCount > 0 && (
@@ -418,7 +421,7 @@ const Dashboard = () => {
                   {getSectionTitle()}
                 </h1>
                 <p className="text-slate-300 text-xs mt-1">
-                  MediConnect {isDoctor ? 'Doctor Hub' : 'Patient Hub'} • Signed in as <span className={`${brandColorText} font-bold`}>{user?.name}</span>
+                  {i18n.t("MediConnect")} {isDoctor ? 'Doctor Hub' : 'Patient Hub'} {i18n.t("• Signed in as")} <span className={`${brandColorText} font-bold`}>{user?.name}</span>
                 </p>
               </div>
               <span className={`text-[10px] font-bold tracking-wider px-3 py-1 rounded-full border uppercase shrink-0 ${brandBgTag}`}>
@@ -444,7 +447,7 @@ const Dashboard = () => {
               }`}
             >
               <LayoutDashboard className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-tight">Home</span>
+              <span className="text-[10px] leading-tight">{i18n.t("Home")}</span>
             </Link>
 
             <Link
@@ -454,7 +457,7 @@ const Dashboard = () => {
               }`}
             >
               <Activity className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-tight">Meds</span>
+              <span className="text-[10px] leading-tight">{i18n.t("Meds")}</span>
             </Link>
 
             <Link
@@ -464,7 +467,7 @@ const Dashboard = () => {
               }`}
             >
               <Sparkles className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-tight">Reports</span>
+              <span className="text-[10px] leading-tight">{i18n.t("Reports")}</span>
             </Link>
 
             <Link
@@ -474,7 +477,7 @@ const Dashboard = () => {
               }`}
             >
               <Calendar className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-tight">Visits</span>
+              <span className="text-[10px] leading-tight">{i18n.t("Visits")}</span>
             </Link>
 
             <Link
@@ -484,7 +487,7 @@ const Dashboard = () => {
               }`}
             >
               <HeartPulse className="w-4 h-4 mb-0.5 animate-pulse" />
-              <span className="text-[10px] leading-tight font-bold">SOS</span>
+              <span className="text-[10px] leading-tight font-bold">{i18n.t("SOS")}</span>
             </Link>
           </div>
         </div>

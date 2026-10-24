@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
@@ -261,7 +262,7 @@ const AdminDashboard = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin" />
-        <p className="text-sm font-bold text-slate-400">Loading MediConnect Super Admin Console...</p>
+        <p className="text-sm font-bold text-slate-400">{i18n.t("Loading MediConnect Super Admin Console...")}</p>
       </div>
     );
   }
@@ -279,14 +280,14 @@ const AdminDashboard = () => {
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="text-2xl font-extrabold text-white font-display tracking-tight">
-                  Super Administrator Suite
+                  {i18n.t("Super Administrator Suite")}
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
-                  Root Governance
+                  {i18n.t("Root Governance")}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Manage all registered users, verify medical practitioner licenses, audit system activity, and monitor platform health.
+                {i18n.t("Manage all registered users, verify medical practitioner licenses, audit system activity, and monitor platform health.")}
               </p>
             </div>
           </div>
@@ -301,7 +302,7 @@ const AdminDashboard = () => {
               className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 flex items-center space-x-1.5 transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Refresh Metrics</span>
+              <span>{i18n.t("Refresh Metrics")}</span>
             </button>
           </div>
         </div>
@@ -332,7 +333,7 @@ const AdminDashboard = () => {
           }`}
         >
           <Activity className="w-4 h-4 text-indigo-400" />
-          <span>Platform Overview & Health</span>
+          <span>{i18n.t("Platform Overview & Health")}</span>
         </button>
 
         <button
@@ -344,7 +345,7 @@ const AdminDashboard = () => {
           }`}
         >
           <Users className="w-4 h-4 text-brand-400" />
-          <span>User Directory ({users.length})</span>
+          <span>{i18n.t("User Directory (")}{users.length})</span>
         </button>
 
         <button
@@ -356,10 +357,10 @@ const AdminDashboard = () => {
           }`}
         >
           <Stethoscope className="w-4 h-4 text-emerald-400" />
-          <span>Doctor Verification Queue</span>
+          <span>{i18n.t("Doctor Verification Queue")}</span>
           {stats?.pendingDoctors > 0 && (
             <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-dark-950 text-[10px] font-extrabold animate-pulse">
-              {stats.pendingDoctors} Pending
+              {stats.pendingDoctors} {i18n.t("Pending")}
             </span>
           )}
         </button>
@@ -373,7 +374,7 @@ const AdminDashboard = () => {
           }`}
         >
           <FileText className="w-4 h-4 text-blue-400" />
-          <span>Audit & Compliance Logs</span>
+          <span>{i18n.t("Audit & Compliance Logs")}</span>
         </button>
 
         <button
@@ -385,7 +386,7 @@ const AdminDashboard = () => {
           }`}
         >
           <Megaphone className="w-4 h-4 text-amber-400" />
-          <span>System Broadcast</span>
+          <span>{i18n.t("System Broadcast")}</span>
         </button>
       </div>
 
@@ -400,16 +401,16 @@ const AdminDashboard = () => {
             
             <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] uppercase font-bold tracking-wider">Total Patients</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider">{i18n.t("Total Patients")}</span>
                 <Users className="w-4 h-4 text-brand-400" />
               </div>
               <h3 className="text-2xl font-black text-white font-display">{stats.totalPatients}</h3>
-              <p className="text-[11px] text-slate-500">Registered on MediConnect</p>
+              <p className="text-[11px] text-slate-500">{i18n.t("Registered on MediConnect")}</p>
             </div>
 
             <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] uppercase font-bold tracking-wider">Practicing Doctors</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider">{i18n.t("Practicing Doctors")}</span>
                 <Stethoscope className="w-4 h-4 text-emerald-400" />
               </div>
               <h3 className="text-2xl font-black text-emerald-300 font-display">
@@ -422,24 +423,24 @@ const AdminDashboard = () => {
 
             <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] uppercase font-bold tracking-wider">Appointments</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider">{i18n.t("Appointments")}</span>
                 <Calendar className="w-4 h-4 text-blue-400" />
               </div>
               <h3 className="text-2xl font-black text-white font-display">{stats.totalAppointments}</h3>
               <p className="text-[11px] text-slate-500">
-                {stats.appointmentBreakdown.scheduled} scheduled • {stats.appointmentBreakdown.completed} completed
+                {stats.appointmentBreakdown.scheduled} {i18n.t("scheduled •")} {stats.appointmentBreakdown.completed} {i18n.t("completed")}
               </p>
             </div>
 
             <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] uppercase font-bold tracking-wider">Active Care Pathways</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider">{i18n.t("Active Care Pathways")}</span>
                 <TrendingUp className="w-4 h-4 text-indigo-400" />
               </div>
               <h3 className="text-2xl font-black text-indigo-300 font-display">
                 {stats.activeCarePlans}
               </h3>
-              <p className="text-[11px] text-slate-500">{stats.totalRecords} medical records archived</p>
+              <p className="text-[11px] text-slate-500">{stats.totalRecords} {i18n.t("medical records archived")}</p>
             </div>
 
           </div>
@@ -450,43 +451,43 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 className="text-sm font-bold text-white flex items-center space-x-2">
                   <Server className="w-4 h-4 text-emerald-400" />
-                  <span>Platform System Health & Infrastructure Diagnostics</span>
+                  <span>{i18n.t("Platform System Health & Infrastructure Diagnostics")}</span>
                 </h3>
                 <span className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>All Systems Operational</span>
+                  <span>{i18n.t("All Systems Operational")}</span>
                 </span>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                 <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase font-bold block flex items-center space-x-1">
-                    <Database className="w-3 h-3 text-emerald-400 mr-1" /> Database Status
+                    <Database className="w-3 h-3 text-emerald-400 mr-1" /> {i18n.t("Database Status")}
                   </span>
                   <span className="font-extrabold text-white">{systemHealth.database}</span>
                 </div>
 
                 <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase font-bold block flex items-center space-x-1">
-                    <Radio className="w-3 h-3 text-brand-400 mr-1" /> WebRTC Signaling
+                    <Radio className="w-3 h-3 text-brand-400 mr-1" /> {i18n.t("WebRTC Signaling")}
                   </span>
                   <span className="font-extrabold text-white">{systemHealth.webrtcSignaling}</span>
                 </div>
 
                 <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase font-bold block flex items-center space-x-1">
-                    <Clock className="w-3 h-3 text-blue-400 mr-1" /> Server Uptime
+                    <Clock className="w-3 h-3 text-blue-400 mr-1" /> {i18n.t("Server Uptime")}
                   </span>
                   <span className="font-extrabold text-white">
-                    {Math.floor(systemHealth.serverUptime / 3600)}h {Math.floor((systemHealth.serverUptime % 3600) / 60)}m
+                    {Math.floor(systemHealth.serverUptime / 3600)}{i18n.t("h")} {Math.floor((systemHealth.serverUptime % 3600) / 60)}{i18n.t("m")}
                   </span>
                 </div>
 
                 <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase font-bold block flex items-center space-x-1">
-                    <Activity className="w-3 h-3 text-indigo-400 mr-1" /> Process Memory
+                    <Activity className="w-3 h-3 text-indigo-400 mr-1" /> {i18n.t("Process Memory")}
                   </span>
-                  <span className="font-extrabold text-white">{systemHealth.memoryUsageMB} MB RSS</span>
+                  <span className="font-extrabold text-white">{systemHealth.memoryUsageMB} {i18n.t("MB RSS")}</span>
                 </div>
               </div>
             </div>
@@ -497,13 +498,13 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-sm font-bold text-white flex items-center space-x-2">
                 <FileText className="w-4 h-4 text-blue-400" />
-                <span>Recent Governance Audit Trail</span>
+                <span>{i18n.t("Recent Governance Audit Trail")}</span>
               </h3>
               <button
                 onClick={() => setActiveTab('audit')}
                 className="text-xs text-brand-400 hover:text-brand-300 font-bold flex items-center"
               >
-                <span>View Full Audit Log</span>
+                <span>{i18n.t("View Full Audit Log")}</span>
                 <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </button>
             </div>
@@ -546,7 +547,7 @@ const AdminDashboard = () => {
                 type="text"
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                placeholder="Search user by name or email address..."
+                placeholder={i18n.t("Search user by name or email address...")}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -558,10 +559,10 @@ const AdminDashboard = () => {
                 onChange={(e) => setRoleFilter(e.target.value)}
                 className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
               >
-                <option value="all">All Roles</option>
-                <option value="patient">Patients</option>
-                <option value="doctor">Doctors</option>
-                <option value="admin">Administrators</option>
+                <option value="all">{i18n.t("All Roles")}</option>
+                <option value="patient">{i18n.t("Patients")}</option>
+                <option value="doctor">{i18n.t("Doctors")}</option>
+                <option value="admin">{i18n.t("Administrators")}</option>
               </select>
 
               {/* Status Filter */}
@@ -570,16 +571,16 @@ const AdminDashboard = () => {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
               >
-                <option value="all">All Status</option>
-                <option value="active">Active Only</option>
-                <option value="suspended">Suspended Only</option>
-                <option value="banned">Banned Only</option>
+                <option value="all">{i18n.t("All Status")}</option>
+                <option value="active">{i18n.t("Active Only")}</option>
+                <option value="suspended">{i18n.t("Suspended Only")}</option>
+                <option value="banned">{i18n.t("Banned Only")}</option>
               </select>
 
               <button
                 onClick={fetchUsers}
                 className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                title="Search"
+                title={i18n.t("Search")}
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -592,19 +593,19 @@ const AdminDashboard = () => {
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-800">
                   <tr>
-                    <th className="p-4">User</th>
-                    <th className="p-4">Role</th>
-                    <th className="p-4">Account Standing</th>
-                    <th className="p-4">Verification</th>
-                    <th className="p-4">Registered</th>
-                    <th className="p-4 text-right">Governance Actions</th>
+                    <th className="p-4">{i18n.t("User")}</th>
+                    <th className="p-4">{i18n.t("Role")}</th>
+                    <th className="p-4">{i18n.t("Account Standing")}</th>
+                    <th className="p-4">{i18n.t("Verification")}</th>
+                    <th className="p-4">{i18n.t("Registered")}</th>
+                    <th className="p-4 text-right">{i18n.t("Governance Actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {users.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="p-8 text-center text-slate-500">
-                        No users found matching current filters.
+                        {i18n.t("No users found matching current filters.")}
                       </td>
                     </tr>
                   ) : (
@@ -636,9 +637,9 @@ const AdminDashboard = () => {
                               onChange={(e) => handleUpdateUserRole(u._id, e.target.value)}
                               className="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-200 focus:outline-none focus:border-brand-500"
                             >
-                              <option value="patient">Patient</option>
-                              <option value="doctor">Doctor</option>
-                              <option value="admin">Administrator</option>
+                              <option value="patient">{i18n.t("Patient")}</option>
+                              <option value="doctor">{i18n.t("Doctor")}</option>
+                              <option value="admin">{i18n.t("Administrator")}</option>
                             </select>
                           </td>
 
@@ -647,17 +648,17 @@ const AdminDashboard = () => {
                             {isBanned ? (
                               <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-extrabold flex items-center space-x-1 w-fit">
                                 <XCircle className="w-3 h-3" />
-                                <span>Banned</span>
+                                <span>{i18n.t("Banned")}</span>
                               </span>
                             ) : isSuspended ? (
                               <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold flex items-center space-x-1 w-fit">
                                 <AlertTriangle className="w-3 h-3" />
-                                <span>Suspended</span>
+                                <span>{i18n.t("Suspended")}</span>
                               </span>
                             ) : (
                               <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold flex items-center space-x-1 w-fit">
                                 <CheckCircle2 className="w-3 h-3" />
-                                <span>Active</span>
+                                <span>{i18n.t("Active")}</span>
                               </span>
                             )}
                           </td>
@@ -666,10 +667,10 @@ const AdminDashboard = () => {
                           <td className="p-4">
                             {u.isVerified ? (
                               <span className="text-emerald-400 font-bold flex items-center text-[11px]">
-                                <Check className="w-3.5 h-3.5 mr-1" /> Verified
+                                <Check className="w-3.5 h-3.5 mr-1" /> {i18n.t("Verified")}
                               </span>
                             ) : (
-                              <span className="text-slate-500 text-[11px]">Unverified</span>
+                              <span className="text-slate-500 text-[11px]">{i18n.t("Unverified")}</span>
                             )}
                           </td>
 
@@ -687,7 +688,7 @@ const AdminDashboard = () => {
                                   disabled={updatingUserId === u._id}
                                   className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold transition-all"
                                 >
-                                  Activate
+                                  {i18n.t("Activate")}
                                 </button>
                               ) : (
                                 <>
@@ -696,14 +697,14 @@ const AdminDashboard = () => {
                                     disabled={updatingUserId === u._id}
                                     className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[11px] font-bold transition-all"
                                   >
-                                    Suspend
+                                    {i18n.t("Suspend")}
                                   </button>
                                   <button
                                     onClick={() => handleUpdateUserStatus(u._id, 'banned')}
                                     disabled={updatingUserId === u._id}
                                     className="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[11px] font-bold transition-all"
                                   >
-                                    Ban
+                                    {i18n.t("Ban")}
                                   </button>
                                 </>
                               )}
@@ -729,23 +730,23 @@ const AdminDashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold text-white">Practitioner License Verification Queue</h3>
+              <h3 className="text-sm font-bold text-white">{i18n.t("Practitioner License Verification Queue")}</h3>
               <p className="text-xs text-slate-400">
-                Verify practitioner credentials against medical board registry before granting verified badge.
+                {i18n.t("Verify practitioner credentials against medical board registry before granting verified badge.")}
               </p>
             </div>
             <button
               onClick={fetchDoctors}
               className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
             >
-              Refresh Queue
+              {i18n.t("Refresh Queue")}
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {doctors.length === 0 ? (
               <p className="col-span-full text-center py-12 text-slate-500 border border-dashed border-slate-800 rounded-3xl">
-                No doctors currently in the registry.
+                {i18n.t("No doctors currently in the registry.")}
               </p>
             ) : (
               doctors.map((doc) => {
@@ -764,7 +765,7 @@ const AdminDashboard = () => {
                           <Stethoscope className="w-5 h-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white">Dr. {doc.name}</h4>
+                          <h4 className="text-sm font-bold text-white">{i18n.t("Dr.")} {doc.name}</h4>
                           <span className="text-[11px] text-slate-400">{doc.email}</span>
                         </div>
                       </div>
@@ -773,17 +774,17 @@ const AdminDashboard = () => {
                       {isVerified ? (
                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[9px] font-extrabold flex items-center space-x-1">
                           <CheckCircle2 className="w-3 h-3" />
-                          <span>Verified</span>
+                          <span>{i18n.t("Verified")}</span>
                         </span>
                       ) : isPending ? (
                         <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[9px] font-extrabold flex items-center space-x-1 animate-pulse">
                           <Clock className="w-3 h-3" />
-                          <span>Pending Review</span>
+                          <span>{i18n.t("Pending Review")}</span>
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[9px] font-extrabold flex items-center space-x-1">
                           <XCircle className="w-3 h-3" />
-                          <span>Rejected</span>
+                          <span>{i18n.t("Rejected")}</span>
                         </span>
                       )}
                     </div>
@@ -791,19 +792,19 @@ const AdminDashboard = () => {
                     {/* Credential Details */}
                     <div className="p-3 bg-slate-950/80 rounded-2xl border border-slate-800 text-xs space-y-1.5">
                       <div className="flex justify-between">
-                        <span className="text-slate-500 text-[10px] uppercase font-bold">License Number</span>
+                        <span className="text-slate-500 text-[10px] uppercase font-bold">{i18n.t("License Number")}</span>
                         <span className="font-mono text-slate-200 font-bold">
                           {doc.doctorVerification?.licenseNumber || 'MED-PendingSubmission'}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500 text-[10px] uppercase font-bold">Specialization</span>
+                        <span className="text-slate-500 text-[10px] uppercase font-bold">{i18n.t("Specialization")}</span>
                         <span className="text-slate-200 font-semibold">
                           {doc.profile?.specialization || 'General Medicine'}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500 text-[10px] uppercase font-bold">Hospital/Clinic</span>
+                        <span className="text-slate-500 text-[10px] uppercase font-bold">{i18n.t("Hospital/Clinic")}</span>
                         <span className="text-slate-200 truncate max-w-[160px]">
                           {doc.profile?.clinicAddress || doc.doctorVerification?.hospitalAffiliation || 'Private Practice'}
                         </span>
@@ -819,7 +820,7 @@ const AdminDashboard = () => {
                           className="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-dark-950 font-bold text-xs flex items-center justify-center space-x-1 transition-all shadow-md shadow-emerald-500/20"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Approve & Verify</span>
+                          <span>{i18n.t("Approve & Verify")}</span>
                         </button>
                       )}
 
@@ -832,7 +833,7 @@ const AdminDashboard = () => {
                           disabled={verifyingDoctorId === doc._id}
                           className="px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold transition-colors"
                         >
-                          Reject
+                          {i18n.t("Reject")}
                         </button>
                       )}
 
@@ -842,7 +843,7 @@ const AdminDashboard = () => {
                           disabled={verifyingDoctorId === doc._id}
                           className="w-full py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 text-[11px] font-bold transition-colors"
                         >
-                          Revoke Verification
+                          {i18n.t("Revoke Verification")}
                         </button>
                       )}
                     </div>
@@ -858,19 +859,19 @@ const AdminDashboard = () => {
             <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
               <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h4 className="text-sm font-bold text-white">Reject Doctor Verification</h4>
+                  <h4 className="text-sm font-bold text-white">{i18n.t("Reject Doctor Verification")}</h4>
                   <button onClick={() => setShowRejectModal(false)} className="text-slate-400 hover:text-white">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
                 <p className="text-xs text-slate-400">
-                  Provide clinical feedback to Dr. <strong>{selectedDoctor.name}</strong> regarding why their verification cannot be approved at this time.
+                  {i18n.t("Provide clinical feedback to Dr.")} <strong>{selectedDoctor.name}</strong> {i18n.t("regarding why their verification cannot be approved at this time.")}
                 </p>
                 <textarea
                   rows={3}
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="e.g. License registration could not be verified in state medical council database..."
+                  placeholder={i18n.t("e.g. License registration could not be verified in state medical council database...")}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500"
                 />
                 <div className="flex gap-2">
@@ -878,13 +879,13 @@ const AdminDashboard = () => {
                     onClick={() => handleVerifyDoctor(selectedDoctor._id, 'rejected', rejectionReason)}
                     className="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors"
                   >
-                    Confirm Rejection
+                    {i18n.t("Confirm Rejection")}
                   </button>
                   <button
                     onClick={() => setShowRejectModal(false)}
                     className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold"
                   >
-                    Cancel
+                    {i18n.t("Cancel")}
                   </button>
                 </div>
               </div>
@@ -901,9 +902,9 @@ const AdminDashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold text-white">System Compliance & Governance Audit Trail</h3>
+              <h3 className="text-sm font-bold text-white">{i18n.t("System Compliance & Governance Audit Trail")}</h3>
               <p className="text-xs text-slate-400">
-                Immutable activity log tracking logins, access grants, clinical events, and administrative changes.
+                {i18n.t("Immutable activity log tracking logins, access grants, clinical events, and administrative changes.")}
               </p>
             </div>
 
@@ -913,19 +914,19 @@ const AdminDashboard = () => {
                 onChange={(e) => setAuditCategory(e.target.value)}
                 className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
               >
-                <option value="all">All Categories</option>
-                <option value="user_management">User Management</option>
-                <option value="verification">Verification</option>
-                <option value="clinical">Clinical</option>
-                <option value="system">System</option>
-                <option value="security">Security</option>
+                <option value="all">{i18n.t("All Categories")}</option>
+                <option value="user_management">{i18n.t("User Management")}</option>
+                <option value="verification">{i18n.t("Verification")}</option>
+                <option value="clinical">{i18n.t("Clinical")}</option>
+                <option value="system">{i18n.t("System")}</option>
+                <option value="security">{i18n.t("Security")}</option>
               </select>
 
               <button
                 onClick={fetchAuditLogs}
                 className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
               >
-                Refresh Logs
+                {i18n.t("Refresh Logs")}
               </button>
             </div>
           </div>
@@ -933,7 +934,7 @@ const AdminDashboard = () => {
           <div className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden shadow-xl">
             <div className="p-4 space-y-2">
               {auditLogs.length === 0 ? (
-                <p className="text-center py-10 text-slate-500 text-xs">No audit logs recorded for this category.</p>
+                <p className="text-center py-10 text-slate-500 text-xs">{i18n.t("No audit logs recorded for this category.")}</p>
               ) : (
                 auditLogs.map((log) => (
                   <div
@@ -946,7 +947,7 @@ const AdminDashboard = () => {
                           {log.category}
                         </span>
                         <span className="font-bold text-white">{log.action}</span>
-                        <span className="text-slate-500 text-[10px]">by {log.userName} ({log.userRole})</span>
+                        <span className="text-slate-500 text-[10px]">{i18n.t("by")} {log.userName} ({log.userRole})</span>
                       </div>
                       <p className="text-slate-300 text-[11px] leading-relaxed">{log.details}</p>
                     </div>
@@ -973,9 +974,9 @@ const AdminDashboard = () => {
       {activeTab === 'broadcast' && (
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="text-center space-y-1">
-            <h3 className="text-lg font-bold text-white font-display">System Broadcast Dispatcher</h3>
+            <h3 className="text-lg font-bold text-white font-display">{i18n.t("System Broadcast Dispatcher")}</h3>
             <p className="text-xs text-slate-400">
-              Transmit emergency notices, clinical advisories, or maintenance warnings across user dashboards.
+              {i18n.t("Transmit emergency notices, clinical advisories, or maintenance warnings across user dashboards.")}
             </p>
           </div>
 
@@ -990,58 +991,58 @@ const AdminDashboard = () => {
             
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Target Audience *
+                {i18n.t("Target Audience *")}
               </label>
               <select
                 value={broadcastForm.targetRole}
                 onChange={(e) => setBroadcastForm({ ...broadcastForm, targetRole: e.target.value })}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
               >
-                <option value="all">Broadcast to Everyone (Patients & Doctors)</option>
-                <option value="patient">Patients Only</option>
-                <option value="doctor">Doctors Only</option>
+                <option value="all">{i18n.t("Broadcast to Everyone (Patients & Doctors)")}</option>
+                <option value="patient">{i18n.t("Patients Only")}</option>
+                <option value="doctor">{i18n.t("Doctors Only")}</option>
               </select>
             </div>
 
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Notice Priority *
+                {i18n.t("Notice Priority *")}
               </label>
               <select
                 value={broadcastForm.type}
                 onChange={(e) => setBroadcastForm({ ...broadcastForm, type: e.target.value })}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
               >
-                <option value="warning">Critical Advisory / Warning</option>
-                <option value="info">General Information</option>
-                <option value="reminder">Scheduled System Maintenance</option>
+                <option value="warning">{i18n.t("Critical Advisory / Warning")}</option>
+                <option value="info">{i18n.t("General Information")}</option>
+                <option value="reminder">{i18n.t("Scheduled System Maintenance")}</option>
               </select>
             </div>
 
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Announcement Headline *
+                {i18n.t("Announcement Headline *")}
               </label>
               <input
                 type="text"
                 required
                 value={broadcastForm.title}
                 onChange={(e) => setBroadcastForm({ ...broadcastForm, title: e.target.value })}
-                placeholder="e.g. Critical Medical Advisory: Seasonal Influenza Surge"
+                placeholder={i18n.t("e.g. Critical Medical Advisory: Seasonal Influenza Surge")}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
               />
             </div>
 
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Full Message Body *
+                {i18n.t("Full Message Body *")}
               </label>
               <textarea
                 rows={4}
                 required
                 value={broadcastForm.message}
                 onChange={(e) => setBroadcastForm({ ...broadcastForm, message: e.target.value })}
-                placeholder="Write official directive to be delivered to user notification feeds..."
+                placeholder={i18n.t("Write official directive to be delivered to user notification feeds...")}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -1056,7 +1057,7 @@ const AdminDashboard = () => {
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>Transmit Broadcast Announcement</span>
+                  <span>{i18n.t("Transmit Broadcast Announcement")}</span>
                 </>
               )}
             </button>

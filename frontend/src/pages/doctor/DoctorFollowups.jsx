@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../../services/api';
 import {
@@ -156,7 +157,7 @@ const DoctorFollowups = () => {
     return (
       <div className="py-24 text-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin mx-auto" />
-        <p className="text-sm text-slate-400 font-medium">Loading Patient Follow-ups Register...</p>
+        <p className="text-sm text-slate-400 font-medium">{i18n.t("Loading Patient Follow-ups Register...")}</p>
       </div>
     );
   }
@@ -173,10 +174,10 @@ const DoctorFollowups = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                Follow-ups & Reminders
+                {i18n.t("Follow-ups & Reminders")}
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
-                Schedule follow-up visits, see upcoming appointments, and keep patients on track.
+                {i18n.t("Schedule follow-up visits, see upcoming appointments, and keep patients on track.")}
               </p>
             </div>
           </div>
@@ -191,7 +192,7 @@ const DoctorFollowups = () => {
           className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all shadow-lg shadow-brand-500/20 shrink-0"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>Schedule Follow-up</span>
+          <span>{i18n.t("Schedule Follow-up")}</span>
         </button>
       </div>
 
@@ -216,8 +217,8 @@ const DoctorFollowups = () => {
             <Clock className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Upcoming Check-ins</span>
-            <h3 className="text-xl font-bold text-white mt-0.5">{upcomingFollowups.length} Scheduled</h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Upcoming Check-ins")}</span>
+            <h3 className="text-xl font-bold text-white mt-0.5">{upcomingFollowups.length} {i18n.t("Scheduled")}</h3>
           </div>
         </div>
 
@@ -226,8 +227,8 @@ const DoctorFollowups = () => {
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Completed Visits</span>
-            <h3 className="text-xl font-bold text-white mt-0.5">{completedFollowups.length} Completed</h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Completed Visits")}</span>
+            <h3 className="text-xl font-bold text-white mt-0.5">{completedFollowups.length} {i18n.t("Completed")}</h3>
           </div>
         </div>
 
@@ -236,8 +237,8 @@ const DoctorFollowups = () => {
             <User className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Authorized Patients</span>
-            <h3 className="text-xl font-bold text-white mt-0.5">{patients.length} Active</h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Authorized Patients")}</span>
+            <h3 className="text-xl font-bold text-white mt-0.5">{patients.length} {i18n.t("Active")}</h3>
           </div>
         </div>
       </div>
@@ -250,7 +251,7 @@ const DoctorFollowups = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
               <Calendar className="w-4 h-4 text-emerald-400 mr-2" />
-              <span>Upcoming Patient Reviews ({filteredUpcoming.length})</span>
+              <span>{i18n.t("Upcoming Patient Reviews (")}{filteredUpcoming.length})</span>
             </h3>
 
             <div className="relative w-full sm:w-60">
@@ -259,7 +260,7 @@ const DoctorFollowups = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search patient or purpose..."
+                placeholder={i18n.t("Search patient or purpose...")}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -268,12 +269,12 @@ const DoctorFollowups = () => {
           {filteredUpcoming.length === 0 ? (
             <div className="p-10 text-center bg-slate-900/20 border border-slate-800 rounded-2xl space-y-2">
               <Clock className="w-8 h-8 text-slate-600 mx-auto" />
-              <p className="text-xs text-slate-400 font-medium">No upcoming follow-up appointments found.</p>
+              <p className="text-xs text-slate-400 font-medium">{i18n.t("No upcoming follow-up appointments found.")}</p>
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="text-xs font-bold text-brand-400 hover:text-brand-300 underline mt-1"
               >
-                Schedule a consultation now
+                {i18n.t("Schedule a consultation now")}
               </button>
             </div>
           ) : (
@@ -314,7 +315,7 @@ const DoctorFollowups = () => {
 
                         {appt.notes && (
                           <p className="text-[11px] text-slate-400 leading-relaxed italic">
-                            Prep Notes: "{appt.notes}"
+                            {i18n.t("Prep Notes: \"")}{appt.notes}"
                           </p>
                         )}
 
@@ -342,7 +343,7 @@ const DoctorFollowups = () => {
 
                     <div className="shrink-0 self-end sm:self-center">
                       <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700 uppercase tracking-wider">
-                        Confirmed
+                        {i18n.t("Confirmed")}
                       </span>
                     </div>
                   </div>
@@ -356,12 +357,12 @@ const DoctorFollowups = () => {
         <div className="space-y-4">
           <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center">
             <CheckCircle2 className="w-4 h-4 text-slate-500 mr-2" />
-            <span>Recently Concluded Reviews</span>
+            <span>{i18n.t("Recently Concluded Reviews")}</span>
           </h3>
 
           {completedFollowups.length === 0 ? (
             <div className="p-6 text-center bg-slate-900/20 border border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-500 italic">No concluded follow-ups logged yet.</p>
+              <p className="text-xs text-slate-500 italic">{i18n.t("No concluded follow-ups logged yet.")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -377,11 +378,11 @@ const DoctorFollowups = () => {
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    <span className="text-slate-500">Purpose:</span> {appt.purpose}
+                    <span className="text-slate-500">{i18n.t("Purpose:")}</span> {appt.purpose}
                   </p>
                   {appt.notes && (
                     <p className="text-[10px] text-slate-500 italic border-t border-slate-800/60 pt-1">
-                      Outcome: "{appt.notes}"
+                      {i18n.t("Outcome: \"")}{appt.notes}"
                     </p>
                   )}
                 </div>
@@ -406,13 +407,13 @@ const DoctorFollowups = () => {
 
             <div>
               <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest block mb-1">
-                Clinical Scheduling
+                {i18n.t("Clinical Scheduling")}
               </span>
               <h2 className="text-xl font-bold text-white font-display">
-                Schedule Follow-up Consultation
+                {i18n.t("Schedule Follow-up Consultation")}
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                Directly book a follow-up review for an authorized patient and dispatch an instant notification.
+                {i18n.t("Directly book a follow-up review for an authorized patient and dispatch an instant notification.")}
               </p>
             </div>
 
@@ -421,7 +422,7 @@ const DoctorFollowups = () => {
               {/* Patient */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Select Patient *
+                  {i18n.t("Select Patient *")}
                 </label>
                 <select
                   value={form.patientId}
@@ -429,7 +430,7 @@ const DoctorFollowups = () => {
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                   required
                 >
-                  <option value="">Select from authorized patients...</option>
+                  <option value="">{i18n.t("Select from authorized patients...")}</option>
                   {patients.map((p) => (
                     <option key={p._id} value={p._id}>
                       {p.name} ({p.email})
@@ -441,7 +442,7 @@ const DoctorFollowups = () => {
               {/* Date & Time */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Follow-up Date & Time *
+                  {i18n.t("Follow-up Date & Time *")}
                 </label>
                 <input
                   type="datetime-local"
@@ -456,7 +457,7 @@ const DoctorFollowups = () => {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center">
                   <Tag className="w-3 h-3 text-brand-400 mr-1" />
-                  <span>Clinical Purpose Quick Tags</span>
+                  <span>{i18n.t("Clinical Purpose Quick Tags")}</span>
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {QUICK_PURPOSE_TAGS.map((tag, idx) => (
@@ -475,13 +476,13 @@ const DoctorFollowups = () => {
               {/* Custom Purpose input */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Consultation Purpose / Reason *
+                  {i18n.t("Consultation Purpose / Reason *")}
                 </label>
                 <input
                   type="text"
                   value={form.purpose}
                   onChange={(e) => setForm({ ...form, purpose: e.target.value })}
-                  placeholder="e.g. 2-Week Post-PCI Clinical Review"
+                  placeholder={i18n.t("e.g. 2-Week Post-PCI Clinical Review")}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                   required
                 />
@@ -490,13 +491,13 @@ const DoctorFollowups = () => {
               {/* Clinical Notes / Prep Instructions */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Patient Instructions & Prep Notes
+                  {i18n.t("Patient Instructions & Prep Notes")}
                 </label>
                 <textarea
                   rows={2}
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  placeholder="e.g. Fast 8 hours prior for repeat fasting blood sugar. Bring home blood pressure log."
+                  placeholder={i18n.t("e.g. Fast 8 hours prior for repeat fasting blood sugar. Bring home blood pressure log.")}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 />
               </div>
@@ -507,7 +508,7 @@ const DoctorFollowups = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all"
                 >
-                  Cancel
+                  {i18n.t("Cancel")}
                 </button>
                 <button
                   type="submit"

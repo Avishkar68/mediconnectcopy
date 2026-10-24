@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -11,8 +12,10 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const DoctorOverview = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState({
     patients: [],
@@ -85,7 +88,7 @@ const DoctorOverview = () => {
             <Users className="w-5 h-5" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Active Patients</h5>
+            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{t('Active Patients')}</h5>
             <h3 className="text-lg font-bold text-white mt-0.5">{data.patients.length}</h3>
           </div>
         </div>
@@ -95,7 +98,7 @@ const DoctorOverview = () => {
             <Video className="w-5 h-5" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Today's Schedule</h5>
+            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{t("Today's Schedule")}</h5>
             <h3 className="text-lg font-bold text-white mt-0.5">{todaysConsults.length}</h3>
           </div>
         </div>
@@ -105,7 +108,7 @@ const DoctorOverview = () => {
             <UserPlus className="w-5 h-5 animate-pulse" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Patient Requests</h5>
+            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{t('Patient Requests')}</h5>
             <h3 className="text-lg font-bold text-white mt-0.5">{pendingRequests.length}</h3>
           </div>
         </div>
@@ -115,7 +118,7 @@ const DoctorOverview = () => {
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Pending Tasks</h5>
+            <h5 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{t('Pending Tasks')}</h5>
             <h3 className="text-lg font-bold text-white mt-0.5">{overdueFollowups.length}</h3>
           </div>
         </div>
@@ -132,10 +135,10 @@ const DoctorOverview = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-base font-bold text-white flex items-center">
                 <Video className="w-4 h-4 text-emerald-400 mr-2" />
-                <span>Today's Consultation Schedule</span>
+                <span>{t("Today's Consultation Schedule")}</span>
               </h3>
               <Link to="/dashboard/consultations" className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center">
-                <span>View All Visits</span>
+                <span>{t('View All Visits')}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Link>
             </div>
@@ -143,15 +146,15 @@ const DoctorOverview = () => {
             {todaysConsults.length === 0 ? (
               <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-800 rounded-xl">
                 <Clock className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                <p className="text-xs text-slate-450">No consultations scheduled for today.</p>
+                <p className="text-xs text-slate-450">{t('No consultations scheduled for today.')}</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {todaysConsults.map((appt, idx) => (
                   <div key={idx} className="p-4 rounded-xl bg-slate-900/40 border border-slate-800 flex justify-between items-center flex-wrap gap-2">
                     <div>
-                      <h4 className="text-xs font-bold text-slate-200">Patient: {appt.patient?.name}</h4>
-                      <p className="text-[10px] text-slate-500 mt-0.5">Purpose: {appt.purpose}</p>
+                      <h4 className="text-xs font-bold text-slate-200">{i18n.t("Patient:")} {appt.patient?.name}</h4>
+                      <p className="text-[10px] text-slate-500 mt-0.5">{i18n.t("Purpose:")} {appt.purpose}</p>
                     </div>
                     <div className="flex items-center space-x-3">
                       <span className="text-[10px] text-slate-400 font-bold">
@@ -162,7 +165,7 @@ const DoctorOverview = () => {
                         className="bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-[10px] font-extrabold px-3 py-1.5 rounded-lg flex items-center space-x-1"
                       >
                         <Play className="w-3 h-3 fill-current" />
-                        <span>Start</span>
+                        <span>{t('Start')}</span>
                       </button>
                     </div>
                   </div>
@@ -175,13 +178,13 @@ const DoctorOverview = () => {
           <div className="glass-card rounded-2xl p-6 border border-slate-800">
             <h3 className="text-base font-bold text-white mb-4 flex items-center">
               <AlertCircle className="w-4 h-4 text-yellow-400 mr-2" />
-              <span>Attention Needed</span>
+              <span>{t('Attention Needed')}</span>
             </h3>
 
             {overdueFollowups.length === 0 && pendingRequests.length === 0 ? (
               <div className="p-6 text-center bg-slate-900/20 border border-dashed border-slate-800 rounded-xl">
                 <CheckCircle className="w-8 h-8 text-emerald-500/20 mx-auto mb-2" />
-                <p className="text-xs text-slate-450">All caught up! No urgent alerts or pending items.</p>
+                <p className="text-xs text-slate-450">{i18n.t("All caught up! No urgent alerts or pending items.")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -190,14 +193,14 @@ const DoctorOverview = () => {
                     <div className="flex items-start space-x-2.5">
                       <AlertCircle className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-slate-200">Patient Connection Request</h4>
+                        <h4 className="text-xs font-bold text-slate-200">{i18n.t("Patient Connection Request")}</h4>
                         <p className="text-[10px] text-slate-400 mt-0.5">
-                          Patient <span className="font-semibold text-purple-400">{req.patient?.name}</span> is requesting connection access.
+                          {i18n.t("Patient")} <span className="font-semibold text-purple-400">{req.patient?.name}</span> {i18n.t("is requesting connection access.")}
                         </p>
                       </div>
                     </div>
                     <Link to="/dashboard/requests" className="text-[10px] font-bold text-purple-400 hover:underline">
-                      Manage Request
+                      {i18n.t("Manage Request")}
                     </Link>
                   </div>
                 ))}
@@ -207,14 +210,14 @@ const DoctorOverview = () => {
                     <div className="flex items-start space-x-2.5">
                       <Clock className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-slate-200">Follow-up Visit Due</h4>
+                        <h4 className="text-xs font-bold text-slate-200">{i18n.t("Follow-up Visit Due")}</h4>
                         <p className="text-[10px] text-slate-400 mt-0.5">
-                          Follow-up session with {appt.patient?.name} is overdue since {new Date(appt.dateTime).toLocaleDateString()}.
+                          {i18n.t("Follow-up session with")} {appt.patient?.name} {i18n.t("is overdue since")} {new Date(appt.dateTime).toLocaleDateString()}.
                         </p>
                       </div>
                     </div>
                     <Link to="/dashboard/consultations" className="text-[10px] font-bold text-yellow-400 hover:underline">
-                      Consult Now
+                      {i18n.t("Consult Now")}
                     </Link>
                   </div>
                 ))}
@@ -230,7 +233,7 @@ const DoctorOverview = () => {
           {/* Quick Actions Panel */}
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <h3 className="text-xs font-bold text-slate-450 uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-4">
-              Quick Actions
+              {i18n.t("Quick Actions")}
             </h3>
 
             <div className="flex flex-col space-y-2">
@@ -238,35 +241,35 @@ const DoctorOverview = () => {
                 onClick={() => navigate('/dashboard/patients')}
                 className="w-full text-left text-xs font-bold px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all flex justify-between items-center"
               >
-                <span>Search Patient Directory</span>
+                <span>{i18n.t("Search Patient Directory")}</span>
                 <ArrowRight className="w-4 h-4 text-slate-500" />
               </button>
               <button
                 onClick={() => navigate('/dashboard/requests')}
                 className="w-full text-left text-xs font-bold px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all flex justify-between items-center"
               >
-                <span>Review Patient Requests</span>
+                <span>{i18n.t("Review Patient Requests")}</span>
                 <ArrowRight className="w-4 h-4 text-slate-500" />
               </button>
               <button
                 onClick={() => navigate('/dashboard/consultations')}
                 className="w-full text-left text-xs font-bold px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 hover:shadow-md transition-all flex justify-between items-center"
               >
-                <span>Start Video Consultation</span>
+                <span>{i18n.t("Start Video Consultation")}</span>
                 <Play className="w-4 h-4" />
               </button>
               <button
                 onClick={() => navigate('/dashboard/prescriptions')}
                 className="w-full text-left text-xs font-bold px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all flex justify-between items-center"
               >
-                <span>Write New Prescription</span>
+                <span>{i18n.t("Write New Prescription")}</span>
                 <ArrowRight className="w-4 h-4 text-slate-500" />
               </button>
               <button
                 onClick={() => navigate('/dashboard/care-plans')}
                 className="w-full text-left text-xs font-bold px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all flex justify-between items-center"
               >
-                <span>Create Care Plan</span>
+                <span>{i18n.t("Create Care Plan")}</span>
                 <ArrowRight className="w-4 h-4 text-slate-500" />
               </button>
             </div>
@@ -275,18 +278,18 @@ const DoctorOverview = () => {
           {/* Practitioner Stats Summary */}
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <h3 className="text-xs font-bold text-slate-450 uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-3">
-              Practice Summary
+              {i18n.t("Practice Summary")}
             </h3>
             <div className="space-y-3 text-xs text-slate-400">
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Completed Visits</span>
+                <span>{i18n.t("Completed Visits")}</span>
                 <span className="font-semibold text-white">
                   {data.appointments.filter(a => a.status === 'completed').length}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Connected Patients</span>
-                <span className="font-semibold text-white">{data.patients.length} Patients</span>
+                <span>{i18n.t("Connected Patients")}</span>
+                <span className="font-semibold text-white">{data.patients.length} {i18n.t("Patients")}</span>
               </div>
             </div>
           </div>

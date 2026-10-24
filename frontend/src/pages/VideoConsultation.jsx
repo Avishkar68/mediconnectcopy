@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -533,14 +534,14 @@ const VideoConsultation = () => {
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="text-sm font-bold text-white font-display tracking-tight">
-                Telehealth Video Consultation
+                {i18n.t("Telehealth Video Consultation")}
               </h2>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                P2P Encrypted
+                {i18n.t("P2P Encrypted")}
               </span>
             </div>
             <p className="text-[10px] text-slate-400 flex items-center space-x-2">
-              <span>Room: <strong className="text-slate-300 font-mono">{roomId}</strong></span>
+              <span>{i18n.t("Room:")} <strong className="text-slate-300 font-mono">{roomId}</strong></span>
               <span>•</span>
               <span className="text-emerald-400 font-semibold flex items-center">
                 <Clock className="w-3 h-3 mr-1" />
@@ -582,10 +583,10 @@ const VideoConsultation = () => {
               }`}
             >
               <ClipboardList className="w-4 h-4 text-emerald-400" />
-              <span className="hidden md:inline">Side-by-Side Workspace</span>
+              <span className="hidden md:inline">{i18n.t("Side-by-Side Workspace")}</span>
               {sentPrescriptions.length > 0 && (
                 <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-dark-950 text-[10px] font-extrabold">
-                  {sentPrescriptions.length} Rx
+                  {sentPrescriptions.length} {i18n.t("Rx")}
                 </span>
               )}
             </button>
@@ -602,7 +603,7 @@ const VideoConsultation = () => {
               }`}
             >
               <FileText className="w-4 h-4 text-brand-400" />
-              <span className="hidden md:inline">Doctor's Notes ({sharedKeyPoints.length})</span>
+              <span className="hidden md:inline">{i18n.t("Doctor's Notes (")}{sharedKeyPoints.length})</span>
             </button>
           )}
 
@@ -669,7 +670,7 @@ const VideoConsultation = () => {
                     className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all shadow-md"
                   >
                     <Copy className="w-4 h-4" />
-                    <span>Copy Room URL to Invite</span>
+                    <span>{i18n.t("Copy Room URL to Invite")}</span>
                   </button>
                 )}
               </div>
@@ -705,13 +706,13 @@ const VideoConsultation = () => {
                   <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-brand-400 text-xs">
                     {user?.name?.slice(0, 2).toUpperCase() || 'ME'}
                   </div>
-                  <span className="text-[9px] text-slate-400 mt-1 font-medium">Camera Off</span>
+                  <span className="text-[9px] text-slate-400 mt-1 font-medium">{i18n.t("Camera Off")}</span>
                 </div>
               )}
 
               {/* Local Stream Label */}
               <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-slate-950/85 backdrop-blur-sm text-[9px] font-bold text-slate-300 border border-slate-800 flex items-center space-x-1">
-                <span>You ({user?.role})</span>
+                <span>{i18n.t("You (")}{user?.role})</span>
                 {!audioEnabled && <MicOff className="w-2.5 h-2.5 text-rose-400" />}
               </div>
             </div>
@@ -732,21 +733,21 @@ const VideoConsultation = () => {
                       <div>
                         <div className="flex items-center space-x-2">
                           <h4 className="text-xs font-black text-white uppercase tracking-wider">
-                            Incoming E-Prescription
+                            {i18n.t("Incoming E-Prescription")}
                           </h4>
                           <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            Live Call
+                            {i18n.t("Live Call")}
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-400">
-                          Prescribed by <strong className="text-slate-200">Dr. {incomingPrescription.doctorName || 'Attending Physician'}</strong>
+                          {i18n.t("Prescribed by")} <strong className="text-slate-200">{i18n.t("Dr.")} {incomingPrescription.doctorName || 'Attending Physician'}</strong>
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={handlePatientDeclinePrescription}
                       className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                      title="Dismiss"
+                      title={i18n.t("Dismiss")}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -766,18 +767,18 @@ const VideoConsultation = () => {
 
                       <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-slate-800/60">
                         <div>
-                          <span className="text-[10px] text-slate-500 uppercase font-bold block">Dosage</span>
+                          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Dosage")}</span>
                           <span className="text-slate-200 font-semibold">{incomingPrescription.dosage}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-500 uppercase font-bold block">Frequency</span>
+                          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Frequency")}</span>
                           <span className="text-slate-200 font-semibold">{incomingPrescription.frequency}</span>
                         </div>
                       </div>
 
                       {incomingPrescription.instructions && (
                         <div className="text-[11px] pt-1 border-t border-slate-800/60">
-                          <span className="text-[10px] text-slate-500 uppercase font-bold block">Doctor Instructions</span>
+                          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Doctor Instructions")}</span>
                           <p className="text-slate-300 italic">"{incomingPrescription.instructions}"</p>
                         </div>
                       )}
@@ -787,11 +788,11 @@ const VideoConsultation = () => {
                     {rxAcceptedSuccess ? (
                       <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center space-x-2">
                         <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
-                        <span>Prescription Accepted! Successfully stored into your Medical Records & Health Timeline.</span>
+                        <span>{i18n.t("Prescription Accepted! Successfully stored into your Medical Records & Health Timeline.")}</span>
                       </div>
                     ) : (
                       <p className="text-[10px] text-slate-400">
-                        Clicking accept will securely link this medication to your patient health profile and log an immutable entry in your medical history.
+                        {i18n.t("Clicking accept will securely link this medication to your patient health profile and log an immutable entry in your medical history.")}
                       </p>
                     )}
                   </div>
@@ -809,7 +810,7 @@ const VideoConsultation = () => {
                         ) : (
                           <>
                             <CheckCircle2 className="w-4 h-4" />
-                            <span>Accept & Add to My Records</span>
+                            <span>{i18n.t("Accept & Add to My Records")}</span>
                           </>
                         )}
                       </button>
@@ -818,7 +819,7 @@ const VideoConsultation = () => {
                         disabled={acceptingRx}
                         className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
                       >
-                        Decline
+                        {i18n.t("Decline")}
                       </button>
                     </div>
                   )}
@@ -862,9 +863,9 @@ const VideoConsultation = () => {
                     </div>
                     <div>
                       <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                        In-Call Chat
+                        {i18n.t("In-Call Chat")}
                       </h3>
-                      <p className="text-[10px] text-slate-400">Encrypted instant messages during call</p>
+                      <p className="text-[10px] text-slate-400">{i18n.t("Encrypted instant messages during call")}</p>
                     </div>
                   </>
                 )}
@@ -872,7 +873,7 @@ const VideoConsultation = () => {
               <button
                 onClick={() => setActiveDrawer(null)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                title="Close drawer"
+                title={i18n.t("Close drawer")}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -898,7 +899,7 @@ const VideoConsultation = () => {
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5" />
-                        <span>Key Points ({keyPoints.length})</span>
+                        <span>{i18n.t("Key Points (")}{keyPoints.length})</span>
                       </button>
                       <button
                         onClick={() => setWorkspaceTab('rx')}
@@ -909,7 +910,7 @@ const VideoConsultation = () => {
                         }`}
                       >
                         <Pill className="w-3.5 h-3.5" />
-                        <span>Prescribe ({sentPrescriptions.length})</span>
+                        <span>{i18n.t("Prescribe (")}{sentPrescriptions.length})</span>
                       </button>
                       <button
                         onClick={() => setWorkspaceTab('notes')}
@@ -920,7 +921,7 @@ const VideoConsultation = () => {
                         }`}
                       >
                         <ClipboardList className="w-3.5 h-3.5" />
-                        <span>Diagnosis</span>
+                        <span>{i18n.t("Diagnosis")}</span>
                       </button>
                     </div>
 
@@ -932,17 +933,17 @@ const VideoConsultation = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="text-xs font-bold text-white flex items-center space-x-1">
-                                <span>Consultation Key Points</span>
-                                <span className="text-[10px] text-slate-400 font-normal">(Shared with patient)</span>
+                                <span>{i18n.t("Consultation Key Points")}</span>
+                                <span className="text-[10px] text-slate-400 font-normal">{i18n.t("(Shared with patient)")}</span>
                               </h4>
                               <p className="text-[10px] text-slate-400">
-                                Write down bullet observations side-by-side during the video call.
+                                {i18n.t("Write down bullet observations side-by-side during the video call.")}
                               </p>
                             </div>
                             <button
                               onClick={handleSyncKeyPointsManual}
                               className="px-2.5 py-1 rounded-lg bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/30 text-[10px] font-bold flex items-center space-x-1 transition-all"
-                              title="Sync to patient screen"
+                              title={i18n.t("Sync to patient screen")}
                             >
                               <Share2 className="w-3 h-3" />
                               <span>{keyPointsSyncedNotice ? 'Synced!' : 'Sync'}</span>
@@ -952,7 +953,7 @@ const VideoConsultation = () => {
                           {/* Quick Chips */}
                           <div className="space-y-1">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                              Quick Clinical Templates
+                              {i18n.t("Quick Clinical Templates")}
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {QUICK_KEY_POINTS.map((chip, idx) => (
@@ -974,7 +975,7 @@ const VideoConsultation = () => {
                               type="text"
                               value={newKeyPointText}
                               onChange={(e) => setNewKeyPointText(e.target.value)}
-                              placeholder="Write a clinical point (e.g. Advised rest, gargle 3x)..."
+                              placeholder={i18n.t("Write a clinical point (e.g. Advised rest, gargle 3x)...")}
                               className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
                             />
                             <button
@@ -982,7 +983,7 @@ const VideoConsultation = () => {
                               className="px-3 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 font-bold text-xs flex items-center space-x-1 transition-colors"
                             >
                               <Plus className="w-4 h-4" />
-                              <span className="hidden sm:inline">Add</span>
+                              <span className="hidden sm:inline">{i18n.t("Add")}</span>
                             </button>
                           </form>
 
@@ -990,7 +991,7 @@ const VideoConsultation = () => {
                           <div className="space-y-2">
                             {keyPoints.length === 0 ? (
                               <p className="text-xs text-slate-500 text-center py-6 border border-dashed border-slate-800 rounded-2xl">
-                                No key points noted yet. Type points above or select quick templates.
+                                {i18n.t("No key points noted yet. Type points above or select quick templates.")}
                               </p>
                             ) : (
                               keyPoints.map((point, index) => (
@@ -1007,7 +1008,7 @@ const VideoConsultation = () => {
                                   <button
                                     onClick={() => handleRemoveKeyPoint(index)}
                                     className="p-1 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 opacity-70 group-hover:opacity-100 transition-all shrink-0"
-                                    title="Delete point"
+                                    title={i18n.t("Delete point")}
                                   >
                                     <Trash2 className="w-3.5 h-3.5" />
                                   </button>
@@ -1019,7 +1020,7 @@ const VideoConsultation = () => {
                           {keyPointsSyncedNotice && (
                             <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold flex items-center space-x-1.5">
                               <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                              <span>Key points successfully synchronized with the patient's video screen!</span>
+                              <span>{i18n.t("Key points successfully synchronized with the patient's video screen!")}</span>
                             </div>
                           )}
 
@@ -1032,17 +1033,17 @@ const VideoConsultation = () => {
                           <div>
                             <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
                               <Pill className="w-4 h-4 text-emerald-400" />
-                              <span>Instant In-Call E-Prescription</span>
+                              <span>{i18n.t("Instant In-Call E-Prescription")}</span>
                             </h4>
                             <p className="text-[10px] text-slate-400">
-                              Prescriptions appear live on patient's screen for 1-click acceptance into their medical records.
+                              {i18n.t("Prescriptions appear live on patient's screen for 1-click acceptance into their medical records.")}
                             </p>
                           </div>
 
                           {/* Quick Medicine Shortcuts */}
                           <div className="space-y-1">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                              Common Medications (Tap to fill)
+                              {i18n.t("Common Medications (Tap to fill)")}
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {QUICK_MEDS.map((med, idx) => (
@@ -1069,14 +1070,14 @@ const VideoConsultation = () => {
 
                             <div className="space-y-1">
                               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Medication Name & Strength *
+                                {i18n.t("Medication Name & Strength *")}
                               </label>
                               <input
                                 type="text"
                                 required
                                 value={prescriptionForm.name}
                                 onChange={(e) => setPrescriptionForm({ ...prescriptionForm, name: e.target.value })}
-                                placeholder="e.g. Amoxicillin 500mg, Paracetamol 650mg"
+                                placeholder={i18n.t("e.g. Amoxicillin 500mg, Paracetamol 650mg")}
                                 className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
                               />
                             </div>
@@ -1084,25 +1085,25 @@ const VideoConsultation = () => {
                             <div className="grid grid-cols-2 gap-2">
                               <div className="space-y-1">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                  Dosage
+                                  {i18n.t("Dosage")}
                                 </label>
                                 <input
                                   type="text"
                                   value={prescriptionForm.dosage}
                                   onChange={(e) => setPrescriptionForm({ ...prescriptionForm, dosage: e.target.value })}
-                                  placeholder="1 Tablet, 5ml"
+                                  placeholder={i18n.t("1 Tablet, 5ml")}
                                   className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
                                 />
                               </div>
                               <div className="space-y-1">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                  Duration
+                                  {i18n.t("Duration")}
                                 </label>
                                 <input
                                   type="text"
                                   value={prescriptionForm.duration}
                                   onChange={(e) => setPrescriptionForm({ ...prescriptionForm, duration: e.target.value })}
-                                  placeholder="3 Days, 5 Days"
+                                  placeholder={i18n.t("3 Days, 5 Days")}
                                   className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
                                 />
                               </div>
@@ -1110,30 +1111,30 @@ const VideoConsultation = () => {
 
                             <div className="space-y-1">
                               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Frequency
+                                {i18n.t("Frequency")}
                               </label>
                               <select
                                 value={prescriptionForm.frequency}
                                 onChange={(e) => setPrescriptionForm({ ...prescriptionForm, frequency: e.target.value })}
                                 className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
                               >
-                                <option value="Once daily (Morning)">Once daily (Morning)</option>
-                                <option value="Twice daily after meals">Twice daily after meals</option>
-                                <option value="Thrice daily after food">Thrice daily after food</option>
-                                <option value="Once daily at bedtime">Once daily at bedtime</option>
-                                <option value="As needed for pain/fever (SOS)">As needed for pain/fever (SOS)</option>
+                                <option value="Once daily (Morning)">{i18n.t("Once daily (Morning)")}</option>
+                                <option value="Twice daily after meals">{i18n.t("Twice daily after meals")}</option>
+                                <option value="Thrice daily after food">{i18n.t("Thrice daily after food")}</option>
+                                <option value="Once daily at bedtime">{i18n.t("Once daily at bedtime")}</option>
+                                <option value="As needed for pain/fever (SOS)">{i18n.t("As needed for pain/fever (SOS)")}</option>
                               </select>
                             </div>
 
                             <div className="space-y-1">
                               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Clinical Instructions
+                                {i18n.t("Clinical Instructions")}
                               </label>
                               <input
                                 type="text"
                                 value={prescriptionForm.instructions}
                                 onChange={(e) => setPrescriptionForm({ ...prescriptionForm, instructions: e.target.value })}
-                                placeholder="Take after meals with warm water..."
+                                placeholder={i18n.t("Take after meals with warm water...")}
                                 className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
                               />
                             </div>
@@ -1143,19 +1144,19 @@ const VideoConsultation = () => {
                               className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-dark-950 font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-md shadow-emerald-500/20"
                             >
                               <Send className="w-4 h-4" />
-                              <span>Send Prescription to Patient Screen</span>
+                              <span>{i18n.t("Send Prescription to Patient Screen")}</span>
                             </button>
                           </form>
 
                           {/* Prescriptions Sent History & Real-Time Status Tracker */}
                           <div className="space-y-2">
                             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                              In-Call Prescriptions Status ({sentPrescriptions.length})
+                              {i18n.t("In-Call Prescriptions Status (")}{sentPrescriptions.length})
                             </span>
 
                             {sentPrescriptions.length === 0 ? (
                               <p className="text-xs text-slate-500 text-center py-4 border border-dashed border-slate-800 rounded-2xl">
-                                No prescriptions dispatched yet during this call.
+                                {i18n.t("No prescriptions dispatched yet during this call.")}
                               </p>
                             ) : (
                               sentPrescriptions.map((rx) => (
@@ -1173,17 +1174,17 @@ const VideoConsultation = () => {
                                     {rx.status === 'accepted' ? (
                                       <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[9px] font-extrabold flex items-center space-x-1">
                                         <CheckCircle2 className="w-3 h-3" />
-                                        <span>Accepted & Saved</span>
+                                        <span>{i18n.t("Accepted & Saved")}</span>
                                       </span>
                                     ) : rx.status === 'declined' ? (
                                       <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[9px] font-extrabold flex items-center space-x-1">
                                         <X className="w-3 h-3" />
-                                        <span>Declined</span>
+                                        <span>{i18n.t("Declined")}</span>
                                       </span>
                                     ) : (
                                       <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[9px] font-extrabold flex items-center space-x-1 animate-pulse">
                                         <Clock className="w-3 h-3" />
-                                        <span>Awaiting Patient...</span>
+                                        <span>{i18n.t("Awaiting Patient...")}</span>
                                       </span>
                                     )}
                                   </div>
@@ -1195,7 +1196,7 @@ const VideoConsultation = () => {
                                   {rx.status === 'accepted' && (
                                     <p className="text-[10px] text-emerald-400/90 font-medium flex items-center space-x-1">
                                       <Check className="w-3 h-3" />
-                                      <span>Patient accepted and medication stored in patient health records!</span>
+                                      <span>{i18n.t("Patient accepted and medication stored in patient health records!")}</span>
                                     </p>
                                   )}
                                 </div>
@@ -1212,10 +1213,10 @@ const VideoConsultation = () => {
                           <div>
                             <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
                               <ClipboardList className="w-4 h-4 text-blue-400" />
-                              <span>Clinical Consultation Summary</span>
+                              <span>{i18n.t("Clinical Consultation Summary")}</span>
                             </h4>
                             <p className="text-[10px] text-slate-400">
-                              Permanently archive consultation notes and diagnosis to MediConnect.
+                              {i18n.t("Permanently archive consultation notes and diagnosis to MediConnect.")}
                             </p>
                           </div>
 
@@ -1227,19 +1228,19 @@ const VideoConsultation = () => {
                           {consultationSaved && (
                             <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center space-x-1.5">
                               <CheckCircle2 className="w-4 h-4 shrink-0" />
-                              <span>Consultation record saved to patient medical profile!</span>
+                              <span>{i18n.t("Consultation record saved to patient medical profile!")}</span>
                             </div>
                           )}
 
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                              Primary Clinical Diagnosis *
+                              {i18n.t("Primary Clinical Diagnosis *")}
                             </label>
                             <input
                               type="text"
                               value={diagnosis}
                               onChange={(e) => setDiagnosis(e.target.value)}
-                              placeholder="e.g. Acute Viral Bronchitis, Type 2 Diabetes Follow-up"
+                              placeholder={i18n.t("e.g. Acute Viral Bronchitis, Type 2 Diabetes Follow-up")}
                               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                               required
                             />
@@ -1247,13 +1248,13 @@ const VideoConsultation = () => {
 
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                              Clinical Findings & Directives
+                              {i18n.t("Clinical Findings & Directives")}
                             </label>
                             <textarea
                               rows={5}
                               value={consultationNotes}
                               onChange={(e) => setConsultationNotes(e.target.value)}
-                              placeholder="Record patient complaints, observed symptoms, advice..."
+                              placeholder={i18n.t("Record patient complaints, observed symptoms, advice...")}
                               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                             />
                           </div>
@@ -1268,7 +1269,7 @@ const VideoConsultation = () => {
                             ) : (
                               <>
                                 <CheckCircle2 className="w-4 h-4" />
-                                <span>Save Consultation to Medical Record</span>
+                                <span>{i18n.t("Save Consultation to Medical Record")}</span>
                               </>
                             )}
                           </button>
@@ -1285,17 +1286,17 @@ const VideoConsultation = () => {
                     <div>
                       <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
                         <FileText className="w-4 h-4 text-brand-400" />
-                        <span>Doctor's Key Consultation Points</span>
+                        <span>{i18n.t("Doctor's Key Consultation Points")}</span>
                       </h4>
                       <p className="text-[10px] text-slate-400">
-                        Live takeaways and advice recorded by Dr. {remotePeer?.userName || 'Physician'}
+                        {i18n.t("Live takeaways and advice recorded by Dr.")} {remotePeer?.userName || 'Physician'}
                       </p>
                     </div>
 
                     <div className="space-y-2">
                       {sharedKeyPoints.length === 0 ? (
                         <p className="text-xs text-slate-500 text-center py-6 border border-dashed border-slate-800 rounded-2xl">
-                          Doctor hasn't synced key points yet. They will appear here in real-time as the doctor writes them.
+                          {i18n.t("Doctor hasn't synced key points yet. They will appear here in real-time as the doctor writes them.")}
                         </p>
                       ) : (
                         sharedKeyPoints.map((point, index) => (
@@ -1316,12 +1317,12 @@ const VideoConsultation = () => {
                     <div className="pt-2 space-y-2">
                       <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
                         <Pill className="w-4 h-4 text-emerald-400" />
-                        <span>Prescriptions Saved in this Call ({acceptedMedicationsList.length})</span>
+                        <span>{i18n.t("Prescriptions Saved in this Call (")}{acceptedMedicationsList.length})</span>
                       </h4>
 
                       {acceptedMedicationsList.length === 0 ? (
                         <p className="text-xs text-slate-500 text-center py-4 border border-dashed border-slate-800 rounded-2xl">
-                          No prescriptions accepted yet. When the doctor prescribes a medicine, it appears on your screen to review and accept.
+                          {i18n.t("No prescriptions accepted yet. When the doctor prescribes a medicine, it appears on your screen to review and accept.")}
                         </p>
                       ) : (
                         acceptedMedicationsList.map((rx, idx) => (
@@ -1332,7 +1333,7 @@ const VideoConsultation = () => {
                             <div className="flex items-center justify-between">
                               <span className="font-bold text-emerald-300">{rx.name}</span>
                               <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
-                                Active in Records
+                                {i18n.t("Active in Records")}
                               </span>
                             </div>
                             <p className="text-[11px] text-slate-300">
@@ -1360,7 +1361,7 @@ const VideoConsultation = () => {
                 <div className="space-y-3 flex-1 overflow-y-auto pr-1">
                   {chatMessages.length === 0 ? (
                     <p className="text-xs text-slate-500 text-center py-10">
-                      No messages yet. Send messages, lab values, or instructions during the call.
+                      {i18n.t("No messages yet. Send messages, lab values, or instructions during the call.")}
                     </p>
                   ) : (
                     chatMessages.map((msg) => {
@@ -1397,7 +1398,7 @@ const VideoConsultation = () => {
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Type message..."
+                    placeholder={i18n.t("Type message...")}
                     className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
                   />
                   <button
@@ -1460,7 +1461,7 @@ const VideoConsultation = () => {
         {/* In-Call Chat Toggle */}
         <button
           onClick={() => setActiveDrawer(activeDrawer === 'chat' ? null : 'chat')}
-          title="In-call Chat"
+          title={i18n.t("In-call Chat")}
           className={`p-3.5 rounded-2xl transition-all shadow-md flex items-center justify-center relative ${
             activeDrawer === 'chat'
               ? 'bg-brand-500/20 text-brand-300 border border-brand-500/50'
@@ -1477,7 +1478,7 @@ const VideoConsultation = () => {
         {isDoctor ? (
           <button
             onClick={() => setActiveDrawer(activeDrawer === 'workspace' ? null : 'workspace')}
-            title="Doctor Workspace (Key Points & Prescribe)"
+            title={i18n.t("Doctor Workspace (Key Points & Prescribe)")}
             className={`p-3.5 rounded-2xl transition-all shadow-md flex items-center justify-center relative ${
               activeDrawer === 'workspace'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 ring-2 ring-emerald-500/30'
@@ -1495,7 +1496,7 @@ const VideoConsultation = () => {
           /* Patient Notes & Rx Drawer Toggle */
           <button
             onClick={() => setActiveDrawer(activeDrawer === 'workspace' ? null : 'workspace')}
-            title="Doctor's Notes & Prescriptions"
+            title={i18n.t("Doctor's Notes & Prescriptions")}
             className={`p-3.5 rounded-2xl transition-all shadow-md flex items-center justify-center relative ${
               activeDrawer === 'workspace'
                 ? 'bg-brand-500/20 text-brand-300 border border-brand-500/50'
@@ -1514,11 +1515,11 @@ const VideoConsultation = () => {
         {/* End Call / Leave Room */}
         <button
           onClick={handleEndCall}
-          title="End Consultation"
+          title={i18n.t("End Consultation")}
           className="px-5 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-lg shadow-rose-600/30 flex items-center space-x-2"
         >
           <PhoneOff className="w-5 h-5" />
-          <span className="hidden sm:inline text-xs">End Call</span>
+          <span className="hidden sm:inline text-xs">{i18n.t("End Call")}</span>
         </button>
 
       </div>

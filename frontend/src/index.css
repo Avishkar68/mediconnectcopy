@@ -11,6 +11,38 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight text-slate-900;
   }
+
+  :lang(hi), :lang(mr) {
+    font-family: "Noto Sans Devanagari", Inter, sans-serif;
+  }
+
+  :lang(gu) {
+    font-family: "Noto Sans Gujarati", Inter, sans-serif;
+  }
+
+  :lang(ta) {
+    font-family: "Noto Sans Tamil", Inter, sans-serif;
+  }
+
+  :lang(te) {
+    font-family: "Noto Sans Telugu", Inter, sans-serif;
+  }
+
+  :lang(bn) {
+    font-family: "Noto Sans Bengali", Inter, sans-serif;
+  }
+
+  :lang(kn) {
+    font-family: "Noto Sans Kannada", Inter, sans-serif;
+  }
+
+  :lang(pa) {
+    font-family: "Noto Sans Gurmukhi", Inter, sans-serif;
+  }
+
+  :lang(ml) {
+    font-family: "Noto Sans Malayalam", Inter, sans-serif;
+  }
 }
 
 ::-webkit-scrollbar {

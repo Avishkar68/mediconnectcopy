@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../../services/api';
 import {
@@ -541,7 +542,7 @@ const DoctorCarePlans = () => {
     return (
       <div className="py-24 text-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin mx-auto" />
-        <p className="text-sm text-slate-400 font-medium">Loading Care Plans...</p>
+        <p className="text-sm text-slate-400 font-medium">{i18n.t("Loading Care Plans...")}</p>
       </div>
     );
   }
@@ -558,10 +559,10 @@ const DoctorCarePlans = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                Patient Care Plans
+                {i18n.t("Patient Care Plans")}
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
-                Create easy daily health plans, set recovery goals, and track patient progress.
+                {i18n.t("Create easy daily health plans, set recovery goals, and track patient progress.")}
               </p>
             </div>
           </div>
@@ -576,7 +577,7 @@ const DoctorCarePlans = () => {
           className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all shadow-lg shadow-brand-500/20 shrink-0"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>Prescribe Care Pathway</span>
+          <span>{i18n.t("Prescribe Care Pathway")}</span>
         </button>
       </div>
 
@@ -601,9 +602,9 @@ const DoctorCarePlans = () => {
             <Layers className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Care Pathways</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Active Care Pathways")}</span>
             <h3 className="text-xl font-bold text-white mt-0.5">
-              {carePlans.filter((p) => p.status === 'active').length} Active
+              {carePlans.filter((p) => p.status === 'active').length} {i18n.t("Active")}
             </h3>
           </div>
         </div>
@@ -613,9 +614,9 @@ const DoctorCarePlans = () => {
             <UserCheck className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Patients Enrolled</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Patients Enrolled")}</span>
             <h3 className="text-xl font-bold text-white mt-0.5">
-              {new Set(carePlans.map((p) => p.patient?._id || p.patient)).size} Patients
+              {new Set(carePlans.map((p) => p.patient?._id || p.patient)).size} {i18n.t("Patients")}
             </h3>
           </div>
         </div>
@@ -625,9 +626,9 @@ const DoctorCarePlans = () => {
             <Sparkles className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clinical Templates</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{i18n.t("Clinical Templates")}</span>
             <h3 className="text-xl font-bold text-white mt-0.5">
-              {SMART_PATHWAY_TEMPLATES.length} Available
+              {SMART_PATHWAY_TEMPLATES.length} {i18n.t("Available")}
             </h3>
           </div>
         </div>
@@ -641,12 +642,12 @@ const DoctorCarePlans = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by plan, diagnosis, or patient..."
+            placeholder={i18n.t("Search by plan, diagnosis, or patient...")}
             className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500"
           />
         </div>
         <span className="text-xs text-slate-500 font-medium">
-          Showing {filteredPlans.length} of {carePlans.length} care pathway(s)
+          {i18n.t("Showing")} {filteredPlans.length} {i18n.t("of")} {carePlans.length} {i18n.t("care pathway(s)")}
         </span>
       </div>
 
@@ -654,7 +655,7 @@ const DoctorCarePlans = () => {
       {filteredPlans.length === 0 ? (
         <div className="p-12 text-center bg-slate-900/20 border border-dashed border-slate-800 rounded-3xl space-y-3">
           <ClipboardList className="w-10 h-10 text-slate-600 mx-auto" />
-          <h3 className="text-sm font-bold text-white">No Care Pathways Found</h3>
+          <h3 className="text-sm font-bold text-white">{i18n.t("No Care Pathways Found")}</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
             {searchQuery
               ? 'No care pathways match your search query.'
@@ -665,7 +666,7 @@ const DoctorCarePlans = () => {
             className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all mt-2"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Prescribe First Care Pathway</span>
+            <span>{i18n.t("Prescribe First Care Pathway")}</span>
           </button>
         </div>
       ) : (
@@ -703,7 +704,7 @@ const DoctorCarePlans = () => {
                       {plan.title}
                     </h3>
                     <p className="text-xs text-slate-300 font-medium mt-0.5">
-                      <span className="text-slate-500 font-normal">Diagnosis:</span> {plan.diagnosis}
+                      <span className="text-slate-500 font-normal">{i18n.t("Diagnosis:")}</span> {plan.diagnosis}
                     </p>
                   </div>
 
@@ -726,10 +727,10 @@ const DoctorCarePlans = () => {
                     <div className="p-3 rounded-xl bg-slate-900/30 border border-slate-800 text-xs space-y-1">
                       <div className="flex justify-between items-center text-[10px]">
                         <span className="font-bold text-slate-400 uppercase tracking-wider">
-                          Current Stage
+                          {i18n.t("Current Stage")}
                         </span>
                         <span className="text-brand-400 font-bold uppercase">
-                          Phase {activePhase.phaseNumber} • {activePhase.durationDays} Days
+                          {i18n.t("Phase")} {activePhase.phaseNumber} • {activePhase.durationDays} {i18n.t("Days")}
                         </span>
                       </div>
                       <p className="text-slate-200 font-semibold text-xs truncate">
@@ -741,7 +742,7 @@ const DoctorCarePlans = () => {
                   {/* Daily Tasks Pill list */}
                   <div className="text-[11px] text-slate-400 space-y-1">
                     <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                      Prescribed Daily Tasks ({tasks.length})
+                      {i18n.t("Prescribed Daily Tasks (")}{tasks.length})
                     </span>
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {tasks.slice(0, 3).map((t, tIdx) => (
@@ -751,7 +752,7 @@ const DoctorCarePlans = () => {
                       ))}
                       {tasks.length > 3 && (
                         <span className="px-2 py-0.5 rounded-lg bg-slate-800 text-[10px] text-slate-400">
-                          +{tasks.length - 3} more
+                          +{tasks.length - 3} {i18n.t("more")}
                         </span>
                       )}
                     </div>
@@ -762,7 +763,7 @@ const DoctorCarePlans = () => {
                 <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                   <span className="text-[10px] text-slate-500 flex items-center">
                     <Clock className="w-3 h-3 mr-1" />
-                    Updated: {new Date(plan.updatedAt || plan.createdAt).toLocaleDateString()}
+                    {i18n.t("Updated:")} {new Date(plan.updatedAt || plan.createdAt).toLocaleDateString()}
                   </span>
 
                   <button
@@ -773,7 +774,7 @@ const DoctorCarePlans = () => {
                     className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-brand-300 hover:text-brand-200 text-xs font-bold transition-all border border-slate-700"
                   >
                     <Edit className="w-3.5 h-3.5" />
-                    <span>Manage & Review</span>
+                    <span>{i18n.t("Manage & Review")}</span>
                   </button>
                 </div>
               </div>
@@ -796,13 +797,13 @@ const DoctorCarePlans = () => {
 
             <div>
               <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest block mb-1">
-                Clinical Workflow Studio
+                {i18n.t("Clinical Workflow Studio")}
               </span>
               <h2 className="text-xl font-bold text-white font-display">
-                Prescribe New Smart Care Pathway
+                {i18n.t("Prescribe New Smart Care Pathway")}
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                Select a patient, pick a pre-configured clinical protocol or build custom recovery phases.
+                {i18n.t("Select a patient, pick a pre-configured clinical protocol or build custom recovery phases.")}
               </p>
             </div>
 
@@ -810,7 +811,7 @@ const DoctorCarePlans = () => {
             <div className="space-y-2">
               <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 mr-1.5" />
-                <span>1-Click Smart Clinical Protocols (Auto-Populate)</span>
+                <span>{i18n.t("1-Click Smart Clinical Protocols (Auto-Populate)")}</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {SMART_PATHWAY_TEMPLATES.map((tmpl) => (
@@ -845,7 +846,7 @@ const DoctorCarePlans = () => {
               {/* Patient Selector */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Target Patient *
+                  {i18n.t("Target Patient *")}
                 </label>
                 <select
                   value={form.patientId}
@@ -853,7 +854,7 @@ const DoctorCarePlans = () => {
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                   required
                 >
-                  <option value="">Select from authorized patients...</option>
+                  <option value="">{i18n.t("Select from authorized patients...")}</option>
                   {patients.map((p) => (
                     <option key={p._id} value={p._id}>
                       {p.name} ({p.email})
@@ -866,13 +867,13 @@ const DoctorCarePlans = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Care Pathway Title *
+                    {i18n.t("Care Pathway Title *")}
                   </label>
                   <input
                     type="text"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    placeholder="e.g. Post-PCI Recovery Pathway"
+                    placeholder={i18n.t("e.g. Post-PCI Recovery Pathway")}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                     required
                   />
@@ -880,13 +881,13 @@ const DoctorCarePlans = () => {
 
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Diagnosis / Clinical Indication *
+                    {i18n.t("Diagnosis / Clinical Indication *")}
                   </label>
                   <input
                     type="text"
                     value={form.diagnosis}
                     onChange={(e) => setForm({ ...form, diagnosis: e.target.value })}
-                    placeholder="e.g. Acute Coronary Syndrome, Type 2 Diabetes"
+                    placeholder={i18n.t("e.g. Acute Coronary Syndrome, Type 2 Diabetes")}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                     required
                   />
@@ -896,13 +897,13 @@ const DoctorCarePlans = () => {
               {/* Description */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Clinical Objective & Description
+                  {i18n.t("Clinical Objective & Description")}
                 </label>
                 <textarea
                   rows={2}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Outline clinical goals, precautions, and dietary guidance..."
+                  placeholder={i18n.t("Outline clinical goals, precautions, and dietary guidance...")}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 />
               </div>
@@ -911,12 +912,12 @@ const DoctorCarePlans = () => {
               <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-3">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center">
                   <Target className="w-3.5 h-3.5 text-rose-400 mr-1.5" />
-                  <span>Target Clinical Metrics & Vitals</span>
+                  <span>{i18n.t("Target Clinical Metrics & Vitals")}</span>
                 </span>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                   <div>
-                    <label className="text-[9px] text-slate-500 uppercase block mb-1">Max Systolic BP</label>
+                    <label className="text-[9px] text-slate-500 uppercase block mb-1">{i18n.t("Max Systolic BP")}</label>
                     <input
                       type="number"
                       value={form.targetVitals.systolicMax || ''}
@@ -932,7 +933,7 @@ const DoctorCarePlans = () => {
                   </div>
 
                   <div>
-                    <label className="text-[9px] text-slate-500 uppercase block mb-1">Max Diastolic BP</label>
+                    <label className="text-[9px] text-slate-500 uppercase block mb-1">{i18n.t("Max Diastolic BP")}</label>
                     <input
                       type="number"
                       value={form.targetVitals.diastolicMax || ''}
@@ -948,7 +949,7 @@ const DoctorCarePlans = () => {
                   </div>
 
                   <div>
-                    <label className="text-[9px] text-slate-500 uppercase block mb-1">Heart Rate Target</label>
+                    <label className="text-[9px] text-slate-500 uppercase block mb-1">{i18n.t("Heart Rate Target")}</label>
                     <input
                       type="text"
                       value={form.targetVitals.heartRateTarget || ''}
@@ -958,13 +959,13 @@ const DoctorCarePlans = () => {
                           targetVitals: { ...form.targetVitals, heartRateTarget: e.target.value },
                         })
                       }
-                      placeholder="60 - 80 bpm"
+                      placeholder={i18n.t("60 - 80 bpm")}
                       className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[9px] text-slate-500 uppercase block mb-1">Blood Sugar Target</label>
+                    <label className="text-[9px] text-slate-500 uppercase block mb-1">{i18n.t("Blood Sugar Target")}</label>
                     <input
                       type="text"
                       value={form.targetVitals.bloodSugarTarget || ''}
@@ -974,14 +975,14 @@ const DoctorCarePlans = () => {
                           targetVitals: { ...form.targetVitals, bloodSugarTarget: e.target.value },
                         })
                       }
-                      placeholder="< 130 mg/dL"
+                      placeholder={i18n.t("< 130 mg/dL")}
                       className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[9px] text-slate-500 uppercase block mb-1">Special Clinical Precaution</label>
+                  <label className="text-[9px] text-slate-500 uppercase block mb-1">{i18n.t("Special Clinical Precaution")}</label>
                   <input
                     type="text"
                     value={form.targetVitals.specialNotes || ''}
@@ -991,7 +992,7 @@ const DoctorCarePlans = () => {
                         targetVitals: { ...form.targetVitals, specialNotes: e.target.value },
                       })
                     }
-                    placeholder="e.g. Stop exercise if chest pain occurs. Report fever > 38.0°C."
+                    placeholder={i18n.t("e.g. Stop exercise if chest pain occurs. Report fever > 38.0°C.")}
                     className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white"
                   />
                 </div>
@@ -1001,16 +1002,16 @@ const DoctorCarePlans = () => {
               {form.phases && form.phases.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Configured Pathway Phases ({form.phases.length})
+                    {i18n.t("Configured Pathway Phases (")}{form.phases.length})
                   </span>
                   <div className="space-y-1.5 text-xs">
                     {form.phases.map((ph, idx) => (
                       <div key={idx} className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center">
                         <span className="font-semibold text-slate-200">
-                          Phase {ph.phaseNumber}: {ph.name}
+                          {i18n.t("Phase")} {ph.phaseNumber}: {ph.name}
                         </span>
                         <span className="text-[10px] text-brand-400 font-bold">
-                          {ph.durationDays} Days
+                          {ph.durationDays} {i18n.t("Days")}
                         </span>
                       </div>
                     ))}
@@ -1022,7 +1023,7 @@ const DoctorCarePlans = () => {
               {form.dailyTasks && form.dailyTasks.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Prescribed Daily Tasks ({form.dailyTasks.length})
+                    {i18n.t("Prescribed Daily Tasks (")}{form.dailyTasks.length})
                   </span>
                   <div className="space-y-1 text-xs">
                     {form.dailyTasks.map((t, idx) => (
@@ -1041,13 +1042,13 @@ const DoctorCarePlans = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all"
                 >
-                  Cancel
+                  {i18n.t("Cancel")}
                 </button>
                 <button
                   type="submit"
                   className="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-dark-950 text-xs font-bold transition-all shadow-md shadow-brand-500/20"
                 >
-                  Prescribe Care Pathway
+                  {i18n.t("Prescribe Care Pathway")}
                 </button>
               </div>
 
@@ -1071,13 +1072,13 @@ const DoctorCarePlans = () => {
 
             <div>
               <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest block mb-1">
-                Clinical Adherence & Review
+                {i18n.t("Clinical Adherence & Review")}
               </span>
               <h2 className="text-xl font-bold text-white font-display">
-                Manage: {selectedPlanForReview.title}
+                {i18n.t("Manage:")} {selectedPlanForReview.title}
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Patient: <span className="text-slate-200 font-bold">{selectedPlanForReview.patient?.name}</span> • Diagnosis: {selectedPlanForReview.diagnosis}
+                {i18n.t("Patient:")} <span className="text-slate-200 font-bold">{selectedPlanForReview.patient?.name}</span> {i18n.t("• Diagnosis:")} {selectedPlanForReview.diagnosis}
               </p>
             </div>
 
@@ -1086,7 +1087,7 @@ const DoctorCarePlans = () => {
               {/* Overall Plan Status */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Care Pathway Status
+                  {i18n.t("Care Pathway Status")}
                 </label>
                 <div className="flex space-x-2">
                   {['active', 'paused', 'completed'].map((st) => (
@@ -1114,7 +1115,7 @@ const DoctorCarePlans = () => {
               {/* Milestone Phase Status Control */}
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Advance / Update Milestone Phases
+                  {i18n.t("Advance / Update Milestone Phases")}
                 </label>
                 <div className="space-y-2 text-xs">
                   {selectedPlanForReview.phases.map((ph, idx) => (
@@ -1124,9 +1125,9 @@ const DoctorCarePlans = () => {
                     >
                       <div>
                         <span className="font-bold text-slate-200 block">
-                          Phase {ph.phaseNumber}: {ph.name}
+                          {i18n.t("Phase")} {ph.phaseNumber}: {ph.name}
                         </span>
-                        <span className="text-[10px] text-slate-500">{ph.durationDays} Days</span>
+                        <span className="text-[10px] text-slate-500">{ph.durationDays} {i18n.t("Days")}</span>
                       </div>
 
                       <select
@@ -1134,9 +1135,9 @@ const DoctorCarePlans = () => {
                         onChange={(e) => handlePhaseStatusChange(idx, e.target.value)}
                         className="bg-slate-900 border border-slate-700 text-[11px] text-slate-200 rounded-lg px-2.5 py-1"
                       >
-                        <option value="pending">Pending</option>
-                        <option value="in-progress">In-Progress</option>
-                        <option value="completed">Completed</option>
+                        <option value="pending">{i18n.t("Pending")}</option>
+                        <option value="in-progress">{i18n.t("In-Progress")}</option>
+                        <option value="completed">{i18n.t("Completed")}</option>
                       </select>
                     </div>
                   ))}
@@ -1146,13 +1147,13 @@ const DoctorCarePlans = () => {
               {/* Add Clinical Review Note */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Add Clinical Physician Review Note (Notifies Patient)
+                  {i18n.t("Add Clinical Physician Review Note (Notifies Patient)")}
                 </label>
                 <textarea
                   rows={3}
                   value={reviewNote}
                   onChange={(e) => setReviewNote(e.target.value)}
-                  placeholder="e.g. Evaluated daily BP logs. Resting hemodynamics well-controlled. Cleared to start Phase 2 walking protocol."
+                  placeholder={i18n.t("e.g. Evaluated daily BP logs. Resting hemodynamics well-controlled. Cleared to start Phase 2 walking protocol.")}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 />
               </div>
@@ -1163,7 +1164,7 @@ const DoctorCarePlans = () => {
                   onClick={() => setSelectedPlanForReview(null)}
                   className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all"
                 >
-                  Cancel
+                  {i18n.t("Cancel")}
                 </button>
                 <button
                   type="submit"

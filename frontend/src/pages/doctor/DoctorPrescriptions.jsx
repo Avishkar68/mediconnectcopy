@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
@@ -132,7 +133,7 @@ const DoctorPrescriptions = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading prescription console...</div>;
+    return <div className="text-center py-12 text-slate-500">{i18n.t("Loading prescription console...")}</div>;
   }
 
   return (
@@ -140,8 +141,8 @@ const DoctorPrescriptions = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Prescriptions</h2>
-        <p className="text-xs text-slate-400">Prescribe medicines and daily instructions directly to your patients.</p>
+        <h2 className="text-xl font-bold text-white font-display">{i18n.t("Prescriptions")}</h2>
+        <p className="text-xs text-slate-400">{i18n.t("Prescribe medicines and daily instructions directly to your patients.")}</p>
       </div>
 
       {success && (
@@ -165,16 +166,16 @@ const DoctorPrescriptions = () => {
           <h3 className="text-sm font-bold text-white mb-4 flex items-center justify-between">
             <div className="flex items-center">
               <PlusCircle className="w-4 h-4 text-emerald-400 mr-2" />
-              <span>Write New Prescription</span>
+              <span>{i18n.t("Write New Prescription")}</span>
             </div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              AI Safety Check Ready
+              {i18n.t("AI Safety Check Ready")}
             </span>
           </h3>
 
           <form onSubmit={handlePrescribeSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Select Patient</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Select Patient")}</label>
               <select
                 value={form.patientId}
                 onChange={(e) => {
@@ -184,7 +185,7 @@ const DoctorPrescriptions = () => {
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
                 required
               >
-                <option value="">Select patient...</option>
+                <option value="">{i18n.t("Select patient...")}</option>
                 {patients.map(p => (
                   <option key={p._id} value={p._id}>
                     {p.name} ({p.email})
@@ -195,7 +196,7 @@ const DoctorPrescriptions = () => {
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Medicine Name</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Medicine Name")}</label>
                 <button
                   type="button"
                   onClick={handleScreenDrug}
@@ -203,7 +204,7 @@ const DoctorPrescriptions = () => {
                   className="text-[10px] px-2.5 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
                 >
                   {screening ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-brand-400" />}
-                  <span>Check For Drug Conflicts</span>
+                  <span>{i18n.t("Check For Drug Conflicts")}</span>
                 </button>
               </div>
 
@@ -215,7 +216,7 @@ const DoctorPrescriptions = () => {
                   setScreeningResult(null);
                 }}
                 className="w-full glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Amoxicillin 500mg, Paracetamol 650mg, Ibuprofen 400mg"
+                placeholder={i18n.t("e.g. Amoxicillin 500mg, Paracetamol 650mg, Ibuprofen 400mg")}
                 required
               />
 
@@ -240,7 +241,7 @@ const DoctorPrescriptions = () => {
                       </span>
                     </span>
                     <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">
-                      {screeningResult.alertsCount} alert(s)
+                      {screeningResult.alertsCount} {i18n.t("alert(s)")}
                     </span>
                   </div>
 
@@ -250,7 +251,7 @@ const DoctorPrescriptions = () => {
                       <p className="text-slate-300 text-[10px]">{a.description}</p>
                       {a.recommendation && (
                         <p className="text-brand-300 text-[10px] font-semibold mt-0.5">
-                          💡 Advice: {a.recommendation}
+                          {i18n.t("💡 Advice:")} {a.recommendation}
                         </p>
                       )}
                     </div>
@@ -261,24 +262,24 @@ const DoctorPrescriptions = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Dosage</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Dosage")}</label>
                 <input
                   type="text"
                   value={form.dosage}
                   onChange={(e) => setForm({ ...form, dosage: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. 500mg, 1 tablet"
+                  placeholder={i18n.t("e.g. 500mg, 1 tablet")}
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Frequency</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Frequency")}</label>
                 <input
                   type="text"
                   value={form.frequency}
                   onChange={(e) => setForm({ ...form, frequency: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. Twice daily, Once a day"
+                  placeholder={i18n.t("e.g. Twice daily, Once a day")}
                   required
                 />
               </div>
@@ -286,7 +287,7 @@ const DoctorPrescriptions = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Start Date")}</label>
                 <input
                   type="date"
                   value={form.startDate}
@@ -295,7 +296,7 @@ const DoctorPrescriptions = () => {
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">End Date (optional)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("End Date (optional)")}</label>
                 <input
                   type="date"
                   value={form.endDate}
@@ -306,12 +307,12 @@ const DoctorPrescriptions = () => {
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Instructions</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Instructions")}</label>
               <textarea
                 value={form.instructions}
                 onChange={(e) => setForm({ ...form, instructions: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 h-20 resize-none"
-                placeholder="e.g. Take after breakfast, avoid high sugar meals..."
+                placeholder={i18n.t("e.g. Take after breakfast, avoid high sugar meals...")}
               />
             </div>
 
@@ -319,7 +320,7 @@ const DoctorPrescriptions = () => {
               type="submit"
               className="w-full bg-emerald-500 hover:bg-emerald-400 text-dark-950 text-xs font-bold py-2.5 rounded-xl transition-all"
             >
-              Sign & Issue Prescription
+              {i18n.t("Sign & Issue Prescription")}
             </button>
           </form>
         </div>
@@ -328,12 +329,12 @@ const DoctorPrescriptions = () => {
         <div className="lg:col-span-1 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
             <Activity className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Prescription Slip Logs</span>
+            <span>{i18n.t("Prescription Slip Logs")}</span>
           </h3>
 
           {issuedPrescriptions.length === 0 ? (
             <div className="p-6 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-500">No prescriptions issued in this session.</p>
+              <p className="text-xs text-slate-500">{i18n.t("No prescriptions issued in this session.")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -341,16 +342,16 @@ const DoctorPrescriptions = () => {
                 <div key={pres._id} className="p-4 rounded-xl bg-slate-900/35 border border-slate-850 space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-xs font-bold text-white">Patient: {pres.patientName}</h4>
-                      <p className="text-[10px] text-emerald-400 mt-0.5 font-bold">Drug: {pres.name}</p>
+                      <h4 className="text-xs font-bold text-white">{i18n.t("Patient:")} {pres.patientName}</h4>
+                      <p className="text-[10px] text-emerald-400 mt-0.5 font-bold">{i18n.t("Drug:")} {pres.name}</p>
                     </div>
                     <span className="text-[8px] text-slate-500">
                       {new Date(pres.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="text-[10px] text-slate-400 pt-1.5 border-t border-slate-850">
-                    <p>Dose: {pres.dosage} | Frequency: {pres.frequency}</p>
-                    {pres.instructions && <p className="mt-1 italic text-slate-500">Note: {pres.instructions}</p>}
+                    <p>{i18n.t("Dose:")} {pres.dosage} {i18n.t("| Frequency:")} {pres.frequency}</p>
+                    {pres.instructions && <p className="mt-1 italic text-slate-500">{i18n.t("Note:")} {pres.instructions}</p>}
                   </div>
                 </div>
               ))}

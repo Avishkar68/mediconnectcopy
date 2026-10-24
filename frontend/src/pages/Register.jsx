@@ -1,11 +1,14 @@
+import i18n from "../i18n/index.js";
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { HeartPulse, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Register = () => {
+  const { t } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
   
@@ -31,16 +34,16 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.name.trim()) newErrors.name = t('Name is required');
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('Email is required');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please provide a valid email';
+      newErrors.email = t('Please provide a valid email');
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('Password is required');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('Password must be at least 6 characters');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -58,7 +61,7 @@ const Register = () => {
       // Redirect to OTP verification with email query param
       navigate(`/verify-otp?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
-      setServerError(err.message || 'An error occurred during registration.');
+      setServerError(t(err.message || 'An error occurred during registration.'));
     } finally {
       setLoading(false);
     }
@@ -78,10 +81,10 @@ const Register = () => {
             <HeartPulse className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold font-display text-white tracking-tight">
-            Join MediConnect
+            {t('Join MediConnect')}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Create an account to manage your health network.
+            {t('Create an account to manage your health network.')}
           </p>
         </div>
 
@@ -95,26 +98,26 @@ const Register = () => {
             )}
 
             <Input
-              label="Full Name"
+              label={t('Full Name')}
               name="name"
-              placeholder="Dr. John Doe / Jane Doe"
+              placeholder={i18n.t("Dr. John Doe / Jane Doe")}
               value={formData.name}
               onChange={handleChange}
               error={errors.name}
             />
 
             <Input
-              label="Email Address"
+              label={t('Email Address')}
               name="email"
               type="email"
-              placeholder="example@mediconnect.com"
+              placeholder={i18n.t("example@mediconnect.com")}
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
             />
 
             <Input
-              label="Password (min 6 chars)"
+              label={t('Password (min 6 chars)')}
               name="password"
               type="password"
               placeholder="••••••••"
@@ -125,7 +128,7 @@ const Register = () => {
 
             <div className="flex flex-col space-y-1.5 w-full">
               <label htmlFor="registration-role" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                User Role
+                {t('User Role')}
               </label>
               <select
                 id="registration-role"
@@ -134,14 +137,14 @@ const Register = () => {
                 onChange={handleChange}
                 className="glass-input px-4 py-2.5 rounded-lg text-sm bg-slate-900 border border-slate-700/50 text-slate-100 transition-all focus:border-brand-500 focus:outline-none"
               >
-                <option value="patient" className="bg-slate-950">Patient</option>
-                <option value="doctor" className="bg-slate-950">Doctor</option>
-                <option value="admin" className="bg-slate-950">System Admin</option>
+                <option value="patient" className="bg-slate-950">{t('Patient')}</option>
+                <option value="doctor" className="bg-slate-950">{t('Doctor')}</option>
+                <option value="admin" className="bg-slate-950">{t('System Admin')}</option>
               </select>
             </div>
 
             <Button type="submit" loading={loading} className="w-full mt-6">
-              <span>Create Account</span>
+              <span>{t('Create Account')}</span>
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </form>
@@ -149,9 +152,9 @@ const Register = () => {
           {/* Footer link */}
           <div className="mt-6 text-center">
             <p className="text-slate-400 text-xs">
-              Already have an account?{' '}
+              {t('Already have an account?')}{' '}
               <Link to="/login" className="text-brand-400 hover:text-brand-300 font-semibold underline">
-                Log In
+                {t('Log In')}
               </Link>
             </p>
           </div>

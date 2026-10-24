@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
@@ -97,7 +98,7 @@ const PatientMedications = () => {
   const pastMeds = medications.filter(m => m.status !== 'active');
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-400">Loading your medicines...</div>;
+    return <div className="text-center py-12 text-slate-400">{i18n.t("Loading your medicines...")}</div>;
   }
 
   return (
@@ -106,8 +107,8 @@ const PatientMedications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">My Daily Medicines</h2>
-          <p className="text-xs text-slate-300">Keep track of what pills to take, how much to take, and when to take them.</p>
+          <h2 className="text-xl font-bold text-white font-display">{i18n.t("My Daily Medicines")}</h2>
+          <p className="text-xs text-slate-300">{i18n.t("Keep track of what pills to take, how much to take, and when to take them.")}</p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
@@ -135,41 +136,41 @@ const PatientMedications = () => {
       {/* Add Form */}
       {showAddForm && (
         <div className="glass-card rounded-2xl p-6 border border-slate-800 max-w-xl mx-auto animate-in fade-in slide-in-from-top-3 duration-200">
-          <h3 className="text-sm font-bold text-white mb-4">Add A New Medicine</h3>
+          <h3 className="text-sm font-bold text-white mb-4">{i18n.t("Add A New Medicine")}</h3>
 
           <form onSubmit={handleMedSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Medicine Name</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Medicine Name")}</label>
               <input
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Paracetamol, Metformin, Vitamin D"
+                placeholder={i18n.t("e.g. Paracetamol, Metformin, Vitamin D")}
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">How Much (Dosage)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("How Much (Dosage)")}</label>
                 <input
                   type="text"
                   value={form.dosage}
                   onChange={(e) => setForm({ ...form, dosage: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. 1 tablet, 500mg, 5ml"
+                  placeholder={i18n.t("e.g. 1 tablet, 500mg, 5ml")}
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">How Often (Frequency)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("How Often (Frequency)")}</label>
                 <input
                   type="text"
                   value={form.frequency}
                   onChange={(e) => setForm({ ...form, frequency: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                  placeholder="e.g. Once daily, Twice a day after meals"
+                  placeholder={i18n.t("e.g. Once daily, Twice a day after meals")}
                   required
                 />
               </div>
@@ -177,7 +178,7 @@ const PatientMedications = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Start Date")}</label>
                 <input
                   type="date"
                   value={form.startDate}
@@ -186,7 +187,7 @@ const PatientMedications = () => {
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">End Date (optional)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("End Date (optional)")}</label>
                 <input
                   type="date"
                   value={form.endDate}
@@ -197,12 +198,12 @@ const PatientMedications = () => {
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Doctor's Advice or Special Instructions</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Doctor's Advice or Special Instructions")}</label>
               <textarea
                 value={form.instructions}
                 onChange={(e) => setForm({ ...form, instructions: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 h-20 resize-none"
-                placeholder="e.g. Take with warm water after food, do not take on empty stomach..."
+                placeholder={i18n.t("e.g. Take with warm water after food, do not take on empty stomach...")}
               />
             </div>
 
@@ -210,7 +211,7 @@ const PatientMedications = () => {
               type="submit"
               className="w-full bg-brand-500 hover:bg-brand-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition-all shadow-md shadow-brand-500/20"
             >
-              Save To My Medicines
+              {i18n.t("Save To My Medicines")}
             </button>
           </form>
         </div>
@@ -223,17 +224,17 @@ const PatientMedications = () => {
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
             <Activity className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Medicines I Am Taking Right Now ({activeMeds.length})</span>
+            <span>{i18n.t("Medicines I Am Taking Right Now (")}{activeMeds.length})</span>
           </h3>
 
           {activeMeds.length === 0 ? (
             <div className="p-8 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-2xl">
-              <p className="text-xs text-slate-400">No active medicines registered right now.</p>
+              <p className="text-xs text-slate-400">{i18n.t("No active medicines registered right now.")}</p>
               <button
                 onClick={() => setShowAddForm(true)}
                 className="mt-3 text-xs font-bold text-brand-400 hover:underline"
               >
-                + Add your first medicine
+                {i18n.t("+ Add your first medicine")}
               </button>
             </div>
           ) : (
@@ -250,17 +251,17 @@ const PatientMedications = () => {
                         {med.status === 'active' ? 'Active' : med.status}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-1">Dose: <strong className="text-white">{med.dosage}</strong> • Frequency: {med.frequency}</p>
+                    <p className="text-xs text-slate-300 mt-1">{i18n.t("Dose:")} <strong className="text-white">{med.dosage}</strong> {i18n.t("• Frequency:")} {med.frequency}</p>
                     
                     {med.instructions && (
                       <p className="text-xs text-slate-400 mt-2 italic bg-slate-900/40 p-2 rounded-lg border border-slate-800">
-                        Instructions: {med.instructions}
+                        {i18n.t("Instructions:")} {med.instructions}
                       </p>
                     )}
                   </div>
 
                   <div className="text-left sm:text-right border-t sm:border-t-0 border-slate-800 pt-2 sm:pt-0">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Course Duration</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">{i18n.t("Course Duration")}</span>
                     <div className="flex items-center text-xs text-slate-300 mt-1 space-x-1 sm:justify-end">
                       <Calendar className="w-3.5 h-3.5 text-brand-400" />
                       <span>
@@ -278,21 +279,21 @@ const PatientMedications = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider border-b border-slate-800 pb-2 mb-3">
-              Helpful Medicine Reminders
+              {i18n.t("Helpful Medicine Reminders")}
             </h3>
             <div className="space-y-3 text-xs text-slate-300">
               <div className="flex items-start space-x-2.5 p-3 bg-slate-900/40 rounded-xl border border-slate-800">
                 <Clock className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-white">Morning Routine</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Take thyroid or blood pressure pills in the morning as prescribed.</p>
+                  <h4 className="font-bold text-white">{i18n.t("Morning Routine")}</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">{i18n.t("Take thyroid or blood pressure pills in the morning as prescribed.")}</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2.5 p-3 bg-slate-900/40 rounded-xl border border-slate-800">
                 <Clock className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-white">Evening Routine</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Take dinner sugar pills and cholesterol tablets with food.</p>
+                  <h4 className="font-bold text-white">{i18n.t("Evening Routine")}</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">{i18n.t("Take dinner sugar pills and cholesterol tablets with food.")}</p>
                 </div>
               </div>
             </div>
@@ -302,7 +303,7 @@ const PatientMedications = () => {
           {pastMeds.length > 0 && (
             <div className="glass-card rounded-2xl p-5 border border-slate-800">
               <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 mb-3">
-                Past Medicines (Finished Course)
+                {i18n.t("Past Medicines (Finished Course)")}
               </h3>
               <div className="space-y-2.5">
                 {pastMeds.map(med => (
@@ -313,7 +314,7 @@ const PatientMedications = () => {
                         {med.status}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Dose: {med.dosage} | Ended: {med.endDate ? new Date(med.endDate).toLocaleDateString() : 'Completed'}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{i18n.t("Dose:")} {med.dosage} {i18n.t("| Ended:")} {med.endDate ? new Date(med.endDate).toLocaleDateString() : 'Completed'}</p>
                   </div>
                 ))}
               </div>

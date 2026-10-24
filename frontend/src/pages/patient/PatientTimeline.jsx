@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
@@ -63,7 +64,7 @@ const PatientTimeline = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading timeline tracker...</div>;
+    return <div className="text-center py-12 text-slate-500">{i18n.t("Loading timeline tracker...")}</div>;
   }
 
   return (
@@ -71,8 +72,8 @@ const PatientTimeline = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">My Health Timeline</h2>
-        <p className="text-xs text-slate-400">A simple timeline of your health journey, doctor visits, and test reports in order.</p>
+        <h2 className="text-xl font-bold text-white font-display">{i18n.t("My Health Timeline")}</h2>
+        <p className="text-xs text-slate-400">{i18n.t("A simple timeline of your health journey, doctor visits, and test reports in order.")}</p>
       </div>
 
       {error && (
@@ -85,9 +86,9 @@ const PatientTimeline = () => {
       {timeline.length === 0 ? (
         <div className="p-12 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
           <Clock className="w-12 h-12 text-slate-650 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-white">Your timeline is empty</h3>
+          <h3 className="text-sm font-bold text-white">{i18n.t("Your timeline is empty")}</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-            When you log blood pressure readings, visit a doctor, or upload lab reports, your timeline will show up here automatically.
+            {i18n.t("When you log blood pressure readings, visit a doctor, or upload lab reports, your timeline will show up here automatically.")}
           </p>
         </div>
       ) : (

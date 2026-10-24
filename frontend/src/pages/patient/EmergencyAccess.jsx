@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
@@ -330,17 +331,17 @@ export default function EmergencyAccess() {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-                  Life Safety Card
+                  {i18n.t("Life Safety Card")}
                 </span>
                 <span className="text-[9px] px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-mono">
-                  Private & Protected
+                  {i18n.t("Private & Protected")}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-display mt-0.5">
-                Emergency Health QR Card
+                {i18n.t("Emergency Health QR Card")}
               </h1>
               <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                Paramedics and emergency doctors can scan this card to quickly see your blood type, allergies, and emergency contact if you ever need urgent help.
+                {i18n.t("Paramedics and emergency doctors can scan this card to quickly see your blood type, allergies, and emergency contact if you ever need urgent help.")}
               </p>
             </div>
           </div>
@@ -351,12 +352,12 @@ export default function EmergencyAccess() {
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-rose-600/20"
             >
               <HeartPulse className="w-4 h-4 animate-pulse" />
-              <span>First-Aid Helper</span>
+              <span>{i18n.t("First-Aid Helper")}</span>
             </Link>
 
             <div className="flex items-center space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
               <div className="text-right">
-                <div className="text-[10px] font-bold text-slate-400 uppercase">Emergency Card Sharing</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Emergency Card Sharing")}</div>
                 <div className={`text-xs font-bold ${enabled ? "text-emerald-400" : "text-slate-500"}`}>
                   {enabled ? "Active & Ready To Scan" : "Sharing Turned Off"}
                 </div>
@@ -385,7 +386,7 @@ export default function EmergencyAccess() {
         <div className="mt-5 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-3.5 text-xs text-slate-300 flex items-center space-x-3">
           <Lock className="w-4 h-4 text-cyan-400 shrink-0" />
           <span>
-            <strong className="text-white">Safe & Protected:</strong> Your emergency card only displays the specific items you turn on below. You stay in full control at all times.
+            <strong className="text-white">{i18n.t("Safe & Protected:")}</strong> {i18n.t("Your emergency card only displays the specific items you turn on below. You stay in full control at all times.")}
           </span>
         </div>
       </div>
@@ -401,7 +402,7 @@ export default function EmergencyAccess() {
       {saved && (
         <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-semibold flex items-center space-x-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
-          <span>Emergency sharing preferences saved and synchronized with server.</span>
+          <span>{i18n.t("Emergency sharing preferences saved and synchronized with server.")}</span>
         </div>
       )}
 
@@ -410,7 +411,7 @@ export default function EmergencyAccess() {
         <div className="glass-card rounded-2xl p-4 border border-yellow-500/30 bg-yellow-500/5">
           <div className="flex items-center space-x-2 text-yellow-400 mb-2 font-bold text-xs">
             <AlertTriangle className="w-4 h-4" />
-            <span>Missing Profile Information Notice</span>
+            <span>{i18n.t("Missing Profile Information Notice")}</span>
           </div>
           <ul className="space-y-1 text-xs text-yellow-300/90 list-disc list-inside">
             {missingWarnings.map((warn, i) => (
@@ -429,14 +430,14 @@ export default function EmergencyAccess() {
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <div>
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  What doctors can see in an emergency
+                  {i18n.t("What doctors can see in an emergency")}
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Choose which information is visible when someone scans your emergency card.
+                  {i18n.t("Choose which information is visible when someone scans your emergency card.")}
                 </p>
               </div>
               <span className="text-xs font-bold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">
-                {enabledCount} of {FIELD_CONFIG.length} Enabled
+                {enabledCount} {i18n.t("of")} {FIELD_CONFIG.length} {i18n.t("Enabled")}
               </span>
             </div>
 
@@ -498,17 +499,17 @@ export default function EmergencyAccess() {
             <div>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-emerald-400" />
-                <span>Primary Emergency Contact Details</span>
+                <span>{i18n.t("Primary Emergency Contact Details")}</span>
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                These details will be displayed to emergency personnel when Emergency Contact sharing is turned on.
+                {i18n.t("These details will be displayed to emergency personnel when Emergency Contact sharing is turned on.")}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                  Contact Full Name
+                  {i18n.t("Contact Full Name")}
                 </label>
                 <input
                   type="text"
@@ -517,14 +518,14 @@ export default function EmergencyAccess() {
                     setSaved(false);
                     setEmergencyContact((prev) => ({ ...prev, name: e.target.value }));
                   }}
-                  placeholder="e.g. Jane Doe"
+                  placeholder={i18n.t("e.g. Jane Doe")}
                   className="w-full bg-slate-900 border border-slate-800 focus:border-brand-500 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                  Contact Phone Number
+                  {i18n.t("Contact Phone Number")}
                 </label>
                 <input
                   type="tel"
@@ -533,14 +534,14 @@ export default function EmergencyAccess() {
                     setSaved(false);
                     setEmergencyContact((prev) => ({ ...prev, phone: e.target.value }));
                   }}
-                  placeholder="e.g. +1 555-0192"
+                  placeholder={i18n.t("e.g. +1 555-0192")}
                   className="w-full bg-slate-900 border border-slate-800 focus:border-brand-500 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                  Relationship
+                  {i18n.t("Relationship")}
                 </label>
                 <input
                   type="text"
@@ -549,7 +550,7 @@ export default function EmergencyAccess() {
                     setSaved(false);
                     setEmergencyContact((prev) => ({ ...prev, relation: e.target.value }));
                   }}
-                  placeholder="e.g. Spouse / Parent / Sibling"
+                  placeholder={i18n.t("e.g. Spouse / Parent / Sibling")}
                   className="w-full bg-slate-900 border border-slate-800 focus:border-brand-500 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                 />
               </div>
@@ -557,8 +558,8 @@ export default function EmergencyAccess() {
 
             <div className="pt-2 border-t border-slate-800">
               <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 flex items-center justify-between">
-                <span>Critical Medical Notes (Optional)</span>
-                <span className="text-slate-500 font-normal">e.g. Pacemaker implanted, organ transplant recipient</span>
+                <span>{i18n.t("Critical Medical Notes (Optional)")}</span>
+                <span className="text-slate-500 font-normal">{i18n.t("e.g. Pacemaker implanted, organ transplant recipient")}</span>
               </label>
               <textarea
                 rows={3}
@@ -567,7 +568,7 @@ export default function EmergencyAccess() {
                   setSaved(false);
                   setCriticalNotes(e.target.value);
                 }}
-                placeholder="Enter any critical instructions, implants, organ donor status, or resuscitation preferences..."
+                placeholder={i18n.t("Enter any critical instructions, implants, organ donor status, or resuscitation preferences...")}
                 className="w-full bg-slate-900 border border-slate-800 focus:border-brand-500 rounded-xl p-3 text-xs text-white focus:outline-none resize-none leading-relaxed"
               />
             </div>
@@ -591,24 +592,24 @@ export default function EmergencyAccess() {
         <div className="space-y-6">
           <div className="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col items-center text-center">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-1">
-              Live QR Preview
+              {i18n.t("Live QR Preview")}
             </h3>
             <p className="text-[11px] text-slate-400 mb-4">
-              Physical or digital scan preview
+              {i18n.t("Physical or digital scan preview")}
             </p>
 
             {!enabled ? (
               <div className="p-8 border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center my-4 bg-slate-900/40 w-full max-w-[260px]">
                 <ShieldAlert className="w-10 h-10 text-slate-600 mb-2" />
-                <h4 className="text-xs font-bold text-slate-300">Sharing Inactive</h4>
+                <h4 className="text-xs font-bold text-slate-300">{i18n.t("Sharing Inactive")}</h4>
                 <p className="text-[10px] text-slate-500 mt-1 text-center">
-                  Enable Emergency Access switch at the top to generate and activate your QR code.
+                  {i18n.t("Enable Emergency Access switch at the top to generate and activate your QR code.")}
                 </p>
                 <button
                   onClick={handleMasterToggle}
                   className="mt-4 text-xs font-bold text-emerald-400 hover:underline"
                 >
-                  Enable Sharing Now
+                  {i18n.t("Enable Sharing Now")}
                 </button>
               </div>
             ) : token ? (
@@ -626,26 +627,26 @@ export default function EmergencyAccess() {
 
                 <div className="mt-3 flex items-center space-x-1.5 text-emerald-400 text-[10px] font-bold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Secure QR Active & Verifiable</span>
+                  <span>{i18n.t("Secure QR Active & Verifiable")}</span>
                 </div>
 
                 {tokenExpiresAt && (
                   <p className="text-[10px] text-slate-500 mt-1">
-                    Valid until: {new Date(tokenExpiresAt).toLocaleDateString()}
+                    {i18n.t("Valid until:")} {new Date(tokenExpiresAt).toLocaleDateString()}
                   </p>
                 )}
 
                 {/* Encrypted Link Box */}
                 <div className="mt-4 w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between text-left">
                   <div className="overflow-hidden mr-2">
-                    <div className="text-[9px] font-bold text-slate-500 uppercase">Emergency Profile URL</div>
+                    <div className="text-[9px] font-bold text-slate-500 uppercase">{i18n.t("Emergency Profile URL")}</div>
                     <div className="text-[10px] font-mono text-slate-300 truncate">
                       {emergencyUrl}
                     </div>
                   </div>
                   <button
                     onClick={handleCopyLink}
-                    title="Copy URL"
+                    title={i18n.t("Copy URL")}
                     className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shrink-0 transition"
                   >
                     {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -659,7 +660,7 @@ export default function EmergencyAccess() {
                     className="w-full py-2.5 px-4 rounded-xl bg-red-500 hover:bg-red-400 text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg shadow-red-500/10 cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
-                    <span>Download QR as PNG</span>
+                    <span>{i18n.t("Download QR as PNG")}</span>
                   </button>
 
                   <button
@@ -667,7 +668,7 @@ export default function EmergencyAccess() {
                     className="w-full py-2 px-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-bold transition flex items-center justify-center space-x-2"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Preview Emergency Profile</span>
+                    <span>{i18n.t("Preview Emergency Profile")}</span>
                   </button>
 
                   <button
@@ -686,7 +687,7 @@ export default function EmergencyAccess() {
                   onClick={handleSaveSettings}
                   className="px-6 py-2.5 rounded-xl bg-emerald-500 text-dark-950 font-bold text-xs"
                 >
-                  Generate Emergency QR
+                  {i18n.t("Generate Emergency QR")}
                 </button>
               </div>
             )}
@@ -696,35 +697,35 @@ export default function EmergencyAccess() {
           <div className="glass-card rounded-2xl p-5 border border-slate-800 text-left">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Visible in Emergency Profile</span>
+              <span>{i18n.t("Visible in Emergency Profile")}</span>
             </h4>
             <div className="space-y-1.5 text-xs text-slate-400">
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Blood Group:</span>
+                <span>{i18n.t("Blood Group:")}</span>
                 <span className="font-semibold text-white">
                   {settings.bloodGroup ? (patientData.bloodGroup || "Not Set") : "Hidden"}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Allergies:</span>
+                <span>{i18n.t("Allergies:")}</span>
                 <span className="font-semibold text-white">
                   {settings.allergies ? `${patientData.allergies?.length || 0} Listed` : "Hidden"}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Medications:</span>
+                <span>{i18n.t("Medications:")}</span>
                 <span className="font-semibold text-white">
                   {settings.medications ? `${patientData.medications?.length || 0} Active` : "Hidden"}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-850">
-                <span>Medical Conditions:</span>
+                <span>{i18n.t("Medical Conditions:")}</span>
                 <span className="font-semibold text-white">
                   {settings.conditions ? `${patientData.conditions?.length || 0} Diagnosed` : "Hidden"}
                 </span>
               </div>
               <div className="flex justify-between py-1">
-                <span>Emergency Contact:</span>
+                <span>{i18n.t("Emergency Contact:")}</span>
                 <span className="font-semibold text-white">
                   {settings.emergencyContact ? (emergencyContact.name || "Configured") : "Hidden"}
                 </span>

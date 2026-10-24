@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -349,21 +350,21 @@ const PatientAiAnalyzer = () => {
         return (
           <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span>Body Status: Healthy & Normal</span>
+            <span>{i18n.t("Body Status: Healthy & Normal")}</span>
           </span>
         );
       case 'attention':
         return (
           <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm">
             <AlertTriangle className="w-4 h-4 text-amber-400" />
-            <span>Body Status: Keep An Eye On This</span>
+            <span>{i18n.t("Body Status: Keep An Eye On This")}</span>
           </span>
         );
       case 'critical':
         return (
           <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse shadow-sm">
             <ShieldAlert className="w-4 h-4 text-rose-400" />
-            <span>Body Status: Doctor Review Advised</span>
+            <span>{i18n.t("Body Status: Doctor Review Advised")}</span>
           </span>
         );
       default:
@@ -382,13 +383,13 @@ const PatientAiAnalyzer = () => {
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-xs font-bold mb-3">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Easy Lab Report Explainer</span>
+              <span>{i18n.t("Easy Lab Report Explainer")}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white font-display">
-              Explain My Lab Report (In Plain English)
+              {i18n.t("Explain My Lab Report (In Plain English)")}
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
-              Upload any blood test or medical report. We translate every line into simple words so you can easily understand what your numbers mean for your body.
+              {i18n.t("Upload any blood test or medical report. We translate every line into simple words so you can easily understand what your numbers mean for your body.")}
             </p>
           </div>
 
@@ -398,7 +399,7 @@ const PatientAiAnalyzer = () => {
               className="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-200 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all shadow-sm"
             >
               <GitCompare className="w-3.5 h-3.5 text-brand-400" />
-              <span>Compare 2 Reports</span>
+              <span>{i18n.t("Compare 2 Reports")}</span>
             </Link>
 
             {analysisResult && (
@@ -407,7 +408,7 @@ const PatientAiAnalyzer = () => {
                 className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-200 hover:text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-all"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Explain Another Report</span>
+                <span>{i18n.t("Explain Another Report")}</span>
               </button>
             )}
           </div>
@@ -428,12 +429,12 @@ const PatientAiAnalyzer = () => {
           <div className="lg:col-span-2 glass-card rounded-3xl p-6 border border-slate-800 space-y-5">
             <h3 className="text-sm font-bold text-white flex items-center space-x-2">
               <FileText className="w-4 h-4 text-brand-400" />
-              <span>Provide Medical Report Details</span>
+              <span>{i18n.t("Provide Medical Report Details")}</span>
             </h3>
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Option A: Choose from Your Saved Medical Records
+                {i18n.t("Option A: Choose from Your Saved Medical Records")}
               </label>
               <select
                 value={selectedRecordId}
@@ -441,7 +442,7 @@ const PatientAiAnalyzer = () => {
                 disabled={fetchingRecords}
                 className="w-full glass-input bg-slate-900 px-3.5 py-2.5 text-xs rounded-xl text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
               >
-                <option value="">-- Select an uploaded record --</option>
+                <option value="">{i18n.t("-- Select an uploaded record --")}</option>
                 {records.map(r => (
                   <option key={r._id} value={r._id}>
                     {r.title} ({r.category?.replace('_', ' ').toUpperCase()}) - {new Date(r.recordDate).toLocaleDateString()}
@@ -452,19 +453,19 @@ const PatientAiAnalyzer = () => {
 
             <div className="relative flex items-center my-2">
               <div className="flex-grow border-t border-slate-850"></div>
-              <span className="flex-shrink mx-3 text-[10px] font-bold text-slate-600 uppercase">OR</span>
+              <span className="flex-shrink mx-3 text-[10px] font-bold text-slate-600 uppercase">{i18n.t("OR")}</span>
               <div className="flex-grow border-t border-slate-850"></div>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Option B: Paste Multi-Section Report Text / Lab Findings
+                {i18n.t("Option B: Paste Multi-Section Report Text / Lab Findings")}
               </label>
               <input
                 type="text"
                 value={reportTitle}
                 onChange={(e) => setReportTitle(e.target.value)}
-                placeholder="Report Title (e.g. Comprehensive Multi-Organ Diagnostic Panel)"
+                placeholder={i18n.t("Report Title (e.g. Comprehensive Multi-Organ Diagnostic Panel)")}
                 className="w-full glass-input bg-slate-900 px-3.5 py-2 text-xs rounded-xl text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 mb-2"
               />
               <textarea
@@ -474,7 +475,7 @@ const PatientAiAnalyzer = () => {
                   if (selectedRecordId) setSelectedRecordId('');
                 }}
                 rows={9}
-                placeholder="Paste multi-page lab text, blood panels, physician impression, or vital signs here..."
+                placeholder={i18n.t("Paste multi-page lab text, blood panels, physician impression, or vital signs here...")}
                 className="w-full glass-input bg-slate-900 px-3.5 py-3 text-xs rounded-xl text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 resize-none font-mono"
               />
             </div>
@@ -491,12 +492,12 @@ const PatientAiAnalyzer = () => {
               {loading ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Processing & Analyzing All Report Sections...</span>
+                  <span>{i18n.t("Processing & Analyzing All Report Sections...")}</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  <span>Analyze Complete Report in Plain English</span>
+                  <span>{i18n.t("Analyze Complete Report in Plain English")}</span>
                 </>
               )}
             </button>
@@ -505,10 +506,10 @@ const PatientAiAnalyzer = () => {
           <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4">
             <h3 className="text-sm font-bold text-white flex items-center space-x-2">
               <Lightbulb className="w-4 h-4 text-amber-400" />
-              <span>Try Sample Reports</span>
+              <span>{i18n.t("Try Sample Reports")}</span>
             </h3>
             <p className="text-xs text-slate-400">
-              Click any sample below to test multi-section report parsing:
+              {i18n.t("Click any sample below to test multi-section report parsing:")}
             </p>
 
             <div className="space-y-3">
@@ -544,15 +545,15 @@ const PatientAiAnalyzer = () => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-white">Full Test Report Breakdown Complete</h4>
+                <h4 className="text-xs font-bold text-white">{i18n.t("Full Test Report Breakdown Complete")}</h4>
                 <p className="text-xs text-slate-400">
-                  All {analysisResult.metricsBreakdown?.length || 0} test parameters explained in plain, simple words.
+                  {i18n.t("All")} {analysisResult.metricsBreakdown?.length || 0} {i18n.t("test parameters explained in plain, simple words.")}
                 </p>
               </div>
             </div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-xs font-bold">
               <Layers className="w-3.5 h-3.5" />
-              <span>{analysisResult.sections?.length || 1} Test Sections Checked</span>
+              <span>{analysisResult.sections?.length || 1} {i18n.t("Test Sections Checked")}</span>
             </div>
           </div>
 
@@ -567,7 +568,7 @@ const PatientAiAnalyzer = () => {
                   <h3 className="text-lg font-bold text-white font-display">
                     {reportTitle || 'Your Test Report Summary'}
                   </h3>
-                  <p className="text-xs text-slate-300">Plain English explanation of your body health</p>
+                  <p className="text-xs text-slate-300">{i18n.t("Plain English explanation of your body health")}</p>
                 </div>
               </div>
               {getStatusBadge(analysisResult.overallStatus)}
@@ -576,7 +577,7 @@ const PatientAiAnalyzer = () => {
             <div className="p-5 rounded-2xl bg-brand-500/10 border border-brand-500/25 space-y-2">
               <div className="flex items-center space-x-2 text-brand-400 text-xs font-bold uppercase tracking-wider">
                 <Heart className="w-4 h-4" />
-                <span>Overall Summary (In Plain English)</span>
+                <span>{i18n.t("Overall Summary (In Plain English)")}</span>
               </div>
               <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed">
                 "{analysisResult.simplifiedSummary}"
@@ -589,11 +590,11 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-amber-500/20 bg-amber-500/5 space-y-3">
               <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                 <ClipboardList className="w-4 h-4" />
-                <span>Doctor's Impression & Clinical Notes</span>
+                <span>{i18n.t("Doctor's Impression & Clinical Notes")}</span>
               </div>
               {analysisResult.clinicalContext.physicianImpression && (
                 <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-                  <span className="text-xs font-bold text-amber-300 block">Attending Doctor's Note:</span>
+                  <span className="text-xs font-bold text-amber-300 block">{i18n.t("Attending Doctor's Note:")}</span>
                   <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     "{analysisResult.clinicalContext.physicianImpression}"
                   </p>
@@ -601,7 +602,7 @@ const PatientAiAnalyzer = () => {
               )}
               {analysisResult.clinicalContext.clinicalNotes?.length > 0 && (
                 <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-850 space-y-1">
-                  <span className="text-xs font-bold text-slate-400 block">Report Notes:</span>
+                  <span className="text-xs font-bold text-slate-400 block">{i18n.t("Report Notes:")}</span>
                   <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
                     {analysisResult.clinicalContext.clinicalNotes.map((note, idx) => (
                       <li key={idx}>{note}</li>
@@ -619,12 +620,12 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Good & Normal Readings</span>
+                <span>{i18n.t("Good & Normal Readings")}</span>
               </div>
               
               <div className="space-y-2.5">
                 {(Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">No specific normal parameters singled out.</p>
+                  <p className="text-xs text-slate-400 italic">{i18n.t("No specific normal parameters singled out.")}</p>
                 ) : (
                   (Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type === 'normal').map((h, i) => (
                     <div key={i} className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
@@ -640,14 +641,14 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                 <AlertTriangle className="w-4 h-4" />
-                <span>Numbers To Discuss With Doctor</span>
+                <span>{i18n.t("Numbers To Discuss With Doctor")}</span>
               </div>
 
               <div className="space-y-2.5">
                 {(Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type !== 'normal').length === 0 ? (
                   <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 font-semibold flex items-center space-x-2">
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>All checked lab values appear within safe normal ranges!</span>
+                    <span>{i18n.t("All checked lab values appear within safe normal ranges!")}</span>
                   </div>
                 ) : (
                   (Array.isArray(analysisResult.statusHighlights) ? analysisResult.statusHighlights : []).filter(h => h.type !== 'normal').map((h, i) => (
@@ -677,10 +678,10 @@ const PatientAiAnalyzer = () => {
               <div>
                 <h4 className="text-base font-bold text-white flex items-center space-x-2 font-display">
                   <Activity className="w-5 h-5 text-sky-400" />
-                  <span>What Each Test Line Means ({analysisResult.metricsBreakdown.length} Tests)</span>
+                  <span>{i18n.t("What Each Test Line Means (")}{analysisResult.metricsBreakdown.length} {i18n.t("Tests)")}</span>
                 </h4>
                 <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Every test from your report is explained below: what it tests, what your number means, and an easy daily health tip.
+                  {i18n.t("Every test from your report is explained below: what it tests, what your number means, and an easy daily health tip.")}
                 </p>
               </div>
 
@@ -712,12 +713,12 @@ const PatientAiAnalyzer = () => {
 
                       <div className="flex items-center space-x-3 text-xs bg-slate-950/70 px-3 py-1.5 rounded-xl border border-slate-800">
                         <div>
-                          <span className="text-slate-400">Your Number: </span>
+                          <span className="text-slate-400">{i18n.t("Your Number:")} </span>
                           <strong className="text-brand-400 font-mono font-bold">{item.val}</strong>
                         </div>
                         <span className="text-slate-600">|</span>
                         <div>
-                          <span className="text-slate-400">Healthy Normal: </span>
+                          <span className="text-slate-400">{i18n.t("Healthy Normal:")} </span>
                           <span className="text-slate-200 font-mono">{item.range}</span>
                         </div>
                       </div>
@@ -727,7 +728,7 @@ const PatientAiAnalyzer = () => {
                       <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 space-y-1">
                         <div className="flex items-center space-x-1.5 text-sky-400 text-[11px] font-bold uppercase tracking-wider">
                           <Info className="w-3.5 h-3.5 shrink-0" />
-                          <span>What is this test?</span>
+                          <span>{i18n.t("What is this test?")}</span>
                         </div>
                         <p className="text-xs text-slate-200 leading-relaxed">
                           {item.simpleDefinition}
@@ -738,7 +739,7 @@ const PatientAiAnalyzer = () => {
                     <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 space-y-1">
                       <div className="flex items-center space-x-1.5 text-brand-400 text-[11px] font-bold uppercase tracking-wider">
                         <Heart className="w-3.5 h-3.5 shrink-0" />
-                        <span>What this means for you</span>
+                        <span>{i18n.t("What this means for you")}</span>
                       </div>
                       <p className="text-xs text-slate-100 leading-relaxed font-medium">
                         {item.simpleMeaning}
@@ -749,7 +750,7 @@ const PatientAiAnalyzer = () => {
                       <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20 space-y-1">
                         <div className="flex items-center space-x-1.5 text-amber-400 text-[11px] font-bold uppercase tracking-wider">
                           <Lightbulb className="w-3.5 h-3.5 shrink-0" />
-                          <span>Everyday health tip</span>
+                          <span>{i18n.t("Everyday health tip")}</span>
                         </div>
                         <p className="text-xs text-slate-200 leading-relaxed">
                           {item.fieldTip}
@@ -768,7 +769,7 @@ const PatientAiAnalyzer = () => {
             <div className="glass-card rounded-3xl p-6 border border-slate-800 space-y-3">
               <h4 className="text-sm font-bold text-white flex items-center space-x-2">
                 <Lightbulb className="w-4 h-4 text-brand-400" />
-                <span>What You Can Do Next</span>
+                <span>{i18n.t("What You Can Do Next")}</span>
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -312,7 +313,7 @@ const PatientCarePlan = () => {
     return (
       <div className="py-24 text-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand-400 animate-spin mx-auto" />
-        <p className="text-sm text-slate-300 font-medium">Loading your care plan...</p>
+        <p className="text-sm text-slate-300 font-medium">{i18n.t("Loading your care plan...")}</p>
       </div>
     );
   }
@@ -329,10 +330,10 @@ const PatientCarePlan = () => {
             </span>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-white font-display tracking-tight">
-                My Care Plan & Daily Recovery Guide
+                {i18n.t("My Care Plan & Daily Recovery Guide")}
               </h1>
               <p className="text-xs text-slate-300 mt-0.5">
-                A simple step-by-step health roadmap to guide your daily medicines, habits, and recovery.
+                {i18n.t("A simple step-by-step health roadmap to guide your daily medicines, habits, and recovery.")}
               </p>
             </div>
           </div>
@@ -361,11 +362,11 @@ const PatientCarePlan = () => {
             <div className="flex items-center space-x-2">
               <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 uppercase tracking-wider flex items-center">
                 <Sparkles className="w-3 h-3 mr-1" />
-                Example Care Plan
+                {i18n.t("Example Care Plan")}
               </span>
               <button
                 onClick={fetchCarePlans}
-                title="Refresh from server"
+                title={i18n.t("Refresh from server")}
                 className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -381,10 +382,10 @@ const PatientCarePlan = () => {
           <Info className="w-5 h-5 text-brand-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <p className="font-semibold text-slate-200">
-              Your Personalized Daily Health Guide
+              {i18n.t("Your Personalized Daily Health Guide")}
             </p>
             <p className="text-slate-300 leading-relaxed">
-              When your doctor creates a custom plan for you, it will show up here. Below is a sample <strong>Heart Recovery & Healthy Living Plan</strong> so you can see how daily checkboxes and progress work. Tap any task to mark it done!
+              {i18n.t("When your doctor creates a custom plan for you, it will show up here. Below is a sample")} <strong>{i18n.t("Heart Recovery & Healthy Living Plan")}</strong> {i18n.t("so you can see how daily checkboxes and progress work. Tap any task to mark it done!")}
             </p>
           </div>
         </div>
@@ -402,7 +403,7 @@ const PatientCarePlan = () => {
               </span>
               <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold flex items-center">
                 <Calendar className="w-3 h-3 mr-1" />
-                Started: {new Date(activePlan.createdAt || activePlan.startDate).toLocaleDateString()}
+                {i18n.t("Started:")} {new Date(activePlan.createdAt || activePlan.startDate).toLocaleDateString()}
               </span>
             </div>
 
@@ -411,7 +412,7 @@ const PatientCarePlan = () => {
             </h2>
 
             <p className="text-xs text-slate-300 font-medium">
-              <span className="text-slate-500">Diagnosis Focus:</span> {activePlan.diagnosis}
+              <span className="text-slate-500">{i18n.t("Diagnosis Focus:")}</span> {activePlan.diagnosis}
             </p>
 
             {activePlan.description && (
@@ -423,7 +424,7 @@ const PatientCarePlan = () => {
             {/* Prescribing Doctor Information */}
             <div className="flex items-center space-x-2 pt-2 text-xs text-slate-400">
               <Stethoscope className="w-4 h-4 text-emerald-400" />
-              <span>Prescribing Physician:</span>
+              <span>{i18n.t("Prescribing Physician:")}</span>
               <span className="font-bold text-slate-200">
                 {activePlan.doctor?.name || 'Attending Physician'}
               </span>
@@ -438,7 +439,7 @@ const PatientCarePlan = () => {
           {/* Adherence Score Ring / Progress */}
           <div className="shrink-0 p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-center min-w-[200px]">
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-              Today's Task Adherence
+              {i18n.t("Today's Task Adherence")}
             </span>
             <div className="flex items-baseline justify-center space-x-1.5 my-1">
               <span className="text-4xl font-extrabold text-brand-400 font-display">
@@ -470,10 +471,10 @@ const PatientCarePlan = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
               <Layers className="w-4 h-4 text-brand-400 mr-2" />
-              <span>Pathway Phases & Clinical Milestones</span>
+              <span>{i18n.t("Pathway Phases & Clinical Milestones")}</span>
             </h3>
             <span className="text-xs text-slate-500 font-medium">
-              {activePlan.phases.length} Structured Care Stages
+              {activePlan.phases.length} {i18n.t("Structured Care Stages")}
             </span>
           </div>
 
@@ -495,7 +496,7 @@ const PatientCarePlan = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Phase {phase.phaseNumber} • {phase.durationDays} Days
+                      {i18n.t("Phase")} {phase.phaseNumber} • {phase.durationDays} {i18n.t("Days")}
                     </span>
 
                     <span
@@ -524,7 +525,7 @@ const PatientCarePlan = () => {
                   {phase.goals && phase.goals.length > 0 && (
                     <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
                       <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider block">
-                        Milestone Goals
+                        {i18n.t("Milestone Goals")}
                       </span>
                       {phase.goals.map((g, gIdx) => (
                         <div key={gIdx} className="flex items-start space-x-1.5 text-[11px] text-slate-300">
@@ -553,17 +554,17 @@ const PatientCarePlan = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 mr-2" />
-              <span>Today's Recovery Checklist ({new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })})</span>
+              <span>{i18n.t("Today's Recovery Checklist (")}{new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })})</span>
             </h3>
             <span className="text-[11px] text-slate-400">
-              Click task to toggle completed status
+              {i18n.t("Click task to toggle completed status")}
             </span>
           </div>
 
           {tasks.length === 0 ? (
             <div className="p-8 text-center bg-slate-900/30 border border-slate-800 rounded-2xl">
               <ClipboardList className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-              <p className="text-xs text-slate-400 font-medium">No daily tasks currently prescribed in this pathway.</p>
+              <p className="text-xs text-slate-400 font-medium">{i18n.t("No daily tasks currently prescribed in this pathway.")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -600,7 +601,7 @@ const PatientCarePlan = () => {
 
                           {task.targetMetric?.targetValue && (
                             <span className="text-[9px] px-2 py-0.5 rounded bg-brand-500/10 text-brand-300 font-bold border border-brand-500/20">
-                              Target: {task.targetMetric.targetValue}
+                              {i18n.t("Target:")} {task.targetMetric.targetValue}
                             </span>
                           )}
                         </div>
@@ -651,22 +652,22 @@ const PatientCarePlan = () => {
           <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center border-b border-slate-800 pb-2">
               <Target className="w-4 h-4 text-rose-400 mr-2" />
-              <span>Target Vitals & Benchmarks</span>
+              <span>{i18n.t("Target Vitals & Benchmarks")}</span>
             </h3>
 
             <div className="space-y-3 text-xs">
               {activePlan.targetVitals?.systolicMax && (
                 <div className="flex justify-between items-center p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-slate-400">Target Blood Pressure</span>
+                  <span className="text-slate-400">{i18n.t("Target Blood Pressure")}</span>
                   <span className="font-extrabold text-rose-400 font-mono">
-                    &lt; {activePlan.targetVitals.systolicMax} / {activePlan.targetVitals.diastolicMax || 80} mmHg
+                    &lt; {activePlan.targetVitals.systolicMax} / {activePlan.targetVitals.diastolicMax || 80} {i18n.t("mmHg")}
                   </span>
                 </div>
               )}
 
               {activePlan.targetVitals?.heartRateTarget && (
                 <div className="flex justify-between items-center p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-slate-400">Resting Heart Rate</span>
+                  <span className="text-slate-400">{i18n.t("Resting Heart Rate")}</span>
                   <span className="font-extrabold text-sky-400 font-mono">
                     {activePlan.targetVitals.heartRateTarget}
                   </span>
@@ -675,7 +676,7 @@ const PatientCarePlan = () => {
 
               {activePlan.targetVitals?.bloodSugarTarget && (
                 <div className="flex justify-between items-center p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-slate-400">Blood Sugar Range</span>
+                  <span className="text-slate-400">{i18n.t("Blood Sugar Range")}</span>
                   <span className="font-extrabold text-emerald-400 font-mono">
                     {activePlan.targetVitals.bloodSugarTarget}
                   </span>
@@ -684,9 +685,9 @@ const PatientCarePlan = () => {
 
               {activePlan.targetVitals?.weightTargetKg && (
                 <div className="flex justify-between items-center p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/80">
-                  <span className="text-slate-400">Target Body Weight</span>
+                  <span className="text-slate-400">{i18n.t("Target Body Weight")}</span>
                   <span className="font-extrabold text-amber-400 font-mono">
-                    {activePlan.targetVitals.weightTargetKg} kg
+                    {activePlan.targetVitals.weightTargetKg} {i18n.t("kg")}
                   </span>
                 </div>
               )}
@@ -694,7 +695,7 @@ const PatientCarePlan = () => {
               {activePlan.targetVitals?.specialNotes && (
                 <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-300 text-[11px] leading-relaxed">
                   <strong className="block text-amber-400 uppercase text-[9px] tracking-wider mb-1">
-                    Special Physician Directive:
+                    {i18n.t("Special Physician Directive:")}
                   </strong>
                   {activePlan.targetVitals.specialNotes}
                 </div>
@@ -706,12 +707,12 @@ const PatientCarePlan = () => {
           <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center border-b border-slate-800 pb-2">
               <UserCheck className="w-4 h-4 text-emerald-400 mr-2" />
-              <span>Doctor Clinical Review Log</span>
+              <span>{i18n.t("Doctor Clinical Review Log")}</span>
             </h3>
 
             {(!activePlan.doctorReviews || activePlan.doctorReviews.length === 0) ? (
               <p className="text-xs text-slate-500 italic py-2">
-                No formal review notes logged by physician yet. Check back following your next consultation.
+                {i18n.t("No formal review notes logged by physician yet. Check back following your next consultation.")}
               </p>
             ) : (
               <div className="space-y-3">
@@ -737,7 +738,7 @@ const PatientCarePlan = () => {
                 className="w-full inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700"
               >
                 <Calendar className="w-3.5 h-3.5 text-brand-400" />
-                <span>Book Follow-up Appointment</span>
+                <span>{i18n.t("Book Follow-up Appointment")}</span>
               </Link>
             </div>
           </div>

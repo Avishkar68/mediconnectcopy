@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import api from '../../services/api';
@@ -170,10 +171,10 @@ const DoctorPatients = () => {
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-                  Emergency Medical Clearance
+                  {i18n.t("Emergency Medical Clearance")}
                 </span>
                 <h3 className="text-base font-bold text-white font-display">
-                  {emergencyPatient?.name || "Patient"} - Emergency Profile
+                  {emergencyPatient?.name || "Patient"} {i18n.t("- Emergency Profile")}
                 </h3>
               </div>
             </div>
@@ -190,7 +191,7 @@ const DoctorPatients = () => {
           {loadingEmergency && (
             <div className="py-12 text-center text-xs text-slate-400 flex flex-col items-center space-y-2">
               <Loader2 className="w-6 h-6 animate-spin text-red-400" />
-              <span>Decrypting emergency medical profile...</span>
+              <span>{i18n.t("Decrypting emergency medical profile...")}</span>
             </div>
           )}
 
@@ -198,7 +199,7 @@ const DoctorPatients = () => {
           {!loadingEmergency && emergencyError && (
             <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-center space-y-2">
               <AlertCircle className="w-8 h-8 text-red-400 mx-auto" />
-              <h4 className="text-sm font-bold text-white">Emergency Access Denied / Unavailable</h4>
+              <h4 className="text-sm font-bold text-white">{i18n.t("Emergency Access Denied / Unavailable")}</h4>
               <p className="text-xs text-slate-400">{emergencyError}</p>
             </div>
           )}
@@ -223,10 +224,10 @@ const DoctorPatients = () => {
                     <div>
                       <div className="flex items-center space-x-1.5 text-emerald-400 text-[10px] font-bold">
                         <CheckCircle className="w-3.5 h-3.5" />
-                        <span>Emergency QR Code Active</span>
+                        <span>{i18n.t("Emergency QR Code Active")}</span>
                       </div>
                       <p className="text-[11px] text-slate-300 font-semibold mt-0.5">
-                        Scan with mobile device or clinical tablet
+                        {i18n.t("Scan with mobile device or clinical tablet")}
                       </p>
                       <p className="text-[10px] font-mono text-slate-400 truncate bg-slate-950/70 px-2 py-1 rounded border border-slate-800 mt-1">
                         {`${window.location.origin}/emergency/${emergencyData.token}`}
@@ -240,7 +241,7 @@ const DoctorPatients = () => {
                         className="px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-400 text-black font-extrabold text-[11px] flex items-center space-x-1.5 transition cursor-pointer shadow-sm shadow-red-500/10"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>Download QR</span>
+                        <span>{i18n.t("Download QR")}</span>
                       </button>
 
                       <button
@@ -258,7 +259,7 @@ const DoctorPatients = () => {
                         className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] flex items-center space-x-1.5 transition cursor-pointer"
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Open Full View</span>
+                        <span>{i18n.t("Open Full View")}</span>
                       </button>
                     </div>
                   </div>
@@ -268,7 +269,7 @@ const DoctorPatients = () => {
               {/* Blood Group */}
               {emergencyData.settings?.bloodGroup && (
                 <div className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl flex justify-between items-center">
-                  <span className="font-bold text-slate-300">Blood Group</span>
+                  <span className="font-bold text-slate-300">{i18n.t("Blood Group")}</span>
                   <span className="text-lg font-bold text-red-400 bg-red-500/20 px-3 py-0.5 rounded-lg border border-red-500/30">
                     {emergencyData.patientData?.bloodGroup || "Not Specified"}
                   </span>
@@ -278,7 +279,7 @@ const DoctorPatients = () => {
               {/* Allergies */}
               {emergencyData.settings?.allergies && (
                 <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
-                  <div className="font-bold text-slate-300">Allergies & Sensitivities</div>
+                  <div className="font-bold text-slate-300">{i18n.t("Allergies & Sensitivities")}</div>
                   {emergencyData.patientData?.allergies?.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5">
                       {emergencyData.patientData.allergies.map((a, i) => (
@@ -288,7 +289,7 @@ const DoctorPatients = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-slate-500 italic text-[11px]">No allergies recorded.</p>
+                    <p className="text-slate-500 italic text-[11px]">{i18n.t("No allergies recorded.")}</p>
                   )}
                 </div>
               )}
@@ -296,7 +297,7 @@ const DoctorPatients = () => {
               {/* Current Medications */}
               {emergencyData.settings?.medications && (
                 <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
-                  <div className="font-bold text-slate-300">Active Medications</div>
+                  <div className="font-bold text-slate-300">{i18n.t("Active Medications")}</div>
                   {emergencyData.patientData?.medications?.length > 0 ? (
                     <div className="space-y-1">
                       {emergencyData.patientData.medications.map((m, i) => (
@@ -306,7 +307,7 @@ const DoctorPatients = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-slate-500 italic text-[11px]">No active medications.</p>
+                    <p className="text-slate-500 italic text-[11px]">{i18n.t("No active medications.")}</p>
                   )}
                 </div>
               )}
@@ -314,7 +315,7 @@ const DoctorPatients = () => {
               {/* Existing Conditions */}
               {emergencyData.settings?.conditions && (
                 <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1.5">
-                  <div className="font-bold text-slate-300">Diagnosed Medical Conditions</div>
+                  <div className="font-bold text-slate-300">{i18n.t("Diagnosed Medical Conditions")}</div>
                   {emergencyData.patientData?.conditions?.length > 0 ? (
                     <div className="space-y-1">
                       {emergencyData.patientData.conditions.map((c, i) => (
@@ -324,7 +325,7 @@ const DoctorPatients = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-slate-500 italic text-[11px]">No medical conditions recorded.</p>
+                    <p className="text-slate-500 italic text-[11px]">{i18n.t("No medical conditions recorded.")}</p>
                   )}
                 </div>
               )}
@@ -332,11 +333,11 @@ const DoctorPatients = () => {
               {/* Emergency Contact */}
               {emergencyData.settings?.emergencyContact && emergencyData.patientData?.emergencyContact && (
                 <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2">
-                  <div className="font-bold text-slate-300">Emergency Contact</div>
+                  <div className="font-bold text-slate-300">{i18n.t("Emergency Contact")}</div>
                   <div className="flex justify-between items-center text-xs">
                     <div>
                       <div className="font-semibold text-white">{emergencyData.patientData.emergencyContact.name || "Emergency Contact"}</div>
-                      <div className="text-[11px] text-slate-400">Relation: {emergencyData.patientData.emergencyContact.relation || "N/A"}</div>
+                      <div className="text-[11px] text-slate-400">{i18n.t("Relation:")} {emergencyData.patientData.emergencyContact.relation || "N/A"}</div>
                       <div className="text-emerald-400 font-mono font-bold mt-0.5">{emergencyData.patientData.emergencyContact.phone || "No phone listed"}</div>
                     </div>
                     {emergencyData.patientData.emergencyContact.phone && (
@@ -345,7 +346,7 @@ const DoctorPatients = () => {
                         className="px-3 py-1.5 rounded-lg bg-emerald-500 text-dark-950 font-bold text-xs flex items-center space-x-1"
                       >
                         <Phone className="w-3.5 h-3.5" />
-                        <span>Call</span>
+                        <span>{i18n.t("Call")}</span>
                       </a>
                     )}
                   </div>
@@ -355,7 +356,7 @@ const DoctorPatients = () => {
               {/* Critical Notes */}
               {emergencyData.settings?.criticalNotes && emergencyData.patientData?.criticalNotes && (
                 <div className="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-1">
-                  <div className="font-bold text-slate-300">Critical Medical Notes</div>
+                  <div className="font-bold text-slate-300">{i18n.t("Critical Medical Notes")}</div>
                   <p className="text-[11px] text-slate-300 leading-relaxed whitespace-pre-wrap">
                     {emergencyData.patientData.criticalNotes}
                   </p>
@@ -436,7 +437,7 @@ const DoctorPatients = () => {
   });
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500 font-display">Loading patients directory...</div>;
+    return <div className="text-center py-12 text-slate-500 font-display">{i18n.t("Loading patients directory...")}</div>;
   }
 
   // --- 1. DETAILED CLINICAL HISTORY CHART VIEW (AUTHORIZED ONLY) ---
@@ -453,7 +454,7 @@ const DoctorPatients = () => {
           className="inline-flex items-center space-x-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-all mb-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Patient Directory</span>
+          <span>{i18n.t("Back to Patient Directory")}</span>
         </button>
 
         {/* Patient Profile Header */}
@@ -479,7 +480,7 @@ const DoctorPatients = () => {
                     </span>
                   )}
                   {patient.profile?.gender && (
-                    <span className="capitalize text-slate-400">Gender: {patient.profile.gender}</span>
+                    <span className="capitalize text-slate-400">{i18n.t("Gender:")} {patient.profile.gender}</span>
                   )}
                 </div>
               </div>
@@ -489,12 +490,12 @@ const DoctorPatients = () => {
               {latestVitals && (
                 <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-2xl flex space-x-6 text-xs text-left">
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-slate-550 block">Blood Pressure</span>
-                    <span className="font-bold text-white mt-0.5">{latestVitals.bloodPressureSystolic}/{latestVitals.bloodPressureDiastolic} mmHg</span>
+                    <span className="text-[9px] uppercase font-bold text-slate-550 block">{i18n.t("Blood Pressure")}</span>
+                    <span className="font-bold text-white mt-0.5">{latestVitals.bloodPressureSystolic}/{latestVitals.bloodPressureDiastolic} {i18n.t("mmHg")}</span>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-slate-550 block">Pulse Rate</span>
-                    <span className="font-bold text-white mt-0.5">{latestVitals.heartRate} bpm</span>
+                    <span className="text-[9px] uppercase font-bold text-slate-550 block">{i18n.t("Pulse Rate")}</span>
+                    <span className="font-bold text-white mt-0.5">{latestVitals.heartRate} {i18n.t("bpm")}</span>
                   </div>
                 </div>
               )}
@@ -503,24 +504,24 @@ const DoctorPatients = () => {
                 id="doctor-emergency-qr-btn"
                 onClick={() => handleViewEmergencyProfile(selectedPatientId || patient?._id, patient?.name)}
                 className="px-3.5 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-2xl text-xs font-bold transition flex items-center space-x-2 shrink-0 cursor-pointer shadow-sm shadow-red-500/5 hover:border-red-500/60 active:scale-95"
-                title="View Emergency Medical QR Information"
+                title={i18n.t("View Emergency Medical QR Information")}
               >
                 {loadingEmergency ? (
                   <Loader2 className="w-4 h-4 animate-spin text-red-400" />
                 ) : (
                   <QrCode className="w-4 h-4 text-red-400" />
                 )}
-                <span>Emergency QR Info</span>
+                <span>{i18n.t("Emergency QR Info")}</span>
               </button>
               <button
                 type="button"
                 id="doctor-ai-copilot-btn"
                 onClick={() => setCopilotOpen(true)}
                 className="px-3.5 py-3 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-brand-300 rounded-2xl text-xs font-bold transition flex items-center space-x-2 shrink-0 cursor-pointer shadow-sm hover:border-brand-500/60 active:scale-95"
-                title="Launch AI Clinical Copilot"
+                title={i18n.t("Launch AI Clinical Copilot")}
               >
                 <Sparkles className="w-4 h-4 text-brand-400 animate-pulse" />
-                <span>AI Clinical Copilot</span>
+                <span>{i18n.t("AI Clinical Copilot")}</span>
               </button>
             </div>
           </div>
@@ -541,15 +542,15 @@ const DoctorPatients = () => {
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-                    Emergency Medical QR Clearance
+                    {i18n.t("Emergency Medical QR Clearance")}
                   </span>
                   <span className="flex items-center space-x-1 text-emerald-400 text-[10px] font-bold">
                     <CheckCircle className="w-3 h-3" />
-                    <span>Active</span>
+                    <span>{i18n.t("Active")}</span>
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-white font-display mt-0.5">
-                  {patient?.name} - Rapid Clinical Scan
+                  {patient?.name} {i18n.t("- Rapid Clinical Scan")}
                 </h4>
                 <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
                   {`${window.location.origin}/emergency/${emergencyData.token}`}
@@ -564,7 +565,7 @@ const DoctorPatients = () => {
                 className="px-3.5 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 font-bold text-xs flex items-center space-x-1.5 transition cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" />
-                <span>View Full Emergency Profile</span>
+                <span>{i18n.t("View Full Emergency Profile")}</span>
               </button>
               <button
                 type="button"
@@ -605,29 +606,29 @@ const DoctorPatients = () => {
             <div className="lg:col-span-2 glass-card rounded-2xl p-6 border border-slate-800 text-left">
               <h3 className="text-sm font-bold text-white mb-4 flex items-center">
                 <Heart className="w-4 h-4 text-red-400 mr-1.5" />
-                <span>Historical Vitals Log</span>
+                <span>{i18n.t("Historical Vitals Log")}</span>
               </h3>
 
               {!profile.vitals || profile.vitals.length === 0 ? (
-                <p className="text-xs text-slate-500 text-center py-6">No vitals logs shared by patient.</p>
+                <p className="text-xs text-slate-500 text-center py-6">{i18n.t("No vitals logs shared by patient.")}</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-slate-850 text-slate-500 uppercase tracking-wider font-bold">
-                        <th className="pb-3">Logged Date</th>
-                        <th className="pb-3">Blood Pressure</th>
-                        <th className="pb-3">Pulse Rate</th>
-                        <th className="pb-3">Temperature</th>
-                        <th className="pb-3">Weight</th>
+                        <th className="pb-3">{i18n.t("Logged Date")}</th>
+                        <th className="pb-3">{i18n.t("Blood Pressure")}</th>
+                        <th className="pb-3">{i18n.t("Pulse Rate")}</th>
+                        <th className="pb-3">{i18n.t("Temperature")}</th>
+                        <th className="pb-3">{i18n.t("Weight")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-850">
                       {profile.vitals.map((v, idx) => (
                         <tr key={idx} className="text-slate-350 hover:bg-slate-900/10">
                           <td className="py-3 text-slate-450">{new Date(v.loggedAt).toLocaleString()}</td>
-                          <td className="py-3 font-semibold text-slate-200">{v.bloodPressureSystolic}/{v.bloodPressureDiastolic} mmHg</td>
-                          <td className="py-3">{v.heartRate} bpm</td>
+                          <td className="py-3 font-semibold text-slate-200">{v.bloodPressureSystolic}/{v.bloodPressureDiastolic} {i18n.t("mmHg")}</td>
+                          <td className="py-3">{v.heartRate} {i18n.t("bpm")}</td>
                           <td className="py-3">{v.temperature ? `${v.temperature}°C` : '--'}</td>
                           <td className="py-3">{v.weight ? `${v.weight}kg` : '--'}</td>
                         </tr>
@@ -640,17 +641,17 @@ const DoctorPatients = () => {
 
             {/* Diagnoses */}
             <div className="lg:col-span-1 glass-card rounded-2xl p-6 border border-slate-800 h-fit">
-              <h3 className="text-sm font-bold text-white mb-4">Active Conditions</h3>
+              <h3 className="text-sm font-bold text-white mb-4">{i18n.t("Active Conditions")}</h3>
               
               {!profile.conditions || profile.conditions.length === 0 ? (
-                <p className="text-xs text-slate-550 italic">No diagnostic files cataloged.</p>
+                <p className="text-xs text-slate-550 italic">{i18n.t("No diagnostic files cataloged.")}</p>
               ) : (
                 <div className="space-y-2">
                   {profile.conditions.map((c, idx) => (
                     <div key={idx} className="p-3 rounded-xl bg-slate-900/30 border border-slate-850 flex justify-between items-center text-xs">
                       <div>
                         <h4 className="font-bold text-slate-300">{c.name}</h4>
-                        <span className="text-[9px] text-slate-500">Diagnosed: {new Date(c.diagnosedAt).toLocaleDateString()}</span>
+                        <span className="text-[9px] text-slate-500">{i18n.t("Diagnosed:")} {new Date(c.diagnosedAt).toLocaleDateString()}</span>
                       </div>
                       <span className="text-[9px] font-bold text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/15 uppercase">
                         {c.status}
@@ -669,8 +670,8 @@ const DoctorPatients = () => {
             {records.length === 0 ? (
               <div className="p-12 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
                 <FileText className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-                <h3 className="text-sm font-bold text-white">No documents uploaded</h3>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">This patient has no uploaded medical reports.</p>
+                <h3 className="text-sm font-bold text-white">{i18n.t("No documents uploaded")}</h3>
+                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">{i18n.t("This patient has no uploaded medical reports.")}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -706,10 +707,10 @@ const DoctorPatients = () => {
                     </div>
 
                     <div className="flex justify-between items-center mt-5 pt-3 border-t border-slate-850">
-                      <span className="text-[10px] text-slate-500">Access: Authorized</span>
+                      <span className="text-[10px] text-slate-500">{i18n.t("Access: Authorized")}</span>
                       <a href={record.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center space-x-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-all">
                         <FileDown className="w-4 h-4" />
-                        <span>Download Record</span>
+                        <span>{i18n.t("Download Record")}</span>
                       </a>
                     </div>
                   </div>
@@ -722,7 +723,7 @@ const DoctorPatients = () => {
         {activeChartTab === 'timeline' && (
           <div>
             {timeline.length === 0 ? (
-              <p className="text-xs text-slate-500 italic">Timeline history is currently empty.</p>
+              <p className="text-xs text-slate-500 italic">{i18n.t("Timeline history is currently empty.")}</p>
             ) : (
               <div className="max-w-xl mx-auto relative border-l border-slate-800 pl-6 ml-4 py-2 space-y-6">
                 {timeline.map((event, idx) => (
@@ -760,7 +761,7 @@ const DoctorPatients = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-        <span className="text-xs text-slate-400">Loading patient health records...</span>
+        <span className="text-xs text-slate-400">{i18n.t("Loading patient health records...")}</span>
       </div>
     );
   }
@@ -771,8 +772,8 @@ const DoctorPatients = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Patient Directory</h2>
-        <p className="text-xs text-slate-400">Search patients, view authorized health charts, or request connection access.</p>
+        <h2 className="text-xl font-bold text-white font-display">{i18n.t("Patient Directory")}</h2>
+        <p className="text-xs text-slate-400">{i18n.t("Search patients, view authorized health charts, or request connection access.")}</p>
       </div>
 
       {success && (
@@ -799,7 +800,7 @@ const DoctorPatients = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by Patient Name, Email, or Patient ID..."
+            placeholder={i18n.t("Search by Patient Name, Email, or Patient ID...")}
             className="bg-transparent border-0 text-xs text-white focus:outline-none w-full"
           />
         </div>
@@ -812,12 +813,12 @@ const DoctorPatients = () => {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="bg-transparent border-0 text-xs text-slate-350 focus:outline-none w-full capitalize"
           >
-            <option value="all">All Access Statuses</option>
-            <option value="none">No Access Request</option>
-            <option value="pending">Request Pending</option>
-            <option value="approved">Access Approved</option>
-            <option value="rejected">Access Rejected</option>
-            <option value="revoked">Access Revoked</option>
+            <option value="all">{i18n.t("All Access Statuses")}</option>
+            <option value="none">{i18n.t("No Access Request")}</option>
+            <option value="pending">{i18n.t("Request Pending")}</option>
+            <option value="approved">{i18n.t("Access Approved")}</option>
+            <option value="rejected">{i18n.t("Access Rejected")}</option>
+            <option value="revoked">{i18n.t("Access Revoked")}</option>
           </select>
         </div>
 
@@ -827,8 +828,8 @@ const DoctorPatients = () => {
       {filteredPatients.length === 0 ? (
         <div className="p-12 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
           <Users className="w-12 h-12 text-slate-750 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-white">No patients found</h3>
-          <p className="text-xs text-slate-500 mt-1">Try refining your search keyword or access status filter.</p>
+          <h3 className="text-sm font-bold text-white">{i18n.t("No patients found")}</h3>
+          <p className="text-xs text-slate-500 mt-1">{i18n.t("Try refining your search keyword or access status filter.")}</p>
         </div>
       ) : (
         <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden">
@@ -836,11 +837,11 @@ const DoctorPatients = () => {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-900/40 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="p-4">Patient Profile</th>
-                  <th className="p-4">Patient ID</th>
-                  <th className="p-4 text-center">Gender & Age</th>
-                  <th className="p-4">Access Status</th>
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="p-4">{i18n.t("Patient Profile")}</th>
+                  <th className="p-4">{i18n.t("Patient ID")}</th>
+                  <th className="p-4 text-center">{i18n.t("Gender & Age")}</th>
+                  <th className="p-4">{i18n.t("Access Status")}</th>
+                  <th className="p-4 text-right">{i18n.t("Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-850">
@@ -884,29 +885,29 @@ const DoctorPatients = () => {
                       <td className="p-4">
                         {hasNone && (
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded border border-slate-800 bg-slate-900 text-slate-450 uppercase">
-                            No Request
+                            {i18n.t("No Request")}
                           </span>
                         )}
                         {isPending && (
                           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border border-yellow-500/20 bg-yellow-500/5 text-yellow-450 uppercase">
                             <Clock className="w-2.5 h-2.5" />
-                            <span>Pending Approval</span>
+                            <span>{i18n.t("Pending Approval")}</span>
                           </span>
                         )}
                         {isApproved && (
                           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 uppercase">
                             <CheckCircle className="w-2.5 h-2.5" />
-                            <span>Access Approved</span>
+                            <span>{i18n.t("Access Approved")}</span>
                           </span>
                         )}
                         {isRevoked && (
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded border border-slate-800 bg-slate-950 text-slate-500 uppercase">
-                            Access Revoked
+                            {i18n.t("Access Revoked")}
                           </span>
                         )}
                         {isRejected && (
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded border border-red-500/20 bg-red-500/5 text-red-400 uppercase">
-                            Request Rejected
+                            {i18n.t("Request Rejected")}
                           </span>
                         )}
                       </td>
@@ -918,10 +919,10 @@ const DoctorPatients = () => {
                             type="button"
                             onClick={() => handleViewEmergencyProfile(pat._id, pat.name)}
                             className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 transition-all cursor-pointer shrink-0"
-                            title="View Emergency Medical QR Information"
+                            title={i18n.t("View Emergency Medical QR Information")}
                           >
                             <QrCode className="w-3 h-3" />
-                            <span>Emergency QR</span>
+                            <span>{i18n.t("Emergency QR")}</span>
                           </button>
 
                           {isApproved && (
@@ -930,7 +931,7 @@ const DoctorPatients = () => {
                               className="bg-emerald-500 hover:bg-emerald-450 text-dark-950 text-[10px] font-extrabold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0"
                             >
                               <Eye className="w-3.5 h-3.5" />
-                              <span>View Patient</span>
+                              <span>{i18n.t("View Patient")}</span>
                             </button>
                           )}
 
@@ -939,7 +940,7 @@ const DoctorPatients = () => {
                               disabled
                               className="bg-slate-900 text-slate-500 border border-slate-850 text-[10px] font-bold px-3 py-1.5 rounded-lg cursor-not-allowed shrink-0"
                             >
-                              Request Pending
+                              {i18n.t("Request Pending")}
                             </button>
                           )}
 
@@ -950,7 +951,7 @@ const DoctorPatients = () => {
                               className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0 transition-all"
                             >
                               <Send className="w-3 h-3" />
-                              <span>Request Access</span>
+                              <span>{i18n.t("Request Access")}</span>
                             </button>
                           )}
 
@@ -961,7 +962,7 @@ const DoctorPatients = () => {
                               className="bg-slate-900 border border-slate-800 hover:border-emerald-500 text-slate-200 hover:text-emerald-450 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shrink-0 transition-all"
                             >
                               <RefreshCw className="w-3.5 h-3.5" />
-                              <span>Request Access Again</span>
+                              <span>{i18n.t("Request Access Again")}</span>
                             </button>
                           )}
                         </div>

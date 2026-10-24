@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React from 'react';
 
 /**
@@ -14,7 +15,7 @@ const Loader = ({ fullPage = false }) => {
         <div className="absolute inset-0 border-4 border-t-brand-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
       </div>
       <p className="text-slate-400 font-medium text-sm tracking-wide animate-pulse">
-        Loading...
+        {i18n.t("Loading...")}
       </p>
     </div>
   );

@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../src/services/api';
 import {
@@ -129,14 +130,14 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="text-sm font-extrabold text-white font-display uppercase tracking-wide">
-                  MediConnect AI Doctor Copilot
+                  {i18n.t("MediConnect AI Doctor Copilot")}
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-brand-500/20 text-brand-300 border border-brand-500/30">
-                  Clinical Decision Support
+                  {i18n.t("Clinical Decision Support")}
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Evaluating patient: <strong className="text-slate-200">{patientName}</strong>
+                {i18n.t("Evaluating patient:")} <strong className="text-slate-200">{patientName}</strong>
               </p>
             </div>
           </div>
@@ -159,7 +160,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>AI Clinical Brief</span>
+            <span>{i18n.t("AI Clinical Brief")}</span>
           </button>
 
           <button
@@ -171,7 +172,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
             }`}
           >
             <Pill className="w-3.5 h-3.5" />
-            <span>Drug & Allergy Safety Check</span>
+            <span>{i18n.t("Drug & Allergy Safety Check")}</span>
           </button>
 
           <button
@@ -183,7 +184,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
             }`}
           >
             <Stethoscope className="w-3.5 h-3.5" />
-            <span>Differential Diagnosis</span>
+            <span>{i18n.t("Differential Diagnosis")}</span>
           </button>
         </div>
 
@@ -196,7 +197,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
               {loadingSummary ? (
                 <div className="py-12 flex flex-col items-center justify-center space-y-3">
                   <RefreshCw className="w-7 h-7 text-brand-400 animate-spin" />
-                  <p className="text-xs text-slate-400">Synthesizing patient vitals, telemetry, allergies & medication history...</p>
+                  <p className="text-xs text-slate-400">{i18n.t("Synthesizing patient vitals, telemetry, allergies & medication history...")}</p>
                 </div>
               ) : summaryError ? (
                 <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs">
@@ -209,7 +210,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     
                     <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Evaluated Risk Tier</span>
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Evaluated Risk Tier")}</span>
                       <div className="flex items-center space-x-1.5">
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase ${
@@ -220,18 +221,18 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                               : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                           }`}
                         >
-                          {summaryData.riskLevel} Risk
+                          {summaryData.riskLevel} {i18n.t("Risk")}
                         </span>
                       </div>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Vital Sign Telemetry</span>
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Vital Sign Telemetry")}</span>
                       <span className="text-xs font-bold text-white block truncate">{summaryData.vitalEvaluation}</span>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Documented Allergens</span>
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Documented Allergens")}</span>
                       <span className="text-xs font-bold text-slate-200">
                         {summaryData.allergies?.length > 0 ? summaryData.allergies.join(', ') : 'None documented'}
                       </span>
@@ -243,7 +244,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
                     <span className="text-[10px] uppercase font-bold text-brand-400 tracking-wider flex items-center space-x-1">
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>AI Synthesized Clinical Narrative</span>
+                      <span>{i18n.t("AI Synthesized Clinical Narrative")}</span>
                     </span>
                     <p className="text-xs text-slate-200 leading-relaxed font-medium">
                       {summaryData.executiveSummary}
@@ -253,7 +254,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   {/* Targeted Clinical Recommendations */}
                   <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                      Targeted Clinical Directives & Recommendations
+                      {i18n.t("Targeted Clinical Directives & Recommendations")}
                     </span>
                     <div className="space-y-1.5">
                       {summaryData.recommendations?.map((rec, i) => (
@@ -269,7 +270,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   {summaryData.activeMedications?.length > 0 && (
                     <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                        Active Prescribed Regimens ({summaryData.activeMedications.length})
+                        {i18n.t("Active Prescribed Regimens (")}{summaryData.activeMedications.length})
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {summaryData.activeMedications.map((m, idx) => (
@@ -294,7 +295,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
           {activeTab === 'interactions' && (
             <div className="space-y-4">
               <div className="text-xs text-slate-400">
-                Screen planned medications against patient's active prescriptions and known hypersensitivities before prescribing.
+                {i18n.t("Screen planned medications against patient's active prescriptions and known hypersensitivities before prescribing.")}
               </div>
 
               <form onSubmit={handleCheckInteraction} className="flex gap-2">
@@ -302,7 +303,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   type="text"
                   value={medInput}
                   onChange={(e) => setMedInput(e.target.value)}
-                  placeholder="Enter medication to screen (e.g. Amoxicillin, Ibuprofen, Warfarin)..."
+                  placeholder={i18n.t("Enter medication to screen (e.g. Amoxicillin, Ibuprofen, Warfarin)...")}
                   className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 />
                 <button
@@ -310,7 +311,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   disabled={loadingInteraction}
                   className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-bold text-xs flex items-center space-x-1 transition-all shadow-md shadow-emerald-500/20"
                 >
-                  {loadingInteraction ? <RefreshCw className="w-4 h-4 animate-spin" /> : <span>Screen Drug</span>}
+                  {loadingInteraction ? <RefreshCw className="w-4 h-4 animate-spin" /> : <span>{i18n.t("Screen Drug")}</span>}
                 </button>
               </form>
 
@@ -323,9 +324,9 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                     <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center space-x-2">
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                       <div>
-                        <span>Safe to Prescribe: No critical allergy conflicts or severe drug-drug interactions detected.</span>
+                        <span>{i18n.t("Safe to Prescribe: No critical allergy conflicts or severe drug-drug interactions detected.")}</span>
                         <p className="text-[11px] font-normal text-emerald-400/90 mt-0.5">
-                          Screened against active patient profile and allergens.
+                          {i18n.t("Screened against active patient profile and allergens.")}
                         </p>
                       </div>
                     </div>
@@ -333,9 +334,9 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                     <div className="p-3.5 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center space-x-2">
                       <AlertOctagon className="w-5 h-5 text-rose-400 shrink-0" />
                       <div>
-                        <span>High-Risk Conflict Detected: {interactionData.alertsCount} contraindication alert(s).</span>
+                        <span>{i18n.t("High-Risk Conflict Detected:")} {interactionData.alertsCount} {i18n.t("contraindication alert(s).")}</span>
                         <p className="text-[11px] font-normal text-rose-400/90 mt-0.5">
-                          Review clinical warnings below before issuing prescription.
+                          {i18n.t("Review clinical warnings below before issuing prescription.")}
                         </p>
                       </div>
                     </div>
@@ -365,7 +366,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                       <p className="text-[11px] text-slate-300">{alert.description}</p>
                       {alert.recommendation && (
                         <div className="pt-1 text-[11px] font-semibold text-brand-300 border-t border-slate-800/80">
-                          Clinical Guidance: {alert.recommendation}
+                          {i18n.t("Clinical Guidance:")} {alert.recommendation}
                         </div>
                       )}
                     </div>
@@ -381,7 +382,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 block">
-                  Select common symptom clusters or enter specific physical examination findings:
+                  {i18n.t("Select common symptom clusters or enter specific physical examination findings:")}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {QUICK_SYMPTOMS.map((chip, idx) => (
@@ -402,7 +403,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   type="text"
                   value={symptomsInput}
                   onChange={(e) => setSymptomsInput(e.target.value)}
-                  placeholder="e.g. Fever 102F, severe cough, pleuritic chest pain for 4 days..."
+                  placeholder={i18n.t("e.g. Fever 102F, severe cough, pleuritic chest pain for 4 days...")}
                   className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                 />
                 <button
@@ -410,7 +411,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   disabled={loadingDdx}
                   className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-dark-950 font-bold text-xs flex items-center space-x-1 transition-all shadow-md shadow-indigo-500/20"
                 >
-                  {loadingDdx ? <RefreshCw className="w-4 h-4 animate-spin" /> : <span>Analyze DDx</span>}
+                  {loadingDdx ? <RefreshCw className="w-4 h-4 animate-spin" /> : <span>{i18n.t("Analyze DDx")}</span>}
                 </button>
               </form>
 
@@ -421,7 +422,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   {/* Potential Conditions */}
                   <div className="space-y-2">
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                      Differential Diagnoses (Ranked by syndromic likelihood)
+                      {i18n.t("Differential Diagnoses (Ranked by syndromic likelihood)")}
                     </span>
                     <div className="space-y-2">
                       {ddxData.differentials?.map((item, idx) => (
@@ -440,7 +441,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                                   : 'bg-slate-800 text-slate-400 border border-slate-700'
                               }`}
                             >
-                              {item.probability} Probability ({item.icdCode})
+                              {item.probability} {i18n.t("Probability (")}{item.icdCode})
                             </span>
                           </div>
                           <p className="text-[11px] text-slate-400">{item.rationale}</p>
@@ -453,7 +454,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                   {ddxData.recommendedTests?.length > 0 && (
                     <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                       <span className="text-[10px] uppercase font-bold text-indigo-400 tracking-wider block">
-                        Recommended Confirmatory Lab / Imaging Diagnostics
+                        {i18n.t("Recommended Confirmatory Lab / Imaging Diagnostics")}
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {ddxData.recommendedTests.map((t, idx) => (
@@ -473,7 +474,7 @@ const DoctorAiCopilotModal = ({ isOpen, onClose, patient, initialMode = 'summary
                     <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-1.5 text-xs">
                       <span className="font-bold text-rose-400 flex items-center space-x-1.5">
                         <AlertOctagon className="w-4 h-4" />
-                        <span>Critical Red-Flag Warning Signs (Emergency Referrals)</span>
+                        <span>{i18n.t("Critical Red-Flag Warning Signs (Emergency Referrals)")}</span>
                       </span>
                       <ul className="list-disc list-inside text-rose-300/90 text-[11px] space-y-0.5">
                         {ddxData.redFlags.map((flag, idx) => (

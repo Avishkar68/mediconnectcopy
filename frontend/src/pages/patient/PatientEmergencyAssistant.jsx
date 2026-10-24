@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -399,15 +400,15 @@ const PatientEmergencyAssistant = () => {
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-extrabold uppercase tracking-wider mb-3">
               <ShieldAlert className="w-3.5 h-3.5" />
-              <span>Emergency First-Aid Guide</span>
+              <span>{i18n.t("Emergency First-Aid Guide")}</span>
             </div>
             
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display flex flex-wrap items-center">
-              <span>Emergency First-Aid Helper: </span>
+              <span>{i18n.t("Emergency First-Aid Helper:")} </span>
               <span className="text-rose-400 ml-2 font-normal text-xl sm:text-2xl">{patientProfile?.name}</span>
             </h1>
             <p className="text-rose-200/80 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
-              Get calm, immediate first-aid instructions. It automatically checks your known allergies ({patientProfile?.allergies?.join(', ') || 'None'}) and medicines so you know what is safe to do right now.
+              {i18n.t("Get calm, immediate first-aid instructions. It automatically checks your known allergies (")}{patientProfile?.allergies?.join(', ') || 'None'}{i18n.t(") and medicines so you know what is safe to do right now.")}
             </p>
           </div>
 
@@ -418,22 +419,22 @@ const PatientEmergencyAssistant = () => {
               className="inline-flex items-center space-x-2 px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-rose-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
             >
               <PhoneCall className="w-4 h-4 animate-bounce" />
-              <span>Call 112 / 911 (Ambulance)</span>
+              <span>{i18n.t("Call 112 / 911 (Ambulance)")}</span>
             </a>
 
             <button
               onClick={() => setShowPersonaDrawer(!showPersonaDrawer)}
               className="inline-flex items-center space-x-2 px-3.5 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 font-bold text-xs transition-all"
-              title="Try a sample profile"
+              title={i18n.t("Try a sample profile")}
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-brand-400" />
-              <span>Try Sample Profile</span>
+              <span>{i18n.t("Try Sample Profile")}</span>
             </button>
 
             <button
               onClick={handleResetChat}
               className="px-3.5 py-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white text-xs font-semibold transition-all"
-              title="Reset conversation"
+              title={i18n.t("Reset conversation")}
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -446,9 +447,9 @@ const PatientEmergencyAssistant = () => {
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
                 <User className="w-3.5 h-3.5 text-brand-400" />
-                <span>Try Different Sample Patient Profiles</span>
+                <span>{i18n.t("Try Different Sample Patient Profiles")}</span>
               </span>
-              <span className="text-[11px] text-slate-400">See how advice automatically changes based on each person's allergies & medicines</span>
+              <span className="text-[11px] text-slate-400">{i18n.t("See how advice automatically changes based on each person's allergies & medicines")}</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -471,8 +472,8 @@ const PatientEmergencyAssistant = () => {
                       </span>
                     </div>
                     <div className="text-[11px] text-slate-400 leading-snug space-y-0.5">
-                      <p>Blood: <strong className="text-slate-200">{persona.bloodGroup}</strong> | Allergies: <strong className="text-amber-300">{persona.allergies.join(', ') || 'None'}</strong></p>
-                      <p className="truncate">Meds: {persona.activeMedications.join(', ') || 'None'}</p>
+                      <p>{i18n.t("Blood:")} <strong className="text-slate-200">{persona.bloodGroup}</strong> {i18n.t("| Allergies:")} <strong className="text-amber-300">{persona.allergies.join(', ') || 'None'}</strong></p>
+                      <p className="truncate">{i18n.t("Meds:")} {persona.activeMedications.join(', ') || 'None'}</p>
                     </div>
                   </button>
                 );
@@ -484,28 +485,28 @@ const PatientEmergencyAssistant = () => {
         {/* Live Patient Profile Cross-Reference Snapshot */}
         <div className="mt-5 pt-4 border-t border-rose-500/20 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <div className="bg-dark-950/60 p-2.5 rounded-xl border border-rose-500/15">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Blood Group</span>
+            <span className="text-[10px] text-slate-400 uppercase font-bold block">{i18n.t("Blood Group")}</span>
             <span className="text-white font-mono font-bold text-sm">
               {patientProfile?.bloodGroup || 'Loading...'}
             </span>
           </div>
 
           <div className="bg-dark-950/60 p-2.5 rounded-xl border border-rose-500/15">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Recorded Allergies</span>
+            <span className="text-[10px] text-slate-400 uppercase font-bold block">{i18n.t("Recorded Allergies")}</span>
             <span className="text-amber-400 font-bold truncate block">
               {patientProfile?.allergies?.length ? patientProfile.allergies.join(', ') : 'None documented'}
             </span>
           </div>
 
           <div className="bg-dark-950/60 p-2.5 rounded-xl border border-rose-500/15">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Active Conditions</span>
+            <span className="text-[10px] text-slate-400 uppercase font-bold block">{i18n.t("Active Conditions")}</span>
             <span className="text-sky-300 font-bold truncate block">
               {patientProfile?.conditions?.length ? patientProfile.conditions.join(', ') : 'None active'}
             </span>
           </div>
 
           <div className="bg-dark-950/60 p-2.5 rounded-xl border border-rose-500/15">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Active Prescriptions</span>
+            <span className="text-[10px] text-slate-400 uppercase font-bold block">{i18n.t("Active Prescriptions")}</span>
             <span className="text-emerald-400 font-bold truncate block">
               {patientProfile?.activeMedications?.length ? `${patientProfile.activeMedications.length} Prescriptions` : 'None'}
             </span>
@@ -518,9 +519,9 @@ const PatientEmergencyAssistant = () => {
         <div className="flex items-center justify-between mb-2.5">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
             <FlameKindling className="w-3.5 h-3.5 text-rose-400" />
-            <span>Common Urgent Symptoms (Tap Any)</span>
+            <span>{i18n.t("Common Urgent Symptoms (Tap Any)")}</span>
           </span>
-          <span className="text-[10px] text-slate-500">Tap to get instant first-aid advice without typing</span>
+          <span className="text-[10px] text-slate-500">{i18n.t("Tap to get instant first-aid advice without typing")}</span>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -552,11 +553,11 @@ const PatientEmergencyAssistant = () => {
             <div className="flex items-center space-x-2.5">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs font-bold text-white uppercase tracking-wider">
-                First-Aid Helper
+                {i18n.t("First-Aid Helper")}
               </span>
             </div>
             <span className="text-[11px] text-slate-400">
-              Active patient: <strong className="text-white">{patientProfile?.name}</strong>
+              {i18n.t("Active patient:")} <strong className="text-white">{patientProfile?.name}</strong>
             </span>
           </div>
 
@@ -595,7 +596,7 @@ const PatientEmergencyAssistant = () => {
                         {struct?.handoverNote && (
                           <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
                             <span className="text-[10px] uppercase font-bold text-slate-400">
-                              EMT Paramedic Briefing
+                              {i18n.t("EMT Paramedic Briefing")}
                             </span>
                             <button
                               onClick={() => handleCopyHandover(struct.handoverNote, msg.id)}
@@ -604,12 +605,12 @@ const PatientEmergencyAssistant = () => {
                               {copiedId === msg.id ? (
                                 <>
                                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span className="text-emerald-400">Copied to Clipboard!</span>
+                                  <span className="text-emerald-400">{i18n.t("Copied to Clipboard!")}</span>
                                 </>
                               ) : (
                                 <>
                                   <Copy className="w-3.5 h-3.5" />
-                                  <span>Copy 20-Sec Briefing for Paramedics</span>
+                                  <span>{i18n.t("Copy 20-Sec Briefing for Paramedics")}</span>
                                 </>
                               )}
                             </button>
@@ -632,7 +633,7 @@ const PatientEmergencyAssistant = () => {
                 </div>
                 <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs text-rose-300 flex items-center space-x-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Evaluating clinical response against {patientProfile?.name}'s medical history...</span>
+                  <span>{i18n.t("Evaluating clinical response against")} {patientProfile?.name}{i18n.t("'s medical history...")}</span>
                 </div>
               </div>
             )}
@@ -642,41 +643,41 @@ const PatientEmergencyAssistant = () => {
 
           {/* Quick Interactive Follow-Up Chips */}
           <div className="px-4 py-2.5 border-t border-slate-800/80 bg-slate-900/40 flex items-center space-x-2 overflow-x-auto text-[11px]">
-            <span className="text-slate-400 font-semibold shrink-0">Ask follow-up:</span>
+            <span className="text-slate-400 font-semibold shrink-0">{i18n.t("Ask follow-up:")}</span>
             <button
               onClick={() => handleSendMessage('Can I drink water right now?')}
               disabled={loading}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 shrink-0 border border-slate-700 transition-all"
             >
-              💧 Can I drink water?
+              {i18n.t("💧 Can I drink water?")}
             </button>
             <button
               onClick={() => handleSendMessage('Can I take aspirin or pain medicine for this?')}
               disabled={loading}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 shrink-0 border border-slate-700 transition-all"
             >
-              💊 Can I take pain medicine?
+              {i18n.t("💊 Can I take pain medicine?")}
             </button>
             <button
               onClick={() => handleSendMessage('Should I lie down flat or sit upright?')}
               disabled={loading}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 shrink-0 border border-slate-700 transition-all"
             >
-              🪑 Should I lie down or sit up?
+              {i18n.t("🪑 Should I lie down or sit up?")}
             </button>
             <button
               onClick={() => handleSendMessage('My pulse is 120 bpm and I am sweating heavily')}
               disabled={loading}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 shrink-0 border border-slate-700 transition-all"
             >
-              📈 My pulse is 120 bpm
+              {i18n.t("📈 My pulse is 120 bpm")}
             </button>
             <button
               onClick={() => handleSendMessage('My emergency contact is not answering and I am home alone')}
               disabled={loading}
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 shrink-0 border border-slate-700 transition-all"
             >
-              🚪 Emergency contact not answering
+              {i18n.t("🚪 Emergency contact not answering")}
             </button>
           </div>
 
@@ -701,7 +702,7 @@ const PatientEmergencyAssistant = () => {
                 disabled={loading || !inputMessage.trim()}
                 className="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition-all shrink-0 shadow-lg shadow-rose-600/20"
               >
-                <span>Send</span>
+                <span>{i18n.t("Send")}</span>
                 <Send className="w-3.5 h-3.5" />
               </button>
             </form>
@@ -718,12 +719,12 @@ const PatientEmergencyAssistant = () => {
               <div className="flex items-center space-x-2 text-rose-400 border-b border-rose-500/20 pb-3">
                 <HeartPulse className="w-4 h-4" />
                 <h3 className="text-xs font-extrabold uppercase tracking-wider">
-                  Active Emergency Protocol
+                  {i18n.t("Active Emergency Protocol")}
                 </h3>
               </div>
 
               <div>
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">Detected Issue</span>
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">{i18n.t("Detected Issue")}</span>
                 <h4 className="text-sm font-bold text-white mt-0.5">
                   {latestStructured.primarySymptom}
                 </h4>
@@ -731,7 +732,7 @@ const PatientEmergencyAssistant = () => {
 
               {latestStructured.immediateSteps?.length > 0 && (
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Top Priority Action</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">{i18n.t("Top Priority Action")}</span>
                   <div className="p-3 rounded-xl bg-slate-900 border border-rose-500/30 text-xs text-rose-200 font-semibold leading-relaxed">
                     {latestStructured.immediateSteps[0]}
                   </div>
@@ -739,7 +740,7 @@ const PatientEmergencyAssistant = () => {
               )}
 
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Emergency Urgency:</span>
+                <span>{i18n.t("Emergency Urgency:")}</span>
                 <span className="font-bold text-rose-400 uppercase">
                   {latestStructured.severity}
                 </span>
@@ -750,11 +751,11 @@ const PatientEmergencyAssistant = () => {
               <div className="flex items-center space-x-2 text-brand-400">
                 <Stethoscope className="w-4 h-4" />
                 <h3 className="text-xs font-bold uppercase tracking-wider">
-                  Context-Aware First Aid
+                  {i18n.t("Context-Aware First Aid")}
                 </h3>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                The chatbot actively reads <strong className="text-white">{patientProfile?.name}</strong>'s medical record before answering every prompt. It prevents dangerous medication conflicts (e.g. Aspirin with recorded Aspirin allergy) and answers your specific questions dynamically.
+                {i18n.t("The chatbot actively reads")} <strong className="text-white">{patientProfile?.name}</strong>{i18n.t("'s medical record before answering every prompt. It prevents dangerous medication conflicts (e.g. Aspirin with recorded Aspirin allergy) and answers your specific questions dynamically.")}
               </p>
             </div>
           )}
@@ -763,7 +764,7 @@ const PatientEmergencyAssistant = () => {
           <div className="glass-card rounded-3xl p-5 border border-slate-800 space-y-3">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
               <PhoneCall className="w-3.5 h-3.5 text-rose-400" />
-              <span>Emergency Dispatch Hotlines</span>
+              <span>{i18n.t("Emergency Dispatch Hotlines")}</span>
             </h3>
 
             <div className="space-y-2">
@@ -771,7 +772,7 @@ const PatientEmergencyAssistant = () => {
                 href="tel:112"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/40 text-xs text-white transition-all"
               >
-                <span>Universal Emergency (EU/India)</span>
+                <span>{i18n.t("Universal Emergency (EU/India)")}</span>
                 <span className="font-mono font-bold text-rose-400">112</span>
               </a>
 
@@ -779,7 +780,7 @@ const PatientEmergencyAssistant = () => {
                 href="tel:911"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/40 text-xs text-white transition-all"
               >
-                <span>United States / Canada</span>
+                <span>{i18n.t("United States / Canada")}</span>
                 <span className="font-mono font-bold text-rose-400">911</span>
               </a>
 
@@ -787,7 +788,7 @@ const PatientEmergencyAssistant = () => {
                 href="tel:999"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/40 text-xs text-white transition-all"
               >
-                <span>United Kingdom</span>
+                <span>{i18n.t("United Kingdom")}</span>
                 <span className="font-mono font-bold text-rose-400">999</span>
               </a>
             </div>
@@ -796,14 +797,14 @@ const PatientEmergencyAssistant = () => {
           {/* Emergency Medical QR Quick Link */}
           <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
             <div>
-              <h4 className="text-xs font-bold text-white">Emergency Medical QR</h4>
-              <p className="text-[10px] text-slate-400 mt-0.5">Let paramedics scan your profile without unlocking</p>
+              <h4 className="text-xs font-bold text-white">{i18n.t("Emergency Medical QR")}</h4>
+              <p className="text-[10px] text-slate-400 mt-0.5">{i18n.t("Let paramedics scan your profile without unlocking")}</p>
             </div>
             <Link
               to="/dashboard/emergency-access"
               className="px-3 py-1.5 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 hover:bg-brand-500 hover:text-dark-950 font-bold text-xs transition-all flex items-center space-x-1"
             >
-              <span>View QR</span>
+              <span>{i18n.t("View QR")}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -812,7 +813,7 @@ const PatientEmergencyAssistant = () => {
           <div className="p-4 rounded-2xl bg-slate-900/30 border border-slate-800/60 text-slate-500 text-[10px] leading-relaxed flex items-start space-x-2">
             <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-400" />
             <p>
-              This first-aid assistant provides immediate temporary stabilization guidance based on your recorded health history while emergency medical services are en route. It does not replace professional emergency medical care.
+              {i18n.t("This first-aid assistant provides immediate temporary stabilization guidance based on your recorded health history while emergency medical services are en route. It does not replace professional emergency medical care.")}
             </p>
           </div>
 

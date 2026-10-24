@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import HealthTrendChart from '../../components/HealthTrendChart';
@@ -89,7 +90,7 @@ const DoctorTrends = () => {
     return (
       <div className="text-center py-12 text-slate-500 font-display flex flex-col items-center justify-center space-y-3">
         <RefreshCw className="w-6 h-6 animate-spin text-emerald-400" />
-        <span>Loading Practice Analytics & Health Trends...</span>
+        <span>{i18n.t("Loading Practice Analytics & Health Trends...")}</span>
       </div>
     );
   }
@@ -101,10 +102,10 @@ const DoctorTrends = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
         <div>
           <h2 className="text-xl font-bold text-white font-display">
-            Patient Health Trends
+            {i18n.t("Patient Health Trends")}
           </h2>
           <p className="text-xs text-slate-400">
-            See your patients' health trends, blood pressure history, and vital charts over time.
+            {i18n.t("See your patients' health trends, blood pressure history, and vital charts over time.")}
           </p>
         </div>
 
@@ -113,7 +114,7 @@ const DoctorTrends = () => {
           className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 flex items-center space-x-1.5 transition-colors self-start"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          <span>Refresh Analytics</span>
+          <span>{i18n.t("Refresh Analytics")}</span>
         </button>
       </div>
 
@@ -126,9 +127,9 @@ const DoctorTrends = () => {
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              Total Patients
+              {i18n.t("Total Patients")}
             </span>
-            <h3 className="text-xl font-extrabold text-white mt-0.5">{patients.length} Active Patients</h3>
+            <h3 className="text-xl font-extrabold text-white mt-0.5">{patients.length} {i18n.t("Active Patients")}</h3>
           </div>
         </div>
 
@@ -138,10 +139,10 @@ const DoctorTrends = () => {
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              Gender Distribution
+              {i18n.t("Gender Distribution")}
             </span>
             <h3 className="text-xl font-extrabold text-white mt-0.5">
-              {demographics.male}M / {demographics.female}F
+              {demographics.male}{i18n.t("M /")} {demographics.female}{i18n.t("F")}
             </h3>
           </div>
         </div>
@@ -152,9 +153,9 @@ const DoctorTrends = () => {
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-              Cardiovascular Status
+              {i18n.t("Cardiovascular Status")}
             </span>
-            <h3 className="text-xl font-extrabold text-emerald-400 mt-0.5">Normative Monitoring</h3>
+            <h3 className="text-xl font-extrabold text-emerald-400 mt-0.5">{i18n.t("Normative Monitoring")}</h3>
           </div>
         </div>
 
@@ -171,10 +172,10 @@ const DoctorTrends = () => {
             <Stethoscope className="w-5 h-5 text-emerald-400 shrink-0" />
             <div>
               <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                Patient Vital Telemetry Explorer
+                {i18n.t("Patient Vital Telemetry Explorer")}
               </h4>
               <p className="text-[10px] text-slate-400">
-                Inspect interactive multi-line curves (BP, Pulse, Temp, Weight) for any patient.
+                {i18n.t("Inspect interactive multi-line curves (BP, Pulse, Temp, Weight) for any patient.")}
               </p>
             </div>
           </div>
@@ -186,7 +187,7 @@ const DoctorTrends = () => {
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 shadow-inner"
             >
               {patients.length === 0 ? (
-                <option value="">No authorized patients</option>
+                <option value="">{i18n.t("No authorized patients")}</option>
               ) : (
                 patients.map((p) => (
                   <option key={p._id} value={p._id}>
@@ -202,16 +203,16 @@ const DoctorTrends = () => {
         {loadingVitals ? (
           <div className="p-12 text-center text-slate-400 glass-card rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-2">
             <RefreshCw className="w-6 h-6 animate-spin text-brand-400" />
-            <span className="text-xs">Loading vital telemetry for {selectedPatientName}...</span>
+            <span className="text-xs">{i18n.t("Loading vital telemetry for")} {selectedPatientName}...</span>
           </div>
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <span className="text-xs font-bold text-slate-300">
-                Displaying Vital Telemetry Curves for: <strong className="text-emerald-400">{selectedPatientName}</strong>
+                {i18n.t("Displaying Vital Telemetry Curves for:")} <strong className="text-emerald-400">{selectedPatientName}</strong>
               </span>
               <span className="text-[10px] text-slate-500 font-bold uppercase">
-                {selectedPatientVitals.length} Data Points Logged
+                {selectedPatientVitals.length} {i18n.t("Data Points Logged")}
               </span>
             </div>
 
@@ -228,13 +229,13 @@ const DoctorTrends = () => {
         <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
           <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center">
             <TrendingUp className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Cohort Demographics Breakdown</span>
+            <span>{i18n.t("Cohort Demographics Breakdown")}</span>
           </h3>
 
           <div className="space-y-3 text-xs">
             <div>
               <div className="flex justify-between text-slate-400 font-bold mb-1 text-[11px]">
-                <span>Male Cohort</span>
+                <span>{i18n.t("Male Cohort")}</span>
                 <span>{demographics.male} ({patients.length > 0 ? Math.round((demographics.male / patients.length) * 100) : 0}%)</span>
               </div>
               <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
@@ -247,7 +248,7 @@ const DoctorTrends = () => {
 
             <div>
               <div className="flex justify-between text-slate-400 font-bold mb-1 text-[11px]">
-                <span>Female Cohort</span>
+                <span>{i18n.t("Female Cohort")}</span>
                 <span>{demographics.female} ({patients.length > 0 ? Math.round((demographics.female / patients.length) * 100) : 0}%)</span>
               </div>
               <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
@@ -260,7 +261,7 @@ const DoctorTrends = () => {
 
             <div>
               <div className="flex justify-between text-slate-400 font-bold mb-1 text-[11px]">
-                <span>Unspecified / Other</span>
+                <span>{i18n.t("Unspecified / Other")}</span>
                 <span>{demographics.other} ({patients.length > 0 ? Math.round((demographics.other / patients.length) * 100) : 0}%)</span>
               </div>
               <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
@@ -277,14 +278,14 @@ const DoctorTrends = () => {
         <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
           <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center">
             <Award className="w-4 h-4 text-emerald-400 mr-1.5" />
-            <span>Practice Quality & Risk Benchmarks</span>
+            <span>{i18n.t("Practice Quality & Risk Benchmarks")}</span>
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Practice analytics are updated based on telemetry submissions and scheduled follow-ups. Regular vital tracking improves early hypertension detection and medication adherence rates by over 42%.
+            {i18n.t("Practice analytics are updated based on telemetry submissions and scheduled follow-ups. Regular vital tracking improves early hypertension detection and medication adherence rates by over 42%.")}
           </p>
           <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center space-x-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>All practice cohorts are synchronized with active Care Pathways and medication tracking.</span>
+            <span>{i18n.t("All practice cohorts are synchronized with active Care Pathways and medication tracking.")}</span>
           </div>
         </div>
 

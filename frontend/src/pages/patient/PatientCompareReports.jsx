@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -361,13 +362,13 @@ const PatientCompareReports = () => {
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold mb-3">
               <GitCompare className="w-3.5 h-3.5" />
-              <span>Track Your Health Over Time</span>
+              <span>{i18n.t("Track Your Health Over Time")}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
-              Compare 2 Reports (See If Health Improved)
+              {i18n.t("Compare 2 Reports (See If Health Improved)")}
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
-              Compare an earlier test report with your latest test report side-by-side. See which numbers got better, which stayed stable, and what to discuss with your doctor.
+              {i18n.t("Compare an earlier test report with your latest test report side-by-side. See which numbers got better, which stayed stable, and what to discuss with your doctor.")}
             </p>
           </div>
 
@@ -377,16 +378,16 @@ const PatientCompareReports = () => {
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
             >
               <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-              <span>Single Report Explainer</span>
+              <span>{i18n.t("Single Report Explainer")}</span>
             </Link>
 
             <button
               onClick={() => window.print()}
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 text-xs font-semibold transition-all"
-              title="Print clinical comparison summary"
+              title={i18n.t("Print clinical comparison summary")}
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Print Summary</span>
+              <span>{i18n.t("Print Summary")}</span>
             </button>
           </div>
         </div>
@@ -398,10 +399,10 @@ const PatientCompareReports = () => {
           <div className="flex items-center space-x-2">
             <Layers className="w-4 h-4 text-brand-400" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              Try A Realistic Example
+              {i18n.t("Try A Realistic Example")}
             </h3>
           </div>
-          <span className="text-[11px] text-slate-400">1-click sample comparisons</span>
+          <span className="text-[11px] text-slate-400">{i18n.t("1-click sample comparisons")}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -424,7 +425,7 @@ const PatientCompareReports = () => {
                   {isSelected && (
                     <span className="flex items-center space-x-1 text-[10px] font-bold text-brand-400">
                       <CheckCircle2 className="w-3 h-3" />
-                      <span>Selected</span>
+                      <span>{i18n.t("Selected")}</span>
                     </span>
                   )}
                 </div>
@@ -449,22 +450,22 @@ const PatientCompareReports = () => {
                 <div className="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center text-xs font-bold">
                   1
                 </div>
-                <h3 className="text-sm font-bold text-white">Report 1: Earlier Test Report</h3>
+                <h3 className="text-sm font-bold text-white">{i18n.t("Report 1: Earlier Test Report")}</h3>
               </div>
-              <span className="text-[11px] font-medium text-slate-400">Starting Point</span>
+              <span className="text-[11px] font-medium text-slate-400">{i18n.t("Starting Point")}</span>
             </div>
 
             {patientRecords.length > 0 && (
               <div className="mb-4">
                 <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Select from Saved Medical Records
+                  {i18n.t("Select from Saved Medical Records")}
                 </label>
                 <select
                   value={report1RecordId}
                   onChange={handleSelectRecord1}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 >
-                  <option value="">-- Choose from archive or use custom text below --</option>
+                  <option value="">{i18n.t("-- Choose from archive or use custom text below --")}</option>
                   {patientRecords.map((r) => (
                     <option key={r._id} value={r._id}>
                       {r.title} ({new Date(r.recordDate).toLocaleDateString()}) - {r.category}
@@ -476,22 +477,22 @@ const PatientCompareReports = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Report Title</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">{i18n.t("Report Title")}</label>
                 <input
                   type="text"
                   value={report1Title}
                   onChange={(e) => setReport1Title(e.target.value)}
-                  placeholder="e.g., CBC Baseline Test"
+                  placeholder={i18n.t("e.g., CBC Baseline Test")}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Date</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">{i18n.t("Date")}</label>
                 <input
                   type="text"
                   value={report1Date}
                   onChange={(e) => setReport1Date(e.target.value)}
-                  placeholder="e.g., Jan 15, 2026"
+                  placeholder={i18n.t("e.g., Jan 15, 2026")}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                 />
               </div>
@@ -499,7 +500,7 @@ const PatientCompareReports = () => {
 
             <div>
               <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                Diagnostic Parameters & Laboratory Findings
+                {i18n.t("Diagnostic Parameters & Laboratory Findings")}
               </label>
               <textarea
                 rows={9}
@@ -508,7 +509,7 @@ const PatientCompareReports = () => {
                   setReport1Text(e.target.value);
                   setSelectedPresetId('');
                 }}
-                placeholder="Paste earlier diagnostic report text or test parameters..."
+                placeholder={i18n.t("Paste earlier diagnostic report text or test parameters...")}
                 className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 font-mono focus:outline-none focus:border-brand-500 leading-relaxed"
               />
             </div>
@@ -523,22 +524,22 @@ const PatientCompareReports = () => {
                 <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">
                   2
                 </div>
-                <h3 className="text-sm font-bold text-white">Report 2: Latest / Recent Test Report</h3>
+                <h3 className="text-sm font-bold text-white">{i18n.t("Report 2: Latest / Recent Test Report")}</h3>
               </div>
-              <span className="text-[11px] font-medium text-slate-400">Latest Numbers</span>
+              <span className="text-[11px] font-medium text-slate-400">{i18n.t("Latest Numbers")}</span>
             </div>
 
             {patientRecords.length > 0 && (
               <div className="mb-4">
                 <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Select from Saved Medical Records
+                  {i18n.t("Select from Saved Medical Records")}
                 </label>
                 <select
                   value={report2RecordId}
                   onChange={handleSelectRecord2}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 >
-                  <option value="">-- Choose from archive or use custom text below --</option>
+                  <option value="">{i18n.t("-- Choose from archive or use custom text below --")}</option>
                   {patientRecords.map((r) => (
                     <option key={r._id} value={r._id}>
                       {r.title} ({new Date(r.recordDate).toLocaleDateString()}) - {r.category}
@@ -550,22 +551,22 @@ const PatientCompareReports = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Report Title</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">{i18n.t("Report Title")}</label>
                 <input
                   type="text"
                   value={report2Title}
                   onChange={(e) => setReport2Title(e.target.value)}
-                  placeholder="e.g., Follow-up Review"
+                  placeholder={i18n.t("e.g., Follow-up Review")}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Date</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">{i18n.t("Date")}</label>
                 <input
                   type="text"
                   value={report2Date}
                   onChange={(e) => setReport2Date(e.target.value)}
-                  placeholder="e.g., Apr 18, 2026"
+                  placeholder={i18n.t("e.g., Apr 18, 2026")}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
                 />
               </div>
@@ -573,7 +574,7 @@ const PatientCompareReports = () => {
 
             <div>
               <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                Diagnostic Parameters & Laboratory Findings
+                {i18n.t("Diagnostic Parameters & Laboratory Findings")}
               </label>
               <textarea
                 rows={9}
@@ -582,7 +583,7 @@ const PatientCompareReports = () => {
                   setReport2Text(e.target.value);
                   setSelectedPresetId('');
                 }}
-                placeholder="Paste recent diagnostic report text or test parameters..."
+                placeholder={i18n.t("Paste recent diagnostic report text or test parameters...")}
                 className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 font-mono focus:outline-none focus:border-brand-500 leading-relaxed"
               />
             </div>
@@ -595,7 +596,7 @@ const PatientCompareReports = () => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
         <div className="flex items-center space-x-2 text-xs text-slate-400">
           <Info className="w-4 h-4 text-brand-400 shrink-0" />
-          <span>The comparison engine pairs identical biomarkers across both tests to compute numeric delta, % variance, and clinical status transition.</span>
+          <span>{i18n.t("The comparison engine pairs identical biomarkers across both tests to compute numeric delta, % variance, and clinical status transition.")}</span>
         </div>
 
         <button
@@ -606,12 +607,12 @@ const PatientCompareReports = () => {
           {comparing ? (
             <>
               <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Analyzing Trajectories...</span>
+              <span>{i18n.t("Analyzing Trajectories...")}</span>
             </>
           ) : (
             <>
               <GitCompare className="w-4 h-4" />
-              <span>Run Biomarker Comparison</span>
+              <span>{i18n.t("Run Biomarker Comparison")}</span>
             </>
           )}
         </button>
@@ -646,12 +647,12 @@ const PatientCompareReports = () => {
                     <span>{comparisonResult.overallStatusText}</span>
                   </span>
                   <span className="text-xs text-slate-400">
-                    {comparisonResult.matchedCount} Tracked Biomarkers
+                    {comparisonResult.matchedCount} {i18n.t("Tracked Biomarkers")}
                   </span>
                 </div>
 
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
-                  Trajectory: {comparisonResult.report1Meta.title} ➔ {comparisonResult.report2Meta.title}
+                  {i18n.t("Trajectory:")} {comparisonResult.report1Meta.title} ➔ {comparisonResult.report2Meta.title}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
                   {comparisonResult.summary}
@@ -666,7 +667,7 @@ const PatientCompareReports = () => {
                     <span>{comparisonResult.stats.improvedCount}</span>
                   </div>
                   <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">
-                    Getting Better
+                    {i18n.t("Getting Better")}
                   </span>
                 </div>
 
@@ -676,7 +677,7 @@ const PatientCompareReports = () => {
                     <span>{comparisonResult.stats.worsenedCount}</span>
                   </div>
                   <span className="text-[10px] uppercase font-bold text-rose-300 tracking-wider">
-                    Needs Watching
+                    {i18n.t("Needs Watching")}
                   </span>
                 </div>
 
@@ -686,7 +687,7 @@ const PatientCompareReports = () => {
                     <span>{comparisonResult.stats.stableCount}</span>
                   </div>
                   <span className="text-[10px] uppercase font-bold text-sky-300 tracking-wider">
-                    Stayed Same
+                    {i18n.t("Stayed Same")}
                   </span>
                 </div>
               </div>
@@ -698,7 +699,7 @@ const PatientCompareReports = () => {
                 <div className="flex items-center space-x-2 mb-3">
                   <Stethoscope className="w-4 h-4 text-brand-400" />
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                    What You Should Do Next
+                    {i18n.t("What You Should Do Next")}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -729,7 +730,7 @@ const PatientCompareReports = () => {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                All Metrics ({comparisonResult.matchedParameters.length})
+                {i18n.t("All Metrics (")}{comparisonResult.matchedParameters.length})
               </button>
 
               <button
@@ -740,7 +741,7 @@ const PatientCompareReports = () => {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Improved ({comparisonResult.stats.improvedCount})
+                {i18n.t("Improved (")}{comparisonResult.stats.improvedCount})
               </button>
 
               <button
@@ -751,7 +752,7 @@ const PatientCompareReports = () => {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Attention ({comparisonResult.stats.worsenedCount})
+                {i18n.t("Attention (")}{comparisonResult.stats.worsenedCount})
               </button>
 
               <button
@@ -762,7 +763,7 @@ const PatientCompareReports = () => {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Stable ({comparisonResult.stats.stableCount})
+                {i18n.t("Stable (")}{comparisonResult.stats.stableCount})
               </button>
             </div>
 
@@ -773,7 +774,7 @@ const PatientCompareReports = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search biomarker or section..."
+                placeholder={i18n.t("Search biomarker or section...")}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -783,7 +784,7 @@ const PatientCompareReports = () => {
           {/* Detailed Matched Biomarkers Cards */}
           {filteredParameters.length === 0 ? (
             <div className="glass-card rounded-2xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-              No biomarkers match the selected filter or query.
+              {i18n.t("No biomarkers match the selected filter or query.")}
             </div>
           ) : (
             <div className="space-y-3">
@@ -824,7 +825,7 @@ const PatientCompareReports = () => {
                         {/* Baseline Box */}
                         <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
                           <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
-                            <span className="font-semibold uppercase">Baseline (Report 1)</span>
+                            <span className="font-semibold uppercase">{i18n.t("Baseline (Report 1)")}</span>
                             <span>{param.report1.date}</span>
                           </div>
                           <div className="flex items-center justify-between">
@@ -834,14 +835,14 @@ const PatientCompareReports = () => {
                             </span>
                           </div>
                           <div className="text-[10px] text-slate-400 mt-1">
-                            Ref: {param.report1.range || 'Standard'}
+                            {i18n.t("Ref:")} {param.report1.range || 'Standard'}
                           </div>
                         </div>
 
                         {/* Follow-up Box */}
                         <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
                           <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
-                            <span className="font-semibold uppercase">Follow-up (Report 2)</span>
+                            <span className="font-semibold uppercase">{i18n.t("Follow-up (Report 2)")}</span>
                             <span>{param.report2.date}</span>
                           </div>
                           <div className="flex items-center justify-between">
@@ -851,14 +852,14 @@ const PatientCompareReports = () => {
                             </span>
                           </div>
                           <div className="text-[10px] text-slate-400 mt-1">
-                            Ref: {param.report2.range || 'Standard'}
+                            {i18n.t("Ref:")} {param.report2.range || 'Standard'}
                           </div>
                         </div>
 
                         {/* Delta & Trajectory Insight */}
                         <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-slate-950/40 border border-slate-800/80 flex flex-col justify-center">
                           <span className="text-[10px] uppercase font-bold text-slate-400 mb-1">
-                            Calculated Delta
+                            {i18n.t("Calculated Delta")}
                           </span>
                           <div className="flex items-center space-x-2">
                             {param.delta !== null ? (
@@ -875,7 +876,7 @@ const PatientCompareReports = () => {
                                 {param.percentChange !== null && `(${param.percentChange > 0 ? `+${param.percentChange}` : param.percentChange}%)`}
                               </span>
                             ) : (
-                              <span className="text-xs text-slate-400 font-semibold">Tracked</span>
+                              <span className="text-xs text-slate-400 font-semibold">{i18n.t("Tracked")}</span>
                             )}
                           </div>
                           <p className="text-[10px] text-slate-400 mt-1 line-clamp-2">
@@ -896,7 +897,7 @@ const PatientCompareReports = () => {
           <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60 text-slate-400 text-[11px] leading-relaxed flex items-start space-x-3">
             <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
             <p>
-              <strong className="text-slate-300">Clinical Reference Disclaimer: </strong>
+              <strong className="text-slate-300">{i18n.t("Clinical Reference Disclaimer:")} </strong>
               {comparisonResult.disclaimer}
             </p>
           </div>

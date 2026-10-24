@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -168,7 +169,7 @@ const PatientRecords = () => {
 
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-400">Loading your medical files...</div>;
+    return <div className="text-center py-12 text-slate-400">{i18n.t("Loading your medical files...")}</div>;
   }
 
   return (
@@ -177,8 +178,8 @@ const PatientRecords = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-left">
         <div>
-          <h2 className="text-xl font-bold text-white font-display">My Medical Files & Lab Papers</h2>
-          <p className="text-xs text-slate-300">Keep all your lab tests, doctor prescriptions, and X-ray papers safely organized here.</p>
+          <h2 className="text-xl font-bold text-white font-display">{i18n.t("My Medical Files & Lab Papers")}</h2>
+          <p className="text-xs text-slate-300">{i18n.t("Keep all your lab tests, doctor prescriptions, and X-ray papers safely organized here.")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -186,7 +187,7 @@ const PatientRecords = () => {
             className="bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-200 hover:text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-all shadow-sm"
           >
             <GitCompare className="w-4 h-4 text-brand-400" />
-            <span>Compare 2 Reports</span>
+            <span>{i18n.t("Compare 2 Reports")}</span>
           </Link>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
@@ -215,39 +216,39 @@ const PatientRecords = () => {
       {/* Upload Form Box */}
       {showAddForm && (
         <div className="glass-card rounded-2xl p-6 border border-slate-800 text-left max-w-xl mx-auto animate-in fade-in slide-in-from-top-3 duration-200">
-          <h3 className="text-sm font-bold text-white mb-4">Upload A Medical Document</h3>
+          <h3 className="text-sm font-bold text-white mb-4">{i18n.t("Upload A Medical Document")}</h3>
 
           <form onSubmit={handleRecordSubmit} className="space-y-4">
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Document Title</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Document Title")}</label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
-                placeholder="e.g. Blood Test - Q3 2026, Chest X-Ray"
+                placeholder={i18n.t("e.g. Blood Test - Q3 2026, Chest X-Ray")}
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Category</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Category")}</label>
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500"
                 >
-                  <option value="lab_report">Lab Diagnostic Report</option>
-                  <option value="prescription">Prescription Slip</option>
-                  <option value="scan">MRI / X-Ray / Scan</option>
-                  <option value="vaccine">Vaccination Sheet</option>
-                  <option value="other">Other/Miscellaneous</option>
+                  <option value="lab_report">{i18n.t("Lab Diagnostic Report")}</option>
+                  <option value="prescription">{i18n.t("Prescription Slip")}</option>
+                  <option value="scan">{i18n.t("MRI / X-Ray / Scan")}</option>
+                  <option value="vaccine">{i18n.t("Vaccination Sheet")}</option>
+                  <option value="other">{i18n.t("Other/Miscellaneous")}</option>
                 </select>
               </div>
 
               <div className="flex flex-col space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Record Date</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Record Date")}</label>
                 <input
                   type="date"
                   value={form.recordDate}
@@ -258,7 +259,7 @@ const PatientRecords = () => {
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Upload Record Image</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Upload Record Image")}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -268,18 +269,18 @@ const PatientRecords = () => {
               />
               {selectedImage && (
                 <p className="text-[10px] text-emerald-400 font-semibold mt-1">
-                  Selected: {selectedImage.name} ({Math.round(selectedImage.size / 1024)} KB)
+                  {i18n.t("Selected:")} {selectedImage.name} ({Math.round(selectedImage.size / 1024)} {i18n.t("KB)")}
                 </p>
               )}
             </div>
 
             <div className="flex flex-col space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Additional Clinical Notes</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase">{i18n.t("Additional Clinical Notes")}</label>
               <textarea
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 className="glass-input bg-slate-900 px-3 py-2 text-xs rounded-lg text-slate-200 border border-slate-800 focus:outline-none focus:border-brand-500 h-20 resize-none"
-                placeholder="Include doctor instructions, comments, or follow-ups..."
+                placeholder={i18n.t("Include doctor instructions, comments, or follow-ups...")}
               />
             </div>
 
@@ -302,7 +303,7 @@ const PatientRecords = () => {
       <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2 text-left">
         <div className="flex items-center space-x-2">
           <Filter className="w-4 h-4 text-slate-400" />
-          <span className="text-xs font-bold text-slate-400">Filter By Category:</span>
+          <span className="text-xs font-bold text-slate-400">{i18n.t("Filter By Category:")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {['all', 'lab_report', 'prescription', 'scan', 'vaccine', 'other'].map(cat => (
@@ -325,9 +326,9 @@ const PatientRecords = () => {
       {filteredRecords.length === 0 ? (
         <div className="p-12 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
           <FileCheck className="w-12 h-12 text-slate-650 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-white">No documents match the criteria</h3>
+          <h3 className="text-sm font-bold text-white">{i18n.t("No documents match the criteria")}</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-            Get started by logging your clinical records, scan files, or reports to encrypt them on the cloud.
+            {i18n.t("Get started by logging your clinical records, scan files, or reports to encrypt them on the cloud.")}
           </p>
         </div>
       ) : (
@@ -376,7 +377,7 @@ const PatientRecords = () => {
                   className="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-500 hover:text-rose-400 transition-all"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete</span>
+                  <span>{i18n.t("Delete")}</span>
                 </button>
                 <div className="flex items-center space-x-3">
                   <Link
@@ -384,7 +385,7 @@ const PatientRecords = () => {
                     className="inline-flex items-center space-x-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 border border-brand-500/20 transition-all"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Analyze with AI</span>
+                    <span>{i18n.t("Analyze with AI")}</span>
                   </Link>
                   {record.fileUrl && (
                     <a
@@ -394,7 +395,7 @@ const PatientRecords = () => {
                       className="inline-flex items-center space-x-1 text-xs font-bold text-slate-400 hover:text-slate-200 transition-all"
                     >
                       <ArrowDownToLine className="w-4 h-4" />
-                      <span>Download</span>
+                      <span>{i18n.t("Download")}</span>
                     </a>
                   )}
                 </div>

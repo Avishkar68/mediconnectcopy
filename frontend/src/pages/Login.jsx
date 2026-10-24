@@ -1,11 +1,14 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { HeartPulse, LogIn, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,12 +39,12 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('Email is required');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = t('Please enter a valid email');
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('Password is required');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -64,9 +67,9 @@ const Login = () => {
     } catch (err) {
       // Capture 403 unverified case to offer OTP link
       if (err.status === 403) {
-        setServerError('Your account is not verified yet.');
+        setServerError(t('Your account is not verified yet.'));
       } else {
-        setServerError(err.message || 'Login failed. Please check your credentials.');
+        setServerError(t(err.message || 'Login failed. Please check your credentials.'));
       }
     } finally {
       setLoading(false);
@@ -87,10 +90,10 @@ const Login = () => {
             <HeartPulse className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold font-display text-white tracking-tight">
-            Welcome to MediConnect
+            {t('Welcome to MediConnect')}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Access your secure patient-doctor workspace.
+            {t('Access your secure patient-doctor workspace.')}
           </p>
         </div>
 
@@ -100,7 +103,7 @@ const Login = () => {
           {justVerified && (
             <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-semibold text-center mb-4 flex items-center justify-center space-x-2">
               <CheckCircle2 className="w-4 h-4" />
-              <span>Email verified! Please sign in.</span>
+              <span>{t('Email verified! Please sign in.')}</span>
             </div>
           )}
 
@@ -113,24 +116,24 @@ const Login = () => {
                     to={`/verify-otp?email=${encodeURIComponent(formData.email)}`}
                     className="underline text-brand-300 hover:text-brand-200 mt-1 block"
                   >
-                    Click here to enter OTP verification code
+                    {t('Click here to enter OTP verification code')}
                   </Link>
                 )}
               </div>
             )}
 
             <Input
-              label="Email Address"
+              label={t('Email Address')}
               name="email"
               type="email"
-              placeholder="example@mediconnect.com"
+              placeholder={i18n.t("example@mediconnect.com")}
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
             />
 
             <Input
-              label="Password"
+              label={t('Password')}
               name="password"
               type="password"
               placeholder="••••••••"
@@ -140,7 +143,7 @@ const Login = () => {
             />
 
             <Button type="submit" loading={loading} className="w-full mt-6">
-              <span>Log In</span>
+              <span>{t('Log In')}</span>
               <LogIn className="w-4 h-4 ml-2" />
             </Button>
           </form>
@@ -148,9 +151,9 @@ const Login = () => {
           {/* Footer link */}
           <div className="mt-6 text-center">
             <p className="text-slate-400 text-xs">
-              New to MediConnect?{' '}
+              {t('New to MediConnect?')}{' '}
               <Link to="/register" className="text-brand-400 hover:text-brand-300 font-semibold underline">
-                Sign Up
+                {t('Sign Up')}
               </Link>
             </p>
           </div>

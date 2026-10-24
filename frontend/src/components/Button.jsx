@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React from 'react';
 
 /**
@@ -34,7 +35,7 @@ const Button = ({
       {loading ? (
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-          <span>Loading...</span>
+          <span>{i18n.t("Loading...")}</span>
         </div>
       ) : (
         children

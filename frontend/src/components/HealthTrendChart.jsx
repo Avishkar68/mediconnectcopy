@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState } from 'react';
 import {
   Heart,
@@ -17,7 +18,7 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
   if (!vitals || vitals.length === 0) {
     return (
       <div className="p-8 text-center border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500">
-        No vital sign readings logged yet. Add readings above to generate interactive trend curves.
+        {i18n.t("No vital sign readings logged yet. Add readings above to generate interactive trend curves.")}
       </div>
     );
   }
@@ -196,7 +197,7 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
             }`}
           >
             <Activity className="w-3.5 h-3.5 text-sky-400" />
-            <span>Blood Pressure</span>
+            <span>{i18n.t("Blood Pressure")}</span>
           </button>
 
           <button
@@ -208,7 +209,7 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
             }`}
           >
             <Heart className="w-3.5 h-3.5 text-red-400" />
-            <span>Heart Rate</span>
+            <span>{i18n.t("Heart Rate")}</span>
           </button>
 
           <button
@@ -220,7 +221,7 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
             }`}
           >
             <Thermometer className="w-3.5 h-3.5 text-yellow-400" />
-            <span>Temperature</span>
+            <span>{i18n.t("Temperature")}</span>
           </button>
 
           <button
@@ -232,7 +233,7 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
             }`}
           >
             <Scale className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Weight</span>
+            <span>{i18n.t("Weight")}</span>
           </button>
         </div>
 
@@ -456,21 +457,21 @@ const HealthTrendChart = ({ vitals = [], height = 240 }) => {
       {/* Analytics Summary Footer */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-800 text-xs">
         <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80">
-          <span className="text-[10px] text-slate-500 uppercase font-bold block">Latest Reading</span>
+          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Latest Reading")}</span>
           <span className="font-extrabold text-white text-sm">{stats.latestText}</span>
         </div>
         <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80">
-          <span className="text-[10px] text-slate-500 uppercase font-bold block">Historical Average</span>
+          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Historical Average")}</span>
           <span className="font-extrabold text-slate-200 text-sm">{stats.avgText}</span>
         </div>
         <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80">
-          <span className="text-[10px] text-slate-500 uppercase font-bold block">Readings Cataloged</span>
-          <span className="font-extrabold text-brand-400 text-sm">{points.length} Entries</span>
+          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Readings Cataloged")}</span>
+          <span className="font-extrabold text-brand-400 text-sm">{points.length} {i18n.t("Entries")}</span>
         </div>
         <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80">
-          <span className="text-[10px] text-slate-500 uppercase font-bold block">Clinical Trend</span>
+          <span className="text-[10px] text-slate-500 uppercase font-bold block">{i18n.t("Clinical Trend")}</span>
           <span className="font-extrabold text-emerald-400 text-sm flex items-center">
-            <TrendingUp className="w-3.5 h-3.5 mr-1" /> Stable
+            <TrendingUp className="w-3.5 h-3.5 mr-1" /> {i18n.t("Stable")}
           </span>
         </div>
       </div>

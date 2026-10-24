@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import {
@@ -39,49 +40,49 @@ const DoctorRequests = () => {
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-yellow-500/10 text-yellow-450 border-yellow-500/20">
             <Clock className="w-3 h-3 text-yellow-500" />
-            <span>Pending</span>
+            <span>{i18n.t("Pending")}</span>
           </span>
         );
       case 'approved':
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-emerald-500/10 text-emerald-450 border-emerald-500/20">
             <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            <span>Approved</span>
+            <span>{i18n.t("Approved")}</span>
           </span>
         );
       case 'rejected':
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-red-500/10 text-red-450 border-red-500/20">
             <XCircle className="w-3 h-3 text-red-400" />
-            <span>Rejected</span>
+            <span>{i18n.t("Rejected")}</span>
           </span>
         );
       case 'revoked':
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-slate-500/10 text-slate-450 border-slate-500/20">
             <XCircle className="w-3 h-3 text-slate-500" />
-            <span>Revoked</span>
+            <span>{i18n.t("Revoked")}</span>
           </span>
         );
       case 'expired':
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-slate-800 text-slate-500 border-slate-850">
             <Clock className="w-3 h-3" />
-            <span>Expired</span>
+            <span>{i18n.t("Expired")}</span>
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center space-x-1 text-[9px] font-bold px-2 py-0.5 rounded border uppercase bg-slate-900 text-slate-400 border-slate-800">
             <HelpCircle className="w-3 h-3" />
-            <span>Unknown</span>
+            <span>{i18n.t("Unknown")}</span>
           </span>
         );
     }
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-slate-500">Loading consent queue...</div>;
+    return <div className="text-center py-12 text-slate-500">{i18n.t("Loading consent queue...")}</div>;
   }
 
   return (
@@ -89,8 +90,8 @@ const DoctorRequests = () => {
       
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white font-display">Patient Connection Requests</h2>
-        <p className="text-xs text-slate-400">Requests you sent to patients to connect and share medical records.</p>
+        <h2 className="text-xl font-bold text-white font-display">{i18n.t("Patient Connection Requests")}</h2>
+        <p className="text-xs text-slate-400">{i18n.t("Requests you sent to patients to connect and share medical records.")}</p>
       </div>
 
       {error && (
@@ -103,9 +104,9 @@ const DoctorRequests = () => {
       {requests.length === 0 ? (
         <div className="p-12 text-center bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
           <UserPlus className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-white">No outgoing requests found</h3>
+          <h3 className="text-sm font-bold text-white">{i18n.t("No outgoing requests found")}</h3>
           <p className="text-xs text-slate-500 mt-1">
-            Search patients in the directory to send them a connection request.
+            {i18n.t("Search patients in the directory to send them a connection request.")}
           </p>
         </div>
       ) : (
@@ -127,7 +128,7 @@ const DoctorRequests = () => {
                   </div>
                   <div className="flex items-center text-[9px] text-slate-500 mt-2 space-x-1">
                     <Clock className="w-3.5 h-3.5 text-slate-600" />
-                    <span>Requested: {new Date(req.requestedAt || req.createdAt).toLocaleString()}</span>
+                    <span>{i18n.t("Requested:")} {new Date(req.requestedAt || req.createdAt).toLocaleString()}</span>
                   </div>
                 </div>
               </div>

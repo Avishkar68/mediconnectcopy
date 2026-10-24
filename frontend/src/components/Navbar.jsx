@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -12,10 +13,39 @@ import {
   LayoutDashboard,
   HeartPulse,
   Shield,
+  Languages,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { supportedLanguages } from '../i18n';
+
+const LanguagePicker = ({ className = '' }) => {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <label className={`flex items-center gap-1.5 text-slate-500 ${className}`}>
+      <Languages aria-hidden="true" className="w-4 h-4 shrink-0" />
+      <span className="sr-only">{t('Language')}</span>
+      <select
+        aria-label={t('Language')}
+        value={i18n.resolvedLanguage || 'en'}
+        onChange={(event) => {
+          i18n.changeLanguage(event.target.value).catch((error) => {
+            console.error('Unable to change the application language:', error);
+          });
+        }}
+        className="max-w-28 bg-transparent text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-md py-1"
+      >
+        {supportedLanguages.map(({ code, name }) => (
+          <option key={code} value={code}>{name}</option>
+        ))}
+      </select>
+    </label>
+  );
+};
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -103,7 +133,7 @@ const Navbar = () => {
             <HeartPulse className="w-5 h-5" />
           </div>
           <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-slate-700 to-brand-600 bg-clip-text text-transparent">
-            MediConnect
+            {i18n.t("MediConnect")}
           </span>
         </Link>
 
@@ -117,7 +147,7 @@ const Navbar = () => {
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Dashboard</span>
+              <span>{t('Dashboard')}</span>
             </Link>
 
             {user?.role === 'admin' && (
@@ -128,7 +158,7 @@ const Navbar = () => {
                 }`}
               >
                 <Shield className="w-4 h-4 text-indigo-400" />
-                <span>Super Admin</span>
+                <span>{t('Super Admin')}</span>
               </Link>
             )}
 
@@ -139,7 +169,7 @@ const Navbar = () => {
               }`}
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Community</span>
+              <span>{t('Community')}</span>
             </Link>
 
             <Link
@@ -149,7 +179,7 @@ const Navbar = () => {
               }`}
             >
               <User className="w-4 h-4" />
-              <span>Profile</span>
+              <span>{t('Profile')}</span>
             </Link>
 
             {/* Role Badge */}
@@ -180,16 +210,16 @@ const Navbar = () => {
               {showNotifications && (
                 <div className="absolute right-0 mt-3 w-80 glass-card rounded-2xl shadow-2xl border border-slate-700/60 p-4 max-h-96 overflow-y-auto">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
-                    <h4 className="text-sm font-bold text-slate-200">Notifications</h4>
+                    <h4 className="text-sm font-bold text-slate-200">{t('Notifications')}</h4>
                     <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">
-                      {unreadCount} Unread
+                      {t('{{count}} Unread', { count: unreadCount })}
                     </span>
                   </div>
 
                   <div className="space-y-2 mt-2">
                     {notifications.length === 0 ? (
                       <p className="text-xs text-slate-500 text-center py-4">
-                        No notifications found
+                        {t('No notifications found')}
                       </p>
                     ) : (
                       notifications.map(notif => (
@@ -212,7 +242,7 @@ const Navbar = () => {
                                   : 'text-brand-400'
                               }`}
                             >
-                              {notif.type}
+                              {t(notif.type)}
                             </span>
                             <span className="text-[8px] text-slate-500">
                               {new Date(notif.createdAt).toLocaleTimeString([], {
@@ -221,7 +251,7 @@ const Navbar = () => {
                               })}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-300 mt-1">{notif.message}</p>
+                          <p className="text-xs text-slate-300 mt-1">{t(notif.message)}</p>
                         </div>
                       ))
                     )}
@@ -236,7 +266,7 @@ const Navbar = () => {
               className="flex items-center space-x-1 p-2 text-slate-400 hover:text-red-400 transition-colors font-medium text-sm rounded-lg hover:bg-red-500/5"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>{t('Logout')}</span>
             </button>
           </div>
         ) : (
@@ -245,16 +275,18 @@ const Navbar = () => {
               to="/login"
               className="text-slate-300 hover:text-white text-sm font-semibold transition-colors"
             >
-              Login
+              {t('Login')}
             </Link>
             <Link
               to="/register"
               className="bg-brand-500 hover:bg-brand-400 text-dark-950 text-sm font-semibold px-4 py-2 rounded-xl transition-all hover:shadow-lg hover:shadow-brand-500/20"
             >
-              Register
+              {t('Register')}
             </Link>
           </div>
         )}
+
+        <LanguagePicker className="hidden md:flex" />
 
         {/* Mobile Toggle */}
         <button
@@ -286,7 +318,7 @@ const Navbar = () => {
                 className="flex items-center space-x-2 p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 text-sm font-medium transition-all"
               >
                 <LayoutDashboard className="w-4 h-4" />
-                <span>Dashboard</span>
+                <span>{t('Dashboard')}</span>
               </Link>
               {user?.role === 'admin' && (
                 <Link
@@ -295,7 +327,7 @@ const Navbar = () => {
                   className="flex items-center space-x-2 p-2.5 rounded-lg text-indigo-400 hover:text-white hover:bg-slate-800/50 text-sm font-bold transition-all"
                 >
                   <Shield className="w-4 h-4 text-indigo-400" />
-                  <span>Super Admin</span>
+                  <span>{t('Super Admin')}</span>
                 </Link>
               )}
               <Link
@@ -304,7 +336,7 @@ const Navbar = () => {
                 className="flex items-center space-x-2 p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 text-sm font-medium transition-all"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>Community Forum</span>
+                <span>{t('Community Forum')}</span>
               </Link>
               <Link
                 to="/profile"
@@ -312,14 +344,14 @@ const Navbar = () => {
                 className="flex items-center space-x-2 p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 text-sm font-medium transition-all"
               >
                 <User className="w-4 h-4" />
-                <span>Profile Settings</span>
+                <span>{t('Profile Settings')}</span>
               </Link>
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center space-x-2 p-2.5 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 text-sm font-semibold transition-all"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Logout Session</span>
+                <span>{t('Logout Session')}</span>
               </button>
             </>
           ) : (
@@ -329,17 +361,18 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center text-slate-300 hover:text-white p-2.5 rounded-lg hover:bg-slate-800/40 text-sm font-semibold transition-all"
               >
-                Login
+                {t('Login')}
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center bg-brand-500 hover:bg-brand-400 text-dark-950 p-2.5 rounded-lg text-sm font-bold transition-all"
               >
-                Register
+                {t('Register')}
               </Link>
             </div>
           )}
+          <LanguagePicker className="px-2 py-1" />
         </div>
       )}
     </nav>

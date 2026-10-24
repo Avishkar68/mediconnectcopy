@@ -1,3 +1,4 @@
+import i18n from "../i18n/index.js";
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/Input';
@@ -96,9 +97,9 @@ const Profile = () => {
           <UserCheck className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold font-display text-white">Profile Settings</h1>
+          <h1 className="text-2xl font-bold font-display text-white">{i18n.t("Profile Settings")}</h1>
           <p className="text-slate-400 text-xs mt-0.5">
-            Manage your personal data, medical identifiers, and account credentials.
+            {i18n.t("Manage your personal data, medical identifiers, and account credentials.")}
           </p>
         </div>
       </div>
@@ -147,18 +148,18 @@ const Profile = () => {
               {/* Core Info */}
               <div className="space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-brand-400 border-b border-slate-800 pb-2">
-                  Account Details
+                  {i18n.t("Account Details")}
                 </h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
-                    label="Display Name"
+                    label={i18n.t("Display Name")}
                     name="name"
                     value={formData.name}
                     onChange={handleTopLevelChange}
                   />
                   <Input
-                    label="Phone Number"
+                    label={i18n.t("Phone Number")}
                     name="phone"
                     value={formData.profile.phone}
                     onChange={handleProfileChange}
@@ -168,7 +169,7 @@ const Profile = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col space-y-1.5">
                     <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                      Gender
+                      {i18n.t("Gender")}
                     </label>
                     <select
                       name="gender"
@@ -176,14 +177,14 @@ const Profile = () => {
                       onChange={handleProfileChange}
                       className="glass-input px-4 py-2.5 rounded-lg text-sm bg-slate-900 border border-slate-700/50 text-slate-100 focus:border-brand-500 focus:outline-none"
                     >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
+                      <option value="">{i18n.t("Select Gender")}</option>
+                      <option value="Male">{i18n.t("Male")}</option>
+                      <option value="Female">{i18n.t("Female")}</option>
+                      <option value="Other">{i18n.t("Other")}</option>
                     </select>
                   </div>
                   <Input
-                    label="Date of Birth"
+                    label={i18n.t("Date of Birth")}
                     name="dateOfBirth"
                     type="date"
                     value={formData.profile.dateOfBirth}
@@ -193,13 +194,13 @@ const Profile = () => {
 
                 <div className="flex flex-col space-y-1.5">
                   <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Short Bio
+                    {i18n.t("Short Bio")}
                   </label>
                   <textarea
                     name="bio"
                     value={formData.profile.bio}
                     onChange={handleProfileChange}
-                    placeholder="Tell us about yourself..."
+                    placeholder={i18n.t("Tell us about yourself...")}
                     className="glass-input px-4 py-2.5 rounded-lg text-sm bg-slate-900 border border-slate-700/50 text-slate-100 focus:border-brand-500 focus:outline-none h-20 resize-none"
                   />
                 </div>
@@ -210,18 +211,18 @@ const Profile = () => {
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 border-b border-slate-800 pb-2 flex items-center space-x-1.5">
                     <Stethoscope className="w-3.5 h-3.5" />
-                    <span>Medical Practitioner Credentials</span>
+                    <span>{i18n.t("Medical Practitioner Credentials")}</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
-                      label="Specialization"
+                      label={i18n.t("Specialization")}
                       name="specialization"
                       value={formData.profile.specialization}
                       onChange={handleProfileChange}
-                      placeholder="Cardiologist, Neurologist, etc."
+                      placeholder={i18n.t("Cardiologist, Neurologist, etc.")}
                     />
                     <Input
-                      label="Years of Experience"
+                      label={i18n.t("Years of Experience")}
                       name="experienceYears"
                       type="number"
                       value={formData.profile.experienceYears}
@@ -229,11 +230,11 @@ const Profile = () => {
                     />
                   </div>
                   <Input
-                    label="Clinic/Hospital Address"
+                    label={i18n.t("Clinic/Hospital Address")}
                     name="clinicAddress"
                     value={formData.profile.clinicAddress}
                     onChange={handleProfileChange}
-                    placeholder="123 Health Ave, Suite 400"
+                    placeholder={i18n.t("123 Health Ave, Suite 400")}
                   />
                 </div>
               )}
@@ -243,22 +244,22 @@ const Profile = () => {
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400 border-b border-slate-800 pb-2 flex items-center space-x-1.5">
                     <Activity className="w-3.5 h-3.5" />
-                    <span>Patient Health Details</span>
+                    <span>{i18n.t("Patient Health Details")}</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
-                      label="Blood Group"
+                      label={i18n.t("Blood Group")}
                       name="bloodGroup"
                       value={formData.profile.bloodGroup}
                       onChange={handleProfileChange}
-                      placeholder="O+, A-, B+, etc."
+                      placeholder={i18n.t("O+, A-, B+, etc.")}
                     />
                     <Input
-                      label="Known Allergies (comma-separated)"
+                      label={i18n.t("Known Allergies (comma-separated)")}
                       name="allergies"
                       value={formData.profile.allergies}
                       onChange={handleProfileChange}
-                      placeholder="Peanuts, Penicillin, etc."
+                      placeholder={i18n.t("Peanuts, Penicillin, etc.")}
                     />
                   </div>
                 </div>
@@ -267,10 +268,10 @@ const Profile = () => {
               {/* Credentials Update */}
               <div className="space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-red-400 border-b border-slate-800 pb-2">
-                  Security Settings
+                  {i18n.t("Security Settings")}
                 </h4>
                 <Input
-                  label="Update Password (leave blank to keep current)"
+                  label={i18n.t("Update Password (leave blank to keep current)")}
                   name="password"
                   type="password"
                   placeholder="••••••••"
@@ -281,7 +282,7 @@ const Profile = () => {
 
               <div className="pt-4">
                 <Button type="submit" loading={loading} className="w-full sm:w-auto">
-                  Save Settings
+                  {i18n.t("Save Settings")}
                 </Button>
               </div>
 

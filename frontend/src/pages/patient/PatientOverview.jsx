@@ -1,3 +1,4 @@
+import i18n from "../../i18n/index.js";
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -19,8 +20,10 @@ import {
   FileText,
   Check
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const PatientOverview = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState({
     profile: null,
     bloodGroup: '',
@@ -124,11 +127,11 @@ const PatientOverview = () => {
     if (!sys || !dia) return null;
 
     if (sys <= 125 && dia <= 82) {
-      return { label: 'Healthy & Normal', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      return { label: t('Healthy & Normal'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
     } else if (sys <= 139 || dia <= 89) {
-      return { label: 'Slightly Elevated', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+      return { label: t('Slightly Elevated'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
     } else {
-      return { label: 'High - Please Consult Doctor', color: 'text-rose-400 bg-rose-500/15 border-rose-500/30' };
+      return { label: t('High - Please Consult Doctor'), color: 'text-rose-400 bg-rose-500/15 border-rose-500/30' };
     }
   };
 
@@ -141,9 +144,9 @@ const PatientOverview = () => {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-slate-300 uppercase tracking-wider">
-            What would you like to do today?
+            {t('What would you like to do today?')}
           </h2>
-          <span className="text-xs text-slate-400 hidden sm:inline">1-click shortcuts</span>
+          <span className="text-xs text-slate-400 hidden sm:inline">{t('1-click shortcuts')}</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -158,14 +161,14 @@ const PatientOverview = () => {
                 <Sparkles className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">
-                Explain A Test Report
+                {t('Explain A Test Report')}
               </h3>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Upload your blood test or lab paper to understand every line in simple words.
+                {i18n.t("Upload your blood test or lab paper to understand every line in simple words.")}
               </p>
             </div>
             <div className="flex items-center text-xs font-bold text-sky-400 mt-4 group-hover:translate-x-1 transition-transform">
-              <span>Read report simply</span>
+              <span>{t('Read report simply')}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
           </Link>
@@ -180,14 +183,14 @@ const PatientOverview = () => {
                 <Video className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
-                Doctor Visits & Video Calls
+                {t('Doctor Visits & Video Calls')}
               </h3>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Talk to your doctor online from home or book your next in-person visit.
+                {i18n.t("Talk to your doctor online from home or book your next in-person visit.")}
               </p>
             </div>
             <div className="flex items-center text-xs font-bold text-emerald-400 mt-4 group-hover:translate-x-1 transition-transform">
-              <span>See visits & calls</span>
+              <span>{t('See visits & calls')}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
           </Link>
@@ -202,14 +205,14 @@ const PatientOverview = () => {
                 <Activity className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
-                My Daily Medicines
+                {i18n.t("My Daily Medicines")}
               </h3>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Check which pills to take today, dosage instructions, and refill dates.
+                {i18n.t("Check which pills to take today, dosage instructions, and refill dates.")}
               </p>
             </div>
             <div className="flex items-center text-xs font-bold text-purple-400 mt-4 group-hover:translate-x-1 transition-transform">
-              <span>Check today's pills</span>
+              <span>{i18n.t("Check today's pills")}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
           </Link>
@@ -224,14 +227,14 @@ const PatientOverview = () => {
                 <QrCode className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-white group-hover:text-rose-300 transition-colors">
-                Emergency Medical Card
+                {i18n.t("Emergency Medical Card")}
               </h3>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Your Blood Group, allergies, and contacts ready for doctors in emergencies.
+                {i18n.t("Your Blood Group, allergies, and contacts ready for doctors in emergencies.")}
               </p>
             </div>
             <div className="flex items-center text-xs font-bold text-rose-400 mt-4 group-hover:translate-x-1 transition-transform">
-              <span>View QR health card</span>
+              <span>{i18n.t("View QR health card")}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
           </Link>
@@ -249,7 +252,7 @@ const PatientOverview = () => {
           </div>
           <div className="min-w-0">
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Blood Pressure & Pulse</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("Blood Pressure & Pulse")}</span>
               {vitalStatus && (
                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${vitalStatus.color}`}>
                   {vitalStatus.label}
@@ -275,9 +278,9 @@ const PatientOverview = () => {
             <Activity className="w-6 h-6" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Medicines Prescribed</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("Medicines Prescribed")}</span>
             <h3 className="text-base font-bold text-white mt-1">
-              {activeMeds.length} Active {activeMeds.length === 1 ? 'Medicine' : 'Medicines'}
+              {activeMeds.length} {i18n.t("Active")} {activeMeds.length === 1 ? 'Medicine' : 'Medicines'}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5 truncate">
               {activeMeds.length > 0 ? `Next: ${activeMeds[0].name} (${activeMeds[0].dosage})` : 'No active medicines'}
@@ -291,12 +294,12 @@ const PatientOverview = () => {
             <UserCheck className="w-6 h-6" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Approved Doctors</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{i18n.t("Approved Doctors")}</span>
             <h3 className="text-base font-bold text-white mt-1">
-              {activeDoctorAccess.length} {activeDoctorAccess.length === 1 ? 'Doctor' : 'Doctors'} Connected
+              {activeDoctorAccess.length} {activeDoctorAccess.length === 1 ? 'Doctor' : 'Doctors'} {i18n.t("Connected")}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Can view your records with your permission
+              {i18n.t("Can view your records with your permission")}
             </p>
           </div>
         </div>
@@ -314,10 +317,10 @@ const PatientOverview = () => {
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center space-x-2">
                 <ClipboardList className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white">Daily Health Habits</h3>
+                <h3 className="text-sm font-bold text-white">{i18n.t("Daily Health Habits")}</h3>
               </div>
               <Link to="/dashboard/care-plan" className="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center">
-                <span>View doctor's full care plan</span>
+                <span>{i18n.t("View doctor's full care plan")}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Link>
             </div>
@@ -335,12 +338,12 @@ const PatientOverview = () => {
                   </div>
                   <div>
                     <h4 className={`text-xs font-semibold ${completedTasks.meds ? 'line-through text-slate-400' : 'text-slate-100'}`}>
-                      Take morning medicines with water
+                      {i18n.t("Take morning medicines with water")}
                     </h4>
-                    <p className="text-[11px] text-slate-400">Prescribed by your doctor</p>
+                    <p className="text-[11px] text-slate-400">{i18n.t("Prescribed by your doctor")}</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">Morning</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">{i18n.t("Morning")}</span>
               </div>
 
               <div
@@ -355,12 +358,12 @@ const PatientOverview = () => {
                   </div>
                   <div>
                     <h4 className={`text-xs font-semibold ${completedTasks.vitals ? 'line-through text-slate-400' : 'text-slate-100'}`}>
-                      Check and log your Blood Pressure
+                      {i18n.t("Check and log your Blood Pressure")}
                     </h4>
-                    <p className="text-[11px] text-slate-400">Keep resting for 5 mins before taking reading</p>
+                    <p className="text-[11px] text-slate-400">{i18n.t("Keep resting for 5 mins before taking reading")}</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">Daily</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">{i18n.t("Daily")}</span>
               </div>
 
               <div
@@ -375,12 +378,12 @@ const PatientOverview = () => {
                   </div>
                   <div>
                     <h4 className={`text-xs font-semibold ${completedTasks.water ? 'line-through text-slate-400' : 'text-slate-100'}`}>
-                      Stay hydrated (Drink at least 8 glasses of water)
+                      {i18n.t("Stay hydrated (Drink at least 8 glasses of water)")}
                     </h4>
-                    <p className="text-[11px] text-slate-400">Supports healthy blood pressure and kidneys</p>
+                    <p className="text-[11px] text-slate-400">{i18n.t("Supports healthy blood pressure and kidneys")}</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">All day</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">{i18n.t("All day")}</span>
               </div>
             </div>
           </div>
@@ -390,19 +393,19 @@ const PatientOverview = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-bold text-white flex items-center space-x-2">
                 <Activity className="w-4 h-4 text-brand-400" />
-                <span>My Active Medicines</span>
+                <span>{i18n.t("My Active Medicines")}</span>
               </h3>
               <Link to="/dashboard/medications" className="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center">
-                <span>See all medicines</span>
+                <span>{i18n.t("See all medicines")}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Link>
             </div>
 
             {activeMeds.length === 0 ? (
               <div className="p-6 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-xl">
-                <p className="text-xs text-slate-400">No active medicines registered right now.</p>
+                <p className="text-xs text-slate-400">{i18n.t("No active medicines registered right now.")}</p>
                 <Link to="/dashboard/medications" className="inline-block mt-2 text-xs font-bold text-brand-400 hover:underline">
-                  + Add a medicine
+                  {i18n.t("+ Add a medicine")}
                 </Link>
               </div>
             ) : (
@@ -416,7 +419,7 @@ const PatientOverview = () => {
                       <div>
                         <h4 className="text-xs font-bold text-white">{med.name}</h4>
                         <p className="text-[11px] text-slate-400">
-                          Take <span className="text-slate-200 font-semibold">{med.dosage}</span> • {med.frequency}
+                          {i18n.t("Take")} <span className="text-slate-200 font-semibold">{med.dosage}</span> • {med.frequency}
                         </p>
                       </div>
                     </div>
@@ -434,17 +437,17 @@ const PatientOverview = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-bold text-white flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-sky-400" />
-                <span>Recent Health Timeline</span>
+                <span>{i18n.t("Recent Health Timeline")}</span>
               </h3>
               <Link to="/dashboard/timeline" className="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center">
-                <span>View full timeline</span>
+                <span>{i18n.t("View full timeline")}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Link>
             </div>
 
             {data.timeline.length === 0 ? (
               <div className="p-6 text-center bg-slate-900/30 border border-dashed border-slate-800 rounded-xl">
-                <p className="text-xs text-slate-400">No medical events logged in timeline yet.</p>
+                <p className="text-xs text-slate-400">{i18n.t("No medical events logged in timeline yet.")}</p>
               </div>
             ) : (
               <div className="space-y-3 relative border-l border-slate-800 pl-4 ml-2">
@@ -475,7 +478,7 @@ const PatientOverview = () => {
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5 mb-3">
               <Calendar className="w-4 h-4 text-brand-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Next Doctor Visit</h3>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">{i18n.t("Next Doctor Visit")}</h3>
             </div>
 
             {nextAppointment ? (
@@ -483,14 +486,14 @@ const PatientOverview = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="text-xs font-bold text-white">
-                      Dr. {nextAppointment.doctor?.name || 'Doctor'}
+                      {i18n.t("Dr.")} {nextAppointment.doctor?.name || 'Doctor'}
                     </h4>
                     <p className="text-[11px] text-brand-400">
                       {nextAppointment.doctor?.profile?.specialization || 'General Physician'}
                     </p>
                   </div>
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    Confirmed
+                    {i18n.t("Confirmed")}
                   </span>
                 </div>
 
@@ -500,7 +503,7 @@ const PatientOverview = () => {
                 </div>
 
                 <p className="text-[11px] text-slate-400 italic">
-                  Reason: {nextAppointment.purpose || 'Health checkup'}
+                  {i18n.t("Reason:")} {nextAppointment.purpose || 'Health checkup'}
                 </p>
 
                 <Link
@@ -508,18 +511,18 @@ const PatientOverview = () => {
                   className="w-full mt-2 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition-colors"
                 >
                   <Video className="w-3.5 h-3.5" />
-                  <span>Join Video Call / View Details</span>
+                  <span>{i18n.t("Join Video Call / View Details")}</span>
                 </Link>
               </div>
             ) : (
               <div className="text-center py-5 bg-slate-900/30 rounded-xl border border-slate-800">
-                <p className="text-xs text-slate-400">No visits scheduled right now.</p>
+                <p className="text-xs text-slate-400">{i18n.t("No visits scheduled right now.")}</p>
                 <Link
                   to="/dashboard/appointments"
                   className="inline-flex items-center space-x-1 mt-3 px-3.5 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/30 text-brand-300 hover:text-white text-xs font-bold transition-all"
                 >
                   <Calendar className="w-3.5 h-3.5" />
-                  <span>Book Doctor Visit</span>
+                  <span>{i18n.t("Book Doctor Visit")}</span>
                 </Link>
               </div>
             )}
@@ -529,16 +532,16 @@ const PatientOverview = () => {
           <div className="glass-card rounded-2xl p-5 border border-rose-500/20 bg-rose-500/5">
             <div className="flex items-center space-x-2 mb-2">
               <HeartPulse className="w-4 h-4 text-rose-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">First-Aid Emergency Guide</h3>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">{i18n.t("First-Aid Emergency Guide")}</h3>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Need instant help for chest pain, high fever, bleeding, or burns? Get immediate step-by-step guidance.
+              {i18n.t("Need instant help for chest pain, high fever, bleeding, or burns? Get immediate step-by-step guidance.")}
             </p>
             <Link
               to="/dashboard/emergency-assistant"
               className="mt-3 w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors shadow-md shadow-rose-600/20"
             >
-              <span>Open First-Aid SOS Guide</span>
+              <span>{i18n.t("Open First-Aid SOS Guide")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -547,29 +550,29 @@ const PatientOverview = () => {
           <div className="glass-card rounded-2xl p-5 border border-slate-800">
             <div className="flex items-center space-x-2 border-b border-slate-800 pb-2.5 mb-3">
               <ShieldCheck className="w-4 h-4 text-purple-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Doctor Permissions</h3>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">{i18n.t("Doctor Permissions")}</h3>
             </div>
 
             <div className="space-y-2 text-left">
               <p className="text-[11px] text-slate-400">
-                Doctors who have permission to see your medical papers:
+                {i18n.t("Doctors who have permission to see your medical papers:")}
               </p>
               {activeDoctorAccess.length === 0 ? (
-                <p className="text-xs text-slate-500 italic py-2">No doctors currently connected.</p>
+                <p className="text-xs text-slate-500 italic py-2">{i18n.t("No doctors currently connected.")}</p>
               ) : (
                 <div className="space-y-1.5">
                   {activeDoctorAccess.slice(0, 3).map((c, idx) => (
                     <div key={idx} className="flex justify-between items-center text-xs p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
-                      <span className="font-semibold text-slate-200">Dr. {c.doctor?.name}</span>
+                      <span className="font-semibold text-slate-200">{i18n.t("Dr.")} {c.doctor?.name}</span>
                       <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
-                        Connected
+                        {i18n.t("Connected")}
                       </span>
                     </div>
                   ))}
                 </div>
               )}
               <Link to="/dashboard/doctors" className="block text-center text-xs font-bold text-brand-400 hover:underline pt-2">
-                Manage doctor permissions
+                {i18n.t("Manage doctor permissions")}
               </Link>
             </div>
           </div>
